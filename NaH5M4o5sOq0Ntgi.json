@@ -536,8 +536,8 @@
         "rule": {
           "interval": [
             {
-              "field": "hours",
-              "hoursInterval": 2
+              "field": "minutes",
+              "minutesInterval": 30
             }
           ]
         }
@@ -743,6 +743,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-05-11T18:22:47.295Z",
-  "versionId": "fcf596ea-3ed4-4dd9-bb09-32bc253d71ba"
+  "updatedAt": "2026-05-11T18:23:42.025Z",
+  "versionId": "c8572d52-eca5-453f-bb89-eb0587e6e521"
 }
