@@ -7,7 +7,7 @@
       "main": [
         [
           {
-            "node": "config",
+            "node": "Get a file",
             "type": "main",
             "index": 0
           }
@@ -73,9 +73,9 @@
       "main": [
         [
           {
-            "node": "Merge Paper Sources",
+            "node": "Generate & Rank Video Ideas",
             "type": "main",
-            "index": 1
+            "index": 0
           }
         ]
       ]
@@ -229,42 +229,14 @@
     },
     "On form submission": {
       "main": [
+        []
+      ]
+    },
+    "Get a file": {
+      "main": [
         [
           {
             "node": "Extract PDF Text",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "config": {
-      "main": [
-        [
-          {
-            "node": "GitHub get file",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "GitHub get file": {
-      "main": [
-        [
-          {
-            "node": "Decode file",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Decode file": {
-      "main": [
-        [
-          {
-            "node": "GitHub push edited file",
             "type": "main",
             "index": 0
           }
@@ -275,7 +247,9 @@
   "createdAt": "2026-05-11T17:46:41.314Z",
   "id": "AibDf63BDoWgEeT0",
   "isArchived": false,
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "ResearchPaperToVideo",
   "nodes": [
     {
@@ -285,8 +259,8 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -944,
-        464
+        208,
+        208
       ]
     },
     {
@@ -412,8 +386,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        640,
-        192
+        656,
+        -80
       ]
     },
     {
@@ -426,14 +400,13 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        880,
-        128
+        896,
+        176
       ]
     },
     {
       "parameters": {
         "operation": "pdf",
-        "binaryPropertyName": "Enter_PDF_here",
         "options": {
           "joinPages": true,
           "maxPages": 30
@@ -444,8 +417,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1.1,
       "position": [
-        624,
-        0
+        592,
+        208
       ]
     },
     {
@@ -872,96 +845,29 @@
         },
         "repository": {
           "__rl": true,
-          "value": "ResearchPaperVideoGeneration",
+          "value": "n8n-backups",
           "mode": "list",
-          "cachedResultName": "ResearchPaperVideoGeneration",
-          "cachedResultUrl": "https://github.com/KoenKaandorp/ResearchPaperVideoGeneration"
+          "cachedResultName": "n8n-backups",
+          "cachedResultUrl": "https://github.com/KoenKaandorp/n8n-backups"
         },
-        "filePath": "workflow_improved.json",
+        "filePath": "Troffaes 2017 - MC sampling credal nets.pdf",
         "additionalParameters": {}
       },
-      "id": "8cda4f59-54f9-4d72-ac1b-00cb3ec79f52",
-      "name": "GitHub get file",
       "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
       "position": [
-        -528,
-        464
+        416,
+        208
       ],
-      "typeVersion": 1,
-      "webhookId": "e94e3526-39a3-4d70-a223-fae6ad7988df",
+      "id": "bab6572e-344c-4f9a-8374-539e45f814cf",
+      "name": "Get a file",
+      "webhookId": "0bbb5b06-e212-4d31-8760-94f54b271308",
       "credentials": {
         "githubApi": {
           "id": "Np7LA4CeKtiFyMrr",
           "name": "GitHub account"
         }
       }
-    },
-    {
-      "parameters": {
-        "jsCode": "var text = Buffer.from($input.first().binary.data.data, 'base64').toString('utf8');\nreturn {\"data\": text};"
-      },
-      "id": "eae3f243-3acf-4316-a041-89b3dd2dd4f0",
-      "name": "Decode file",
-      "type": "n8n-nodes-base.code",
-      "position": [
-        -336,
-        464
-      ],
-      "typeVersion": 2
-    },
-    {
-      "parameters": {
-        "authentication": "oAuth2",
-        "resource": "file",
-        "operation": "edit",
-        "owner": {
-          "__rl": true,
-          "mode": "list",
-          "value": "teds-tech-talks",
-          "cachedResultUrl": "https://github.com/teds-tech-talks",
-          "cachedResultName": "teds-tech-talks"
-        },
-        "repository": {
-          "__rl": true,
-          "mode": "list",
-          "value": "git_push_article",
-          "cachedResultUrl": "https://github.com/teds-tech-talks/git_push_article",
-          "cachedResultName": "git_push_article"
-        },
-        "filePath": "README.md",
-        "fileContent": "={{ $json.data }}\n## Updated at:\n{{ $now.toISO() }}",
-        "commitMessage": "updated from n8n via GitHub node"
-      },
-      "id": "f942bdb4-14af-4575-aaed-2d8887f3eb4f",
-      "name": "GitHub push edited file",
-      "type": "n8n-nodes-base.github",
-      "position": [
-        -128,
-        464
-      ],
-      "typeVersion": 1,
-      "webhookId": "672ef463-de85-4d80-bcb4-b21cb1ab7c2c"
-    },
-    {
-      "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "localrepo",
-              "value": "https://github.com/KoenKaandorp/ResearchPaperVideoGeneration.git"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "8dfead75-46e3-44d5-bb29-9655f368c069",
-      "name": "config",
-      "type": "n8n-nodes-base.set",
-      "position": [
-        -736,
-        464
-      ],
-      "typeVersion": 2
     }
   ],
   "pinData": {},
@@ -981,6 +887,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-05-11T18:12:55.420Z",
-  "versionId": "811a4978-9dbc-4c75-847d-291786925b44"
+  "updatedAt": "2026-05-11T18:35:00.563Z",
+  "versionId": "7c829e38-73ee-4af3-bf84-634e94501c2a"
 }
