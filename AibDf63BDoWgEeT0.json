@@ -1,0 +1,986 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Audio - ElevenLabs": {
+      "main": [
+        [
+          {
+            "node": "Wait for Audio Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Videos - Runway": {
+      "main": [
+        [
+          {
+            "node": "Wait for Video Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine & Caption - Creatomate": {
+      "main": [
+        [
+          {
+            "node": "Wait for Final Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape from Pure API": {
+      "main": [
+        [
+          {
+            "node": "Merge Paper Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Paper Sources": {
+      "main": [
+        [
+          {
+            "node": "Generate & Rank Video Ideas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract PDF Text": {
+      "main": [
+        [
+          {
+            "node": "Merge Paper Sources",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Generate & Rank Video Ideas": {
+      "main": [
+        [
+          {
+            "node": "Parse Video Script",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Video Script": {
+      "main": [
+        [
+          {
+            "node": "Generate Audio - ElevenLabs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Post Description": {
+      "main": [
+        [
+          {
+            "node": "Parse Description",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Description": {
+      "main": [
+        [
+          {
+            "node": "Upload - Blotato",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Audio Processing": {
+      "main": [
+        [
+          {
+            "node": "Check Audio Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Audio Success": {
+      "main": [
+        [
+          {
+            "node": "Generate Videos - Runway",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Audio Generation Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Video Processing": {
+      "main": [
+        [
+          {
+            "node": "Check Video Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Video Success": {
+      "main": [
+        [
+          {
+            "node": "Combine & Caption - Creatomate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Video Generation Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Final Video": {
+      "main": [
+        [
+          {
+            "node": "Check Final Video Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Final Video Success": {
+      "main": [
+        [
+          {
+            "node": "Generate Post Description",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Final Video Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate & Rank Video Ideas",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Generate Post Description",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Extract PDF Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "config": {
+      "main": [
+        [
+          {
+            "node": "GitHub get file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GitHub get file": {
+      "main": [
+        [
+          {
+            "node": "Decode file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decode file": {
+      "main": [
+        [
+          {
+            "node": "GitHub push edited file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-05-11T17:46:41.314Z",
+  "id": "AibDf63BDoWgEeT0",
+  "isArchived": false,
+  "meta": null,
+  "name": "ResearchPaperToVideo",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "85aeb900-8e3f-4f53-8400-7103a8a5dbf7",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -944,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "<__PLACEHOLDER_VALUE__ElevenLabs API endpoint (e.g., https://api.elevenlabs.io/v1/text-to-speech/VOICE_ID)__>",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\"text\": $json.fullScript, \"model_id\": \"eleven_turbo_v2_5\", \"voice_settings\": {\"stability\": 0.4, \"similarity_boost\": 0.8, \"style\": 0.15, \"use_speaker_boost\": true}, \"output_format\": \"mp3_44100_128\"} }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "audioFile"
+            }
+          }
+        }
+      },
+      "id": "95020ba9-446b-490d-aa82-76d6706e8356",
+      "name": "Generate Audio - ElevenLabs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1088,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "<__PLACEHOLDER_VALUE__Runway API endpoint (e.g., https://api.runwayml.com/v1/gen3/text-to-video)__>",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\"scenes\": $json.scenes.map(s => ({\"scene_number\": s.number, \"text_prompt\": s.visual, \"duration\": s.duration || 4, \"motion_intensity\": \"medium\"})), \"ratio\": \"9:16\", \"resolution\": \"1080p\", \"model\": \"gen3a_turbo\", \"seed\": Math.floor(Math.random() * 1000000)} }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "d26ba944-db75-4f77-9a25-398021d9d9e9",
+      "name": "Generate Videos - Runway",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1120,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "<__PLACEHOLDER_VALUE__Creatomate API endpoint (e.g., https://api.creatomate.com/v1/renders)__>",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\"template_id\": \"<__PLACEHOLDER_VALUE__Creatomate template ID__>\", \"output_format\": \"mp4\", \"frame_rate\": 30, \"modifications\": {\"Audio-1.source\": $(\"Wait for Audio Processing\").item.json.audioFile, \"Video-Clips.sources\": $(\"Wait for Video Processing\").item.json.videoUrls, \"Title.text\": $(\"Parse Video Script\").item.json.videoTitle, \"Captions.text\": $(\"Parse Video Script\").item.json.fullScript, \"Captions.font_family\": \"Montserrat\", \"Captions.font_weight\": \"800\", \"Captions.color\": \"#FFFFFF\", \"Captions.stroke_color\": \"#000000\", \"Captions.stroke_width\": \"4 px\", \"Captions.y_alignment\": \"75%\"}} }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "e7b88bc1-7d43-4b4f-b879-c82e8da1ec4f",
+      "name": "Combine & Caption - Creatomate",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1104,
+        448
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "<__PLACEHOLDER_VALUE__Blotato API endpoint (e.g., https://api.blotato.com/v1/posts)__>",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\"video_url\": $json.videoUrl, \"title\": $json.videoTitle, \"description\": $json.postDescription, \"hashtags\": $json.hashtags, \"platforms\": [\"tiktok\", \"instagram_reels\", \"youtube_shorts\"], \"platform_settings\": {\"tiktok\": {\"caption\": $json.tiktokCaption, \"allow_comments\": true, \"allow_duet\": true, \"allow_stitch\": true}, \"instagram_reels\": {\"caption\": $json.instagramCaption, \"share_to_feed\": true}, \"youtube_shorts\": {\"title\": $json.videoTitle, \"description\": $json.postDescription, \"category\": \"Education\", \"privacy\": \"public\"}}, \"schedule\": \"immediate\"} }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "c7850974-a3eb-443d-b1e3-c6e008cb9898",
+      "name": "Upload - Blotato",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1872,
+        736
+      ]
+    },
+    {
+      "parameters": {
+        "url": "<__PLACEHOLDER_VALUE__Pure API endpoint (e.g., https://pure.university.edu/api/papers/123)__>",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "af7f3f90-22ed-4f85-86e0-cb9765cad238",
+      "name": "Scrape from Pure API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        640,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "output": "input1"
+      },
+      "id": "15de5bd5-bd93-4a9f-ad68-a5497a248c6c",
+      "name": "Merge Paper Sources",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        880,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "Enter_PDF_here",
+        "options": {
+          "joinPages": true,
+          "maxPages": 30
+        }
+      },
+      "id": "482d2b82-cf2d-4cbd-957d-fb0f8a1b9426",
+      "name": "Extract PDF Text",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        624,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Transform this research into a scroll-stopping short-form video for 16-19 year olds deciding their future studies.\n\n=== RESEARCH INPUT ===\nTitle: {{ $json.info?.Title || $json.title || 'Untitled Research' }}\nContent: {{ $json.text || $json.abstract || $json.content }}\n\n=== YOUR PROCESS ===\n\nSTEP 1 — Brainstorm internally (do NOT output this step):\nGenerate 3 distinct angles on this research:\n  a) The \"wait, what?\" angle — the most counter-intuitive or surprising finding\n  b) The \"this is your future\" angle — connects research to a tech/career that will exist in 5-10 years\n  c) The \"this explains your life\" angle — links research to something teens already experience daily (social media, dating, gaming, school stress, friend drama)\n\nFor each, internally score 1-10 on:\n  - Hook strength (would a teen stop scrolling in 0.5 seconds?)\n  - Relatability (does it connect to their actual life?)\n  - Shareability (would they send it to a friend?)\n  - Curiosity gap (does it make them NEED to know more?)\n\nSTEP 2 — Pick the winner (highest combined score) and build the full package.\n\n=== HOOK RULES (CRITICAL) ===\nThe hook IS the first sentence of the narration. It must:\n- Be 6-12 words maximum\n- Use one of these proven patterns:\n   • Contradiction: \"Everyone thinks X, but actually...\"\n   • Personal callout: \"If you've ever [specific behavior], science just explained why.\"\n   • Specific number: \"87% of people do this without realizing.\"\n   • Future shock: \"In 5 years, [bold claim about their life].\"\n   • Pattern interrupt: \"This isn't a [expected thing]. It's a [unexpected thing].\"\n- NEVER start with: \"Did you know\", \"Have you ever\", \"Imagine if\", \"Scientists discovered\", \"A new study\"\n- NEVER mention research, studies, papers, or universities\n\n=== NARRATION RULES ===\n- Total length: 55-75 words (≈22-28 seconds at natural pace)\n- Hook is sentence 1, baked into the narration (NOT a separate intro)\n- Sentence 2-3: the surprising insight in plain language\n- Sentence 4-5: why this matters to THEIR life specifically\n- Final sentence: thought-provoking closer or implicit \"this could be you studying this\" — never a hard CTA\n- Vocabulary: 8th-grade reading level. No jargon. No \"furthermore\", \"moreover\", \"essentially\"\n- Rhythm: mix short punchy sentences with one longer one. Read it aloud test — it should sound like a friend, not a teacher.\n\n=== SCENE / VISUAL RULES ===\nCreate 4 scenes (one every ~6 seconds). Each visual prompt is for an AI video generator (Runway Gen-3), so it must be:\n- Cinematic and specific (camera angle, lighting, subject, action, mood)\n- 15-30 words\n- Vertical 9:16 framing implied\n- Visually striking — avoid talking heads, stock-photo vibes, generic offices\n- Match the narration beat for that scene\n\nGood visual example: \"Close-up of a teenager's face lit by phone screen glow in a dark bedroom, dopamine-blue and pink color grading, slow push-in, 9:16 vertical, cinematic shallow depth of field\"\nBad visual example: \"A student studying\" / \"People using technology\"\n\n=== CAPTION RULES ===\nThe on-screen first-line caption (used as social post hook) must:\n- Be different wording from the spoken hook (so audio + text don't echo)\n- 4-8 words\n- Trigger curiosity, not summarize\n\n=== OUTPUT FORMAT ===\nReturn ONLY valid JSON, no markdown fences, no commentary:\n\n{\n  \"selectedIdea\": {\n    \"angle\": \"wait-what | future | explains-life\",\n    \"title\": \"max 55 chars, hooky, no clickbait clichés\",\n    \"hook\": \"the literal first line of narration, 6-12 words\",\n    \"viralScore\": 1-10,\n    \"narration\": \"full 55-75 word script, hook included as first sentence\",\n    \"scenes\": [\n      {\n        \"number\": 1,\n        \"description\": \"what happens in this beat of the story\",\n        \"mood\": \"e.g. tense, awe, playful, ominous, hopeful\",\n        \"visual\": \"detailed cinematic prompt for AI video generation\",\n        \"duration\": 4\n      }\n    ],\n    \"caption\": \"4-8 word on-screen opening text, different from spoken hook\",\n    \"fieldOfStudy\": \"the specific subfield this research belongs to (e.g. cognitive neuroscience, human-AI interaction)\"\n  }\n}",
+        "options": {
+          "systemMessage": "You are a content strategist who has produced 1B+ views of educational short-form video for Gen Z audiences across TikTok, Instagram Reels, and YouTube Shorts. You translate academic psychology and human-technology research into videos that 16-19 year olds actively share with friends.\n\nYou understand:\n- Gen Z's 0.5-second attention threshold and how to break it\n- The difference between content that *teaches* (boring) and content that *reframes how someone sees their own life* (viral)\n- That hooks are everything: a great hook saves an okay script, a weak hook kills a perfect one\n- The aesthetic of platform-native content: NOT polished corporate video, NOT a TED talk, but visually striking, emotionally specific, and surprising\n- How to make a research finding feel like gossip, prophecy, or a secret\n\nYour output is always:\n- Honest to the research (no exaggeration, no false claims)\n- Free of academic language (no 'studies show', 'researchers found', 'data suggests')\n- Free of cringe (no 'Hey guys!', no 'Let's dive in', no excessive emojis)\n- One core idea per video — never two, never a list\n- Designed for the spoken word: read every line aloud in your head before keeping it\n\nNon-negotiables:\n- Never mention papers, journals, studies, or universities by name\n- Never use the words: 'fascinating', 'incredible', 'mind-blowing', 'game-changer', 'literally' (overused), 'unhinged', 'low-key', 'high-key'\n- Never write hashtags inside the narration\n- Never use emojis in the narration field (captions only, sparingly)\n- Output strict JSON only — no markdown, no preamble, no trailing commentary",
+          "maxIterations": 10
+        }
+      },
+      "id": "d42dbe64-c0e5-44fa-af2a-c26ad69423be",
+      "name": "Generate & Rank Video Ideas",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ (() => {\n  const raw = $json.output || '';\n  const cleaned = raw.replace(/^```json\\s*/i, '').replace(/^```\\s*/i, '').replace(/```\\s*$/i, '').trim();\n  const parsed = JSON.parse(cleaned);\n  const idea = parsed.selectedIdea;\n  return JSON.stringify({\n    assignments: [\n      { name: 'videoTitle', value: idea.title, type: 'string' },\n      { name: 'hook', value: idea.hook, type: 'string' },\n      { name: 'fullScript', value: idea.narration, type: 'string' },\n      { name: 'scenes', value: idea.scenes, type: 'array' },\n      { name: 'caption', value: idea.caption, type: 'string' },\n      { name: 'viralScore', value: idea.viralScore, type: 'number' },\n      { name: 'angle', value: idea.angle, type: 'string' },\n      { name: 'fieldOfStudy', value: idea.fieldOfStudy, type: 'string' },\n      { name: 'wordCount', value: idea.narration.split(/\\s+/).length, type: 'number' }\n    ]\n  });\n})() }}",
+        "options": {}
+      },
+      "id": "deebe5a7-7118-4829-9340-9e7cb0b3b660",
+      "name": "Parse Video Script",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        592,
+        496
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write platform-native captions for this short-form video.\n\n=== VIDEO CONTEXT ===\nTitle: {{ $(\"Parse Video Script\").item.json.videoTitle }}\nSpoken hook: {{ $(\"Parse Video Script\").item.json.hook }}\nFull narration: {{ $(\"Parse Video Script\").item.json.fullScript }}\nOn-screen caption: {{ $(\"Parse Video Script\").item.json.caption }}\nAngle: {{ $(\"Parse Video Script\").item.json.angle }}\nField of study: {{ $(\"Parse Video Script\").item.json.fieldOfStudy }}\n\n=== TARGET AUDIENCE ===\n16-19 year olds choosing what to study at university. They use TikTok, Instagram Reels, and YouTube Shorts daily. They scroll fast. They skip anything that looks like an ad.\n\n=== PLATFORM RULES ===\n\nTIKTOK (caption shown above video, limited to ~150 chars before \"more\"):\n- Open with curiosity gap, not summary\n- 1-2 sentences\n- 3-5 hashtags, mix of: 1 broad (#fyp or #foryou), 1-2 topical (#psychology #neuroscience), 1-2 niche/community (#stemtok #studytok)\n- Lowercase, casual punctuation, no marketing energy\n- Question or cliffhanger encouraged\n\nINSTAGRAM REELS (longer caption tolerated, hashtags often hidden in comment or end):\n- 2-3 sentences, slightly more polished than TikTok but still casual\n- Can include a soft question to drive comments\n- 5-8 hashtags at the end, mix of reach + niche\n- Light emoji use OK (max 2, only if they add meaning, never strings of them)\n\nPOST DESCRIPTION (used as default fallback, YouTube Shorts description):\n- 2-3 sentences\n- Includes 1 line about the broader field of study (subtle pipeline to studying this)\n- Hashtags appended at the end\n\n=== HASHTAG STRATEGY ===\nReturn 8-10 total hashtags ordered by priority:\n- 1-2 hyper-broad reach tags (#fyp, #foryou, #reels)\n- 2-3 topical (matching the research field — psychology, neuroscience, AI, behavior, etc.)\n- 2-3 audience tags (#genz, #studytok, #studentlife, #universitytips, #careeradvice)\n- 1-2 niche/specific to the video's exact topic\nDo NOT include the # symbol in the hashtags array — just the words.\n\n=== TONE BANS ===\nNever use: \"Did you know\", \"Have you ever wondered\", \"Hey guys\", \"Wait for it\", \"POV:\", \"Tell me why\", \"The way that...\", \"It's giving...\"\nNever use marketing-speak: \"unlock\", \"discover\", \"transform your\", \"level up\"\nNever sound like a brand. Sound like a smart friend texting you something they just realized.\n\n=== OUTPUT FORMAT ===\nReturn ONLY valid JSON, no markdown fences:\n\n{\n  \"description\": \"the default 2-3 sentence post description (no hashtags inline)\",\n  \"tiktokCaption\": \"TikTok-specific 1-2 sentence caption WITH inline hashtags at the end\",\n  \"instagramCaption\": \"Instagram-specific 2-3 sentence caption WITH inline hashtags at the end\",\n  \"hashtags\": [\"word1\", \"word2\", \"word3\"]\n}",
+        "options": {
+          "systemMessage": "You write captions for educational short-form video content aimed at Gen Z. Your captions consistently outperform industry benchmarks because you understand that on TikTok and Instagram Reels, the caption is a second hook, not a description.\n\nYou never summarize the video — you tease it, reframe it, or add a layer to it. You write like a sharp 22-year-old, not a marketer.\n\nOutput strict JSON only. No markdown, no preamble.",
+          "maxIterations": 5
+        }
+      },
+      "id": "b1ef0073-149d-46cd-8b01-63e31e42d17c",
+      "name": "Generate Post Description",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1168,
+        736
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1",
+              "name": "postDescription",
+              "value": "={{ (() => { const r = $json.output.replace(/^```json\\s*/i,'').replace(/^```\\s*/i,'').replace(/```\\s*$/i,'').trim(); return JSON.parse(r).description; })() }}",
+              "type": "string"
+            },
+            {
+              "id": "2",
+              "name": "tiktokCaption",
+              "value": "={{ (() => { const r = $json.output.replace(/^```json\\s*/i,'').replace(/^```\\s*/i,'').replace(/```\\s*$/i,'').trim(); return JSON.parse(r).tiktokCaption; })() }}",
+              "type": "string"
+            },
+            {
+              "id": "3",
+              "name": "instagramCaption",
+              "value": "={{ (() => { const r = $json.output.replace(/^```json\\s*/i,'').replace(/^```\\s*/i,'').replace(/```\\s*$/i,'').trim(); return JSON.parse(r).instagramCaption; })() }}",
+              "type": "string"
+            },
+            {
+              "id": "4",
+              "name": "hashtags",
+              "value": "={{ (() => { const r = $json.output.replace(/^```json\\s*/i,'').replace(/^```\\s*/i,'').replace(/```\\s*$/i,'').trim(); return JSON.parse(r).hashtags; })() }}",
+              "type": "array"
+            },
+            {
+              "id": "5",
+              "name": "videoUrl",
+              "value": "={{ $(\"Wait for Final Video\").item.json.finalVideoUrl }}",
+              "type": "string"
+            },
+            {
+              "id": "6",
+              "name": "videoTitle",
+              "value": "={{ $(\"Parse Video Script\").item.json.videoTitle }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "671e268e-fae1-4484-878b-bc247f04bb21",
+      "name": "Parse Description",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1520,
+        736
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 30
+      },
+      "id": "f750bedd-503d-4c76-9dff-a0b968061d78",
+      "name": "Wait for Audio Processing",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1312,
+        80
+      ],
+      "webhookId": "485669c7-4a27-4920-bb46-46c563f7d71d"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "1",
+              "leftValue": "={{ $json.audioFile }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d72eafad-8a28-43f7-9f80-b5a01bc014b1",
+      "name": "Check Audio Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1536,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 2,
+        "unit": "minutes"
+      },
+      "id": "d98c7bec-b58e-4fd0-ba51-8b51f8cd4bb3",
+      "name": "Wait for Video Processing",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1344,
+        272
+      ],
+      "webhookId": "d2286d6d-883f-44ef-83cd-4a675b1530f3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "1",
+              "leftValue": "={{ $json.videoUrls }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ce10496a-7971-4d20-8354-c26ac3b11bc5",
+      "name": "Check Video Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1568,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 3,
+        "unit": "minutes"
+      },
+      "id": "05c6bbda-8d99-4df2-949c-fa9f10231047",
+      "name": "Wait for Final Video",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1328,
+        448
+      ],
+      "webhookId": "9bc1cab1-7293-4743-8eac-00e5952b5955"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "1",
+              "leftValue": "={{ $json.finalVideoUrl }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ab1210c8-ff6f-4045-aaf5-3acd1a5310b5",
+      "name": "Check Final Video Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1584,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "Final video generation failed - no video URL received from Creatomate. Check template ID, modification keys, and that audio + video clip URLs are valid and publicly accessible."
+      },
+      "id": "007a8f01-6027-438b-a246-4936acc165d6",
+      "name": "Final Video Failed",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1808,
+        496
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "Video generation failed - no video URLs received from Runway. Check API credentials, scene prompt structure, and Gen-3 quota."
+      },
+      "id": "f82fa03c-6fdf-4776-84a2-0a1656f74a44",
+      "name": "Video Generation Failed",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1776,
+        272
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "Audio generation failed - no audio file received from ElevenLabs. Check voice ID, API key, and that the script length is under the model's character limit."
+      },
+      "id": "a79c9f8c-9178-4441-a041-91d500af60e9",
+      "name": "Audio Generation Failed",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1744,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 📥 Data Collection\nFetch research papers from Pure API or upload PDF manually",
+        "height": 496,
+        "width": 896,
+        "color": 4
+      },
+      "id": "75fb77c4-6dfd-40b7-8c4f-1e3e1b17c584",
+      "name": "Sticky Note 671da0f1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        160,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 📝 Script Generation\nAI generates viral video ideas, ranks them, and creates complete script",
+        "height": 480,
+        "width": 896,
+        "color": 5
+      },
+      "id": "282dec07-bfd0-462b-94c3-cc11253e450a",
+      "name": "Sticky Note ed9b8486",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        160,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 🎬 Video Generation\nGenerate audio narration and video clips, then combine with captions",
+        "height": 656,
+        "width": 976,
+        "color": 6
+      },
+      "id": "154c1197-6a4c-482c-b8db-a2ed4d712ea9",
+      "name": "Sticky Note dffd4424",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 🚀 Publishing\nGenerate social media captions and upload to platforms",
+        "height": 256,
+        "width": 976,
+        "color": 2
+      },
+      "id": "08608107-f15e-4698-b047-0c0d5d617ba4",
+      "name": "Sticky Note 0554370c",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        656
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-5",
+          "mode": "list",
+          "cachedResultName": "Claude Sonnet 4.5"
+        },
+        "options": {
+          "maxTokensToSample": 2000,
+          "temperature": 0.8
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        704
+      ],
+      "id": "2a568ff2-b0a1-4f51-b010-fa880cc4135d",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "sUkzGV6H3EB4ekZS",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "basicAuth",
+        "formTitle": "Research Paper to Viral Short",
+        "formDescription": "Upload a psychology or human-technology research paper (PDF, max 30 pages) and the workflow will generate a TikTok/Reels-ready short-form video aimed at prospective students.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Enter PDF here",
+              "fieldType": "file",
+              "acceptFileTypes": ".pdf",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        208,
+        0
+      ],
+      "id": "913b0029-8c64-43f4-b0c8-8afe6264aafa",
+      "name": "On form submission",
+      "webhookId": "cd2e6556-1164-40d3-95ad-1885044b999e",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "grKbvReFqFaQkMi2",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "KoenKaandorp",
+          "mode": "list",
+          "cachedResultName": "KoenKaandorp",
+          "cachedResultUrl": "https://github.com/KoenKaandorp"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "ResearchPaperVideoGeneration",
+          "mode": "list",
+          "cachedResultName": "ResearchPaperVideoGeneration",
+          "cachedResultUrl": "https://github.com/KoenKaandorp/ResearchPaperVideoGeneration"
+        },
+        "filePath": "workflow_improved.json",
+        "additionalParameters": {}
+      },
+      "id": "8cda4f59-54f9-4d72-ac1b-00cb3ec79f52",
+      "name": "GitHub get file",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        -528,
+        464
+      ],
+      "typeVersion": 1,
+      "webhookId": "e94e3526-39a3-4d70-a223-fae6ad7988df",
+      "credentials": {
+        "githubApi": {
+          "id": "Np7LA4CeKtiFyMrr",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "var text = Buffer.from($input.first().binary.data.data, 'base64').toString('utf8');\nreturn {\"data\": text};"
+      },
+      "id": "eae3f243-3acf-4316-a041-89b3dd2dd4f0",
+      "name": "Decode file",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -336,
+        464
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "file",
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "mode": "list",
+          "value": "teds-tech-talks",
+          "cachedResultUrl": "https://github.com/teds-tech-talks",
+          "cachedResultName": "teds-tech-talks"
+        },
+        "repository": {
+          "__rl": true,
+          "mode": "list",
+          "value": "git_push_article",
+          "cachedResultUrl": "https://github.com/teds-tech-talks/git_push_article",
+          "cachedResultName": "git_push_article"
+        },
+        "filePath": "README.md",
+        "fileContent": "={{ $json.data }}\n## Updated at:\n{{ $now.toISO() }}",
+        "commitMessage": "updated from n8n via GitHub node"
+      },
+      "id": "f942bdb4-14af-4575-aaed-2d8887f3eb4f",
+      "name": "GitHub push edited file",
+      "type": "n8n-nodes-base.github",
+      "position": [
+        -128,
+        464
+      ],
+      "typeVersion": 1,
+      "webhookId": "672ef463-de85-4d80-bcb4-b21cb1ab7c2c"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "localrepo",
+              "value": "https://github.com/KoenKaandorp/ResearchPaperVideoGeneration.git"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8dfead75-46e3-44d5-bb29-9655f368c069",
+      "name": "config",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -736,
+        464
+      ],
+      "typeVersion": 2
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-05-11T17:46:41.317Z",
+      "createdAt": "2026-05-11T17:46:41.317Z",
+      "role": "workflow:owner",
+      "workflowId": "AibDf63BDoWgEeT0",
+      "projectId": "O6AJ2gZorGSWwg9b"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-05-11T18:12:55.420Z",
+  "versionId": "811a4978-9dbc-4c75-847d-291786925b44"
+}
