@@ -49,6 +49,7 @@
     },
     "Loop Each Chapter": {
       "main": [
+        [],
         [
           {
             "node": "Download PDF1",
@@ -607,6 +608,17 @@
           }
         ]
       ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Globals1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2026-05-18T09:53:16.695Z",
@@ -633,8 +645,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        -11280,
-        496
+        -11248,
+        -432
       ]
     },
     {
@@ -646,7 +658,7 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": "={{ $('Globals1').item.json.BOOK_MANIFEST_TAB }}",
+          "value": "=Sheet1",
           "mode": "name"
         },
         "options": {}
@@ -656,9 +668,15 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        -10864,
-        416
-      ]
+        -10832,
+        -512
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ednQsic0oBlvB9dg",
+          "name": "Google Sheets account"
+        }
+      }
     },
     {
       "parameters": {
@@ -669,7 +687,7 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": "={{ $('Globals1').item.json.VIDEOS_LOG_TAB }}",
+          "value": "Sheet1",
           "mode": "name"
         },
         "options": {}
@@ -679,9 +697,15 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        -10864,
-        576
-      ]
+        -10832,
+        -352
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ednQsic0oBlvB9dg",
+          "name": "Google Sheets account"
+        }
+      }
     },
     {
       "parameters": {
@@ -692,8 +716,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -10656,
-        496
+        -10624,
+        -432
       ]
     },
     {
@@ -705,8 +729,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -10448,
-        496
+        -10400,
+        -432
       ]
     },
     {
@@ -718,8 +742,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -9824,
-        496
+        -9776,
+        -432
       ]
     },
     {
@@ -736,8 +760,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        -9616,
-        496
+        -9568,
+        -432
       ]
     },
     {
@@ -757,9 +781,15 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
       "typeVersion": 1.3,
       "position": [
-        -9616,
-        704
-      ]
+        -9568,
+        -224
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "sUkzGV6H3EB4ekZS",
+          "name": "Anthropic account"
+        }
+      }
     },
     {
       "parameters": {
@@ -770,8 +800,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -9392,
-        496
+        -9296,
+        -432
       ]
     },
     {
@@ -788,8 +818,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        -9168,
-        496
+        -9120,
+        -432
       ]
     },
     {
@@ -809,9 +839,15 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
       "typeVersion": 1.3,
       "position": [
-        -9168,
-        704
-      ]
+        -9120,
+        -224
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "sUkzGV6H3EB4ekZS",
+          "name": "Anthropic account"
+        }
+      }
     },
     {
       "parameters": {
@@ -822,8 +858,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -8944,
-        496
+        -8848,
+        -432
       ]
     },
     {
@@ -855,8 +891,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -8720,
-        496
+        -8672,
+        -432
       ]
     },
     {
@@ -888,8 +924,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -8496,
-        576
+        -8464,
+        -480
       ]
     },
     {
@@ -902,7 +938,7 @@
         },
         "sheetName": {
           "__rl": true,
-          "value": "={{ $('Globals1').item.json.ERRORS_LOG_TAB }}",
+          "value": "=Sheet1",
           "mode": "name"
         },
         "columns": {
@@ -926,9 +962,15 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        -8272,
-        656
-      ]
+        -8512,
+        -304
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ednQsic0oBlvB9dg",
+          "name": "Google Sheets account"
+        }
+      }
     },
     {
       "parameters": {
@@ -939,8 +981,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -8272,
-        416
+        -8320,
+        -240
       ]
     },
     {
@@ -965,8 +1007,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -8048,
-        416
+        -10368,
+        96
       ]
     },
     {
@@ -978,8 +1020,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -7824,
-        416
+        -10144,
+        96
       ]
     },
     {
@@ -1013,8 +1055,8 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        -7600,
-        416
+        -9920,
+        96
       ]
     },
     {
@@ -1026,8 +1068,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -7376,
-        416
+        -9696,
+        96
       ]
     },
     {
@@ -1039,8 +1081,8 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        -7152,
-        416
+        -9472,
+        96
       ]
     },
     {
@@ -1052,8 +1094,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -6928,
-        416
+        -9248,
+        96
       ]
     },
     {
@@ -1076,9 +1118,15 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -6704,
-        416
-      ]
+        -9024,
+        96
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "0zoFAIoKxbc72Emc",
+          "name": "Google Drive account"
+        }
+      }
     },
     {
       "parameters": {
@@ -1089,8 +1137,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -6480,
-        416
+        -8800,
+        96
       ]
     },
     {
@@ -1111,9 +1159,15 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -6480,
-        608
-      ]
+        -10416,
+        480
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "0zoFAIoKxbc72Emc",
+          "name": "Google Drive account"
+        }
+      }
     },
     {
       "parameters": {
@@ -1124,8 +1178,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -6256,
-        512
+        -10192,
+        384
       ]
     },
     {
@@ -1143,9 +1197,15 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -6032,
-        512
-      ]
+        -9968,
+        384
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "0zoFAIoKxbc72Emc",
+          "name": "Google Drive account"
+        }
+      }
     },
     {
       "parameters": {
@@ -1156,8 +1216,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -5808,
-        512
+        -9744,
+        384
       ]
     },
     {
@@ -1169,8 +1229,8 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        -5584,
-        512
+        -9520,
+        384
       ]
     },
     {
@@ -1182,8 +1242,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -5360,
-        512
+        -9296,
+        384
       ]
     },
     {
@@ -1206,9 +1266,15 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -5136,
-        512
-      ]
+        -9072,
+        384
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "0zoFAIoKxbc72Emc",
+          "name": "Google Drive account"
+        }
+      }
     },
     {
       "parameters": {
@@ -1219,8 +1285,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -4912,
-        512
+        -8848,
+        384
       ]
     },
     {
@@ -1245,8 +1311,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -4688,
-        512
+        -8624,
+        384
       ]
     },
     {
@@ -1258,8 +1324,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -4464,
-        512
+        -10160,
+        640
       ]
     },
     {
@@ -1271,8 +1337,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        -4240,
-        512
+        -9936,
+        640
       ],
       "webhookId": "b38-wait-render"
     },
@@ -1294,8 +1360,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -4016,
-        512
+        -9712,
+        640
       ]
     },
     {
@@ -1327,8 +1393,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -3792,
-        512
+        -9488,
+        640
       ]
     },
     {
@@ -1340,8 +1406,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3792,
-        688
+        -9488,
+        816
       ]
     },
     {
@@ -1353,8 +1419,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3568,
-        512
+        -8496,
+        624
       ]
     },
     {
@@ -1371,8 +1437,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        -3344,
-        512
+        -7920,
+        -432
       ]
     },
     {
@@ -1392,9 +1458,15 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
       "typeVersion": 1.3,
       "position": [
-        -3344,
-        704
-      ]
+        -7920,
+        -240
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "sUkzGV6H3EB4ekZS",
+          "name": "Anthropic account"
+        }
+      }
     },
     {
       "parameters": {
@@ -1405,8 +1477,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3120,
-        512
+        -7632,
+        -432
       ]
     },
     {
@@ -1422,8 +1494,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -2896,
-        512
+        -7472,
+        -432
       ],
       "webhookId": "36e0d227-ee92-488a-b1f0-c277a2039264"
     },
@@ -1437,8 +1509,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        -2672,
-        512
+        -7248,
+        -432
       ],
       "webhookId": "b47-approval-webhook"
     },
@@ -1451,8 +1523,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2448,
-        512
+        -7024,
+        -432
       ]
     },
     {
@@ -1484,8 +1556,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -2224,
-        512
+        -6800,
+        -432
       ]
     },
     {
@@ -1529,9 +1601,15 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        -2000,
-        656
-      ]
+        -7680,
+        -192
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ednQsic0oBlvB9dg",
+          "name": "Google Sheets account"
+        }
+      }
     },
     {
       "parameters": {
@@ -1549,8 +1627,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -2000,
-        416
+        -6592,
+        -448
       ]
     },
     {
@@ -1562,8 +1640,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1776,
-        416
+        -7744,
+        160
       ]
     },
     {
@@ -1587,8 +1665,8 @@
       "type": "n8n-nodes-base.youTube",
       "typeVersion": 1,
       "position": [
-        -1552,
-        416
+        -7520,
+        160
       ]
     },
     {
@@ -1632,9 +1710,15 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        -1328,
-        416
-      ]
+        -7296,
+        160
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ednQsic0oBlvB9dg",
+          "name": "Google Sheets account"
+        }
+      }
     },
     {
       "parameters": {
@@ -1670,9 +1754,15 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        -1104,
-        416
-      ]
+        -7072,
+        160
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ednQsic0oBlvB9dg",
+          "name": "Google Sheets account"
+        }
+      }
     },
     {
       "parameters": {
@@ -1687,8 +1777,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -880,
-        416
+        -6896,
+        160
       ],
       "webhookId": "b15cdd01-9f9d-4fdc-9b96-60014a0c869a"
     },
@@ -1705,14 +1795,14 @@
       "typeVersion": 1,
       "position": [
         -11440,
-        1152
+        912
       ]
     },
     {
       "parameters": {
         "content": "## Creatomate Template Spec\n\nBuild a 720x1280 (9:16) template with these element NAMES exactly:\n\n- `Background` — video element, full frame, source set per-render\n- `Audio` — audio element, source set per-render (the merged narration)\n- `Music` — audio element, source set per-render, volume ~15%\n- `SpriteA` — image element, transparent PNG, positioned lower-left ~30% width, opacity controlled by `animations` array sent per-render (windows where A is talking, opacity 1; otherwise 0)\n- `SpriteB` — image element, lower-right ~30% width, same animation pattern\n- `Hook` — large bold text, top-third, shown 0–1.5s only\n- `Captions` — animated word-level captions sourced from the Audio element's transcript, centered, highlight effect, bold, large stroke\n- `Title` — small text, top, channel branding or video title\n\nThe sprite opacity animation pattern: set the element's base opacity to 0, then pass an `animations` array with per-window `{ time, duration, value_from: 1, value_to: 1 }` entries. Outside those windows the element stays at base opacity (0).\n\nIf Creatomate's API rejects this exact animation shape, alternative: use `keyframes` on opacity property with `{time, value}` pairs derived from the windows.",
-        "height": 380,
-        "width": 700,
+        "height": 428,
+        "width": 732,
         "color": 6
       },
       "id": "3ba0ea13-064c-4151-b140-a9eb20bc5817",
@@ -1720,8 +1810,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -10720,
-        1072
+        -11456,
+        464
       ]
     },
     {
@@ -1743,7 +1833,7 @@
             {
               "id": "g10",
               "name": "BOOK_MANIFEST_SHEET_ID",
-              "value": "<__PLACEHOLDER__Google Sheet ID for book_manifest__>",
+              "value": "1GT3DiUOlB_LdA7oqTIxDLUM7SMaCChrV1u7RJ3WjVhM",
               "type": "string"
             },
             {
@@ -1755,7 +1845,7 @@
             {
               "id": "g12",
               "name": "VIDEOS_LOG_SHEET_ID",
-              "value": "<__PLACEHOLDER__Google Sheet ID for videos_log__>",
+              "value": "1MbPIRQ_4nKztrX3Bdaeik-DJ_F9dd7O_XYvMGzVZLGY",
               "type": "string"
             },
             {
@@ -1767,7 +1857,7 @@
             {
               "id": "g14",
               "name": "ERRORS_LOG_SHEET_ID",
-              "value": "<__PLACEHOLDER__Google Sheet ID for errors_log__>",
+              "value": "1Uwo_dzVIcJRIHJoP7blTwIPQaNmSkWhLtO2bKgT7Nds",
               "type": "string"
             },
             {
@@ -1785,55 +1875,55 @@
             {
               "id": "g30",
               "name": "CHARACTER_A_NAME",
-              "value": "<__PLACEHOLDER__e.g. Max__>",
+              "value": "Max ",
               "type": "string"
             },
             {
               "id": "g31",
               "name": "CHARACTER_A_VOICE_ID",
-              "value": "<__PLACEHOLDER__ElevenLabs voice ID for character A__>",
+              "value": "",
               "type": "string"
             },
             {
               "id": "g32",
               "name": "CHARACTER_A_PERSONALITY",
-              "value": "<__PLACEHOLDER__1-2 sentences. e.g. 'The skeptical everyman. Asks the dumb-sounding question that turns out to be the right one. Mildly cynical, dry, drops occasional self-deprecation. Voices doubt and resistance.'__>",
+              "value": "The skeptical everyman. Asks the dumb-sounding question that turns out to be the right one. Mildly cynical, dry, drops the occasional self-deprecating jab. Voices doubt, resistance, and what the audience is secretly thinking.",
               "type": "string"
             },
             {
               "id": "g33",
               "name": "CHARACTER_A_SPRITE_URL",
-              "value": "<__PLACEHOLDER__Public URL to PNG sprite of character A (transparent bg, ~600x800)__>",
+              "value": "https://drive.google.com/file/d/1wu0TbJ554EYxFi07HOyixvgdep_eh_H4/view?usp=sharing",
               "type": "string"
             },
             {
               "id": "g40",
               "name": "CHARACTER_B_NAME",
-              "value": "<__PLACEHOLDER__e.g. Doc__>",
+              "value": "Doc ",
               "type": "string"
             },
             {
               "id": "g41",
               "name": "CHARACTER_B_VOICE_ID",
-              "value": "<__PLACEHOLDER__ElevenLabs voice ID for character B__>",
+              "value": "",
               "type": "string"
             },
             {
               "id": "g42",
               "name": "CHARACTER_B_PERSONALITY",
-              "value": "<__PLACEHOLDER__1-2 sentences. e.g. 'The patient explainer with a slight edge. Knows the answer, delivers it precisely, occasionally cutting. Never lectures. Voices the insight.'__>",
+              "value": "The patient explainer with a slight edge. Knows the answer, delivers it precisely, occasionally cutting when Max says something especially wrong. Never lectures, never moralizes — just lands the insight and lets it sit.",
               "type": "string"
             },
             {
               "id": "g43",
               "name": "CHARACTER_B_SPRITE_URL",
-              "value": "<__PLACEHOLDER__Public URL to PNG sprite of character B (transparent bg, ~600x800)__>",
+              "value": "https://drive.google.com/file/d/1x061OYfn7fMIyTXyMmG4HkzTqfHLYkJn/view?usp=sharing",
               "type": "string"
             },
             {
               "id": "g50",
               "name": "MINECRAFT_FOOTAGE_FOLDER_ID",
-              "value": "<__PLACEHOLDER__Google Drive folder ID containing your Minecraft parkour MP4s, each >60s__>",
+              "value": "1jy8gxVN_1eCcyS0BctHxlbfM9CxEDvAS",
               "type": "string"
             },
             {
@@ -1869,7 +1959,7 @@
             {
               "id": "g81",
               "name": "NICHE_AUDIENCE",
-              "value": "<__PLACEHOLDER__e.g. 'Young adults 16-25 interested in why people think and behave the way they do. They scroll Shorts daily, are skeptical of self-help cliches, and respond to specific, counter-intuitive insight delivered with personality.'__>",
+              "value": "Young adults interested in learning",
               "type": "string"
             },
             {
@@ -1929,13 +2019,13 @@
             {
               "id": "g111",
               "name": "PUBLIC_AUDIO_FOLDER_ID",
-              "value": "<__PLACEHOLDER__Drive folder ID where merged audio is uploaded and made public for Creatomate__>",
+              "value": "1JP5NGUalE9wla4Zi5PgJadUy2wMnAq_Q",
               "type": "string"
             },
             {
               "id": "g112",
               "name": "PUBLIC_BG_FOLDER_ID",
-              "value": "<__PLACEHOLDER__Drive folder ID where trimmed Minecraft clip is uploaded and made public__>",
+              "value": "1N47i61Lv5hnNi4RCXDzrK0KSTV8-zdGs",
               "type": "string"
             }
           ]
@@ -1947,8 +2037,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -11072,
-        496
+        -11040,
+        -432
       ]
     },
     {
@@ -1966,9 +2056,15 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -10240,
-        496
-      ]
+        -10192,
+        -416
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "0zoFAIoKxbc72Emc",
+          "name": "Google Drive account"
+        }
+      }
     },
     {
       "parameters": {
@@ -1982,9 +2078,115 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1.1,
       "position": [
-        -10032,
-        496
+        -9984,
+        -432
       ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -11248,
+        -288
+      ],
+      "id": "a512c000-a484-44a7-95a4-47f2801d02b5",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "content": "## Generating Script",
+        "height": 496,
+        "width": 2224,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -10432,
+        -592
+      ],
+      "typeVersion": 1,
+      "id": "844f89f7-c7ab-416e-b27c-949c57068236",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Reading data\n",
+        "height": 496,
+        "width": 880
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -11360,
+        -592
+      ],
+      "typeVersion": 1,
+      "id": "cf31a813-11b9-4fc4-b66d-ecce53bb955b",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Voice generation",
+        "height": 336,
+        "width": 1952,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -10416,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "d08932bf-d4e5-49ed-81a8-2ae8ca4cb235",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Video Generation",
+        "height": 656,
+        "width": 2048,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -10416,
+        352
+      ],
+      "typeVersion": 1,
+      "id": "cecb9a02-6d59-4b9c-9510-642144ad59c2",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## MetaData Generation",
+        "height": 512,
+        "width": 1504,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -7936,
+        -528
+      ],
+      "typeVersion": 1,
+      "id": "628acc28-fe6e-4f51-afbe-dd7407c4a056",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Uplouding",
+        "height": 400,
+        "width": 1376,
+        "color": "#213630"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -7872,
+        32
+      ],
+      "typeVersion": 1,
+      "id": "6e402d1c-25c1-41d0-b758-49608a67fd43",
+      "name": "Sticky Note5"
     }
   ],
   "pinData": {},
@@ -2005,6 +2207,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-05-18T11:31:27.092Z",
-  "versionId": "a3146489-e33a-4747-937f-51436f4a194c"
+  "updatedAt": "2026-05-18T17:46:33.482Z",
+  "versionId": "9778c7fe-8921-4b56-974d-560053a429b1"
 }
