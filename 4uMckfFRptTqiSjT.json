@@ -1,0 +1,1449 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Globals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Globals": {
+      "main": [
+        [
+          {
+            "node": "Read Content Plan",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Content Plan": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Queue": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Select Batch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select Batch": {
+      "main": [
+        [
+          {
+            "node": "Get Unique Books",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Unique Books": {
+      "main": [
+        [
+          {
+            "node": "Loop Books",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Books": {
+      "main": [
+        [
+          {
+            "node": "Attach Chapter Text",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Download PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download PDF": {
+      "main": [
+        [
+          {
+            "node": "Extract PDF Per Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract PDF Per Page": {
+      "main": [
+        [
+          {
+            "node": "Normalize Book Pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Book Pages": {
+      "main": [
+        [
+          {
+            "node": "Loop Books",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Attach Chapter Text": {
+      "main": [
+        [
+          {
+            "node": "Loop Each Concept",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Each Concept": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Generate Dialogue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Dialogue": {
+      "main": [
+        [
+          {
+            "node": "Parse Dialogue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dialogue Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Dialogue",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Dialogue": {
+      "main": [
+        [
+          {
+            "node": "Dedup Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dedup Check": {
+      "main": [
+        [
+          {
+            "node": "Evaluate Quality",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dedup Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Dedup Check",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluate Quality": {
+      "main": [
+        [
+          {
+            "node": "Need Retry?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Need Retry?": {
+      "main": [
+        [
+          {
+            "node": "Generate Dialogue",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Skip Concept?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skip Concept?": {
+      "main": [
+        [
+          {
+            "node": "Log Skipped",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fan Out Lines",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Skipped": {
+      "main": [
+        [
+          {
+            "node": "Loop Each Concept",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fan Out Lines": {
+      "main": [
+        [
+          {
+            "node": "TTS Per Line",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TTS Per Line": {
+      "main": [
+        [
+          {
+            "node": "Save Line Audio + Timings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Line Audio + Timings": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Lines",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Lines": {
+      "main": [
+        [
+          {
+            "node": "Build Timing + Captions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Timing + Captions": {
+      "main": [
+        [
+          {
+            "node": "FFmpeg Concat Voice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FFmpeg Concat Voice": {
+      "main": [
+        [
+          {
+            "node": "Pick Minecraft Clip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Minecraft Clip": {
+      "main": [
+        [
+          {
+            "node": "Build FFmpeg Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build FFmpeg Command": {
+      "main": [
+        [
+          {
+            "node": "FFmpeg Assemble Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FFmpeg Assemble Video": {
+      "main": [
+        [
+          {
+            "node": "Load Final Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Final Video": {
+      "main": [
+        [
+          {
+            "node": "Upload Video to Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Video to Drive": {
+      "main": [
+        [
+          {
+            "node": "Capture Drive Ref",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capture Drive Ref": {
+      "main": [
+        [
+          {
+            "node": "Append Queue Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Queue Row": {
+      "main": [
+        [
+          {
+            "node": "Mark Concept Generated",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Concept Generated": {
+      "main": [
+        [
+          {
+            "node": "Cleanup Temp Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cleanup Temp Files": {
+      "main": [
+        [
+          {
+            "node": "Loop Each Concept",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-05-20T14:50:57.330Z",
+  "id": "4uMckfFRptTqiSjT",
+  "isArchived": false,
+  "meta": null,
+  "name": "B1 - Shorts Generator (Batch, optimized)",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1d6e4687-b0d1-4d0a-8de9-c36edcc0bf9d",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        1168,
+        1744
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "g1",
+              "name": "ANTHROPIC_MODEL",
+              "value": "claude-sonnet-4-5",
+              "type": "string"
+            },
+            {
+              "id": "g2",
+              "name": "ANTHROPIC_MODEL_CHEAP",
+              "value": "claude-haiku-4-5-20251001",
+              "type": "string"
+            },
+            {
+              "id": "g10",
+              "name": "BOOK_MANIFEST_SHEET_ID",
+              "value": "1GT3DiUOlB_LdA7oqTIxDLUM7SMaCChrV1u7RJ3WjVhM",
+              "type": "string"
+            },
+            {
+              "id": "g11",
+              "name": "BOOK_MANIFEST_TAB",
+              "value": "Sheet1",
+              "type": "string"
+            },
+            {
+              "id": "g12",
+              "name": "CONTENT_PLAN_SHEET_ID",
+              "value": "1jQvKsxlacuR97yqzMIebv7zorsI-5RagOTu1UjqcLN4",
+              "type": "string"
+            },
+            {
+              "id": "g13",
+              "name": "CONTENT_PLAN_TAB",
+              "value": "Sheet1",
+              "type": "string"
+            },
+            {
+              "id": "g14",
+              "name": "QUEUE_SHEET_ID",
+              "value": "1CShyRG8-hEzHcwDsufPoDzvw98bWpUfuwOrrJcQgfG4",
+              "type": "string"
+            },
+            {
+              "id": "g15",
+              "name": "QUEUE_TAB",
+              "value": "Sheet1",
+              "type": "string"
+            },
+            {
+              "id": "g16",
+              "name": "ERRORS_LOG_SHEET_ID",
+              "value": "1Uwo_dzVIcJRIHJoP7blTwIPQaNmSkWhLtO2bKgT7Nds",
+              "type": "string"
+            },
+            {
+              "id": "g17",
+              "name": "ERRORS_LOG_TAB",
+              "value": "Sheet1",
+              "type": "string"
+            },
+            {
+              "id": "g20",
+              "name": "ELEVENLABS_MODEL_ID",
+              "value": "eleven_turbo_v2_5",
+              "type": "string"
+            },
+            {
+              "id": "g21",
+              "name": "CHARACTER_A_NAME",
+              "value": "Max",
+              "type": "string"
+            },
+            {
+              "id": "g22",
+              "name": "CHARACTER_A_VOICE_ID",
+              "value": "<__PLACEHOLDER__ElevenLabs voice ID for Max__>",
+              "type": "string"
+            },
+            {
+              "id": "g23",
+              "name": "CHARACTER_A_PERSONALITY",
+              "value": "The skeptical everyman. Asks the dumb-sounding question that turns out to be the right one. Mildly cynical, dry, drops the occasional self-deprecating jab. Voices doubt, resistance, and what the audience is secretly thinking.",
+              "type": "string"
+            },
+            {
+              "id": "g24",
+              "name": "CHARACTER_B_NAME",
+              "value": "Doc",
+              "type": "string"
+            },
+            {
+              "id": "g25",
+              "name": "CHARACTER_B_VOICE_ID",
+              "value": "<__PLACEHOLDER__ElevenLabs voice ID for Doc__>",
+              "type": "string"
+            },
+            {
+              "id": "g26",
+              "name": "CHARACTER_B_PERSONALITY",
+              "value": "The patient explainer with a slight edge. Knows the answer, delivers it precisely, occasionally cutting when Max says something especially wrong. Never lectures, never moralizes — just lands the insight and lets it sit.",
+              "type": "string"
+            },
+            {
+              "id": "g30",
+              "name": "NICHE_NAME",
+              "value": "Psychology",
+              "type": "string"
+            },
+            {
+              "id": "g31",
+              "name": "NICHE_AUDIENCE",
+              "value": "Young adults 16-25 interested in why people think and behave the way they do. They scroll Shorts daily, are skeptical of self-help cliches, and respond to specific, counter-intuitive insight delivered with personality.",
+              "type": "string"
+            },
+            {
+              "id": "g40",
+              "name": "WORK_DIR",
+              "value": "/tmp/n8n-shorts",
+              "type": "string"
+            },
+            {
+              "id": "g41",
+              "name": "ASSETS_DIR",
+              "value": "/data/assets",
+              "type": "string"
+            },
+            {
+              "id": "g42",
+              "name": "MINECRAFT_DIR",
+              "value": "/data/assets/minecraft",
+              "type": "string"
+            },
+            {
+              "id": "g43",
+              "name": "SPRITE_A_PATH",
+              "value": "/data/assets/sprites/max.png",
+              "type": "string"
+            },
+            {
+              "id": "g44",
+              "name": "SPRITE_B_PATH",
+              "value": "/data/assets/sprites/doc.png",
+              "type": "string"
+            },
+            {
+              "id": "g45",
+              "name": "MUSIC_BED_PATH",
+              "value": "/data/assets/music/bed.mp3",
+              "type": "string"
+            },
+            {
+              "id": "g50",
+              "name": "FINISHED_VIDEOS_DRIVE_FOLDER_ID",
+              "value": "1Kfj3dN6a3wprHruvfBFeTTkc7sAyLM0c",
+              "type": "string"
+            },
+            {
+              "id": "g60",
+              "name": "BATCH_SIZE",
+              "value": 1,
+              "type": "number"
+            },
+            {
+              "id": "g61",
+              "name": "DEDUP_LOOKBACK",
+              "value": 50,
+              "type": "number"
+            },
+            {
+              "id": "g62",
+              "name": "DEDUP_MAX_RETRIES",
+              "value": 2,
+              "type": "number"
+            },
+            {
+              "id": "g63",
+              "name": "MIN_VIRAL_SCORE",
+              "value": 7,
+              "type": "number"
+            },
+            {
+              "id": "g70",
+              "name": "MUSIC_VOLUME",
+              "value": "0.15",
+              "type": "string"
+            },
+            {
+              "id": "g71",
+              "name": "CAPTION_FONT",
+              "value": "Arial",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0e898f59-fd39-4321-a1c1-e32ff72ee134",
+      "name": "Globals",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1360,
+        1744
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $json.CONTENT_PLAN_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $json.CONTENT_PLAN_TAB }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "625ee789-892e-49f6-bad9-ce8c2e0e86ff",
+      "name": "Read Content Plan",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1584,
+        1664
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ednQsic0oBlvB9dg",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.QUEUE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.QUEUE_TAB }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "e4e29a67-ad0b-471c-8ac5-f169cddae3c9",
+      "name": "Read Queue",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1584,
+        1824
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ednQsic0oBlvB9dg",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1856,
+        1744
+      ],
+      "id": "7b14a829-f9c9-4c0e-9d32-64ae007c7d5a",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Select the next BATCH_SIZE concepts with status 'planned', in sheet order.\n// Attach dedup context (recent titles+summaries from the queue).\nconst plan = $items('Read Content Plan').map(i => i.json);\nconst queue = $items('Read Queue').map(i => i.json);\nconst batchSize = $('Globals').first().json.BATCH_SIZE || 2;\nconst lookback = $('Globals').first().json.DEDUP_LOOKBACK || 50;\n\nconst planned = plan.filter(r => r.status === 'planned');\nif (planned.length === 0) throw new Error('No concepts with status \"planned\" in content_plan. Run the Planner (A2) first.');\n\nconst batch = planned.slice(0, batchSize);\n\nconst recent = queue\n  .filter(r => r.created_at)\n  .sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)))\n  .slice(0, lookback)\n  .map(r => ({ title: r.title || '', summary: r.one_line_summary || '' }));\n\nreturn batch.map((c, i) => ({\n  json: {\n    slot: i + 1,\n    drive_file_id: c.drive_file_id,\n    book_title: c.book_title,\n    book_author: c.book_author,\n    chapter_number: c.chapter_number,\n    chapter_title: c.chapter_title,\n    start_page: c.start_page,\n    end_page: c.end_page,\n    concept_index: c.concept_index,\n    concept_title: c.concept_title,\n    angle: c.angle,\n    brief: c.brief,\n    dedup_context: recent,\n    retry_count: 0,\n    avoid_angles: []\n  }\n}));"
+      },
+      "id": "a55dec3c-97a6-48c8-8e1f-3ec1573edcb4",
+      "name": "Select Batch",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2048,
+        1744
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// From the full batch of concepts, produce ONE item per unique book (drive_file_id).\n// These get downloaded + extracted once. The full batch is re-read later from this node.\nconst all = $input.all().map(i => i.json);\nconst seen = new Set();\nconst uniqueBooks = [];\nfor (const c of all) {\n  if (!seen.has(c.drive_file_id)) {\n    seen.add(c.drive_file_id);\n    uniqueBooks.push({ json: { drive_file_id: c.drive_file_id, book_title: c.book_title } });\n  }\n}\nreturn uniqueBooks;"
+      },
+      "id": "6c59ad0b-cff2-4d27-ac3c-16344ee939e1",
+      "name": "Get Unique Books",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        1744
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "342d5e2c-e707-4f83-9528-fad5eddf4d2e",
+      "name": "Loop Books",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2464,
+        1808
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.drive_file_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "92903e88-30d3-4e42-967a-d109dff7d414",
+      "name": "Download PDF",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1872,
+        2064
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "0zoFAIoKxbc72Emc",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {
+          "joinPages": false
+        }
+      },
+      "id": "850927cd-6566-49d4-8d00-481fa3d6cb6f",
+      "name": "Extract PDF Per Page",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        2096,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Normalize the extracted PDF into a pages[] array and tag it with its drive_file_id.\nconst raw = $json.text || $json.data || '';\nlet pages = [];\nif (Array.isArray(raw)) pages = raw;\nelse if (typeof raw === 'string') {\n  pages = raw.split('\\f');\n  if (pages.length < 3) pages = raw.split(/\\n\\s*\\n\\s*\\n/);\n}\nconst book = $('Loop Books').item.json;\nreturn [{ json: { drive_file_id: book.drive_file_id, book_title: book.book_title, pages } }];"
+      },
+      "id": "90dd38ec-de06-448c-8c37-6d513e92ac2a",
+      "name": "Normalize Book Pages",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2320,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Runs AFTER the book loop finishes. Build a drive_file_id -> pages cache,\n// then re-read the full concept batch and slice each concept's chapter text.\nconst bookItems = $items('Normalize Book Pages');\nconst cache = {};\nfor (const it of bookItems) {\n  cache[it.json.drive_file_id] = it.json.pages;\n}\n\nconst concepts = $items('Select Batch').map(i => i.json);\nconst out = [];\nfor (const c of concepts) {\n  const pages = cache[c.drive_file_id] || [];\n  const start = Math.max(0, (c.start_page || 1) - 1);\n  const end = Math.min(pages.length, c.end_page || pages.length);\n  const chapterText = pages.slice(start, end).join('\\n\\n').slice(0, 25000);\n  out.push({ json: { ...c, chapter_text: chapterText } });\n}\nreturn out;"
+      },
+      "id": "e1fb86e8-154e-446d-9fed-bd68a388e668",
+      "name": "Attach Chapter Text",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1232,
+        2272
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "7b77329b-b744-4e77-b697-ef461209c7bd",
+      "name": "Loop Each Concept",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1456,
+        2272
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Write a short-form dialogue between two characters for a {{ $('Globals').first().json.NICHE_NAME }} YouTube Shorts channel.\n\n=== CHARACTERS ===\n{{ $('Globals').first().json.CHARACTER_A_NAME }} (A): {{ $('Globals').first().json.CHARACTER_A_PERSONALITY }}\n{{ $('Globals').first().json.CHARACTER_B_NAME }} (B): {{ $('Globals').first().json.CHARACTER_B_PERSONALITY }}\n\n=== AUDIENCE ===\n{{ $('Globals').first().json.NICHE_AUDIENCE }}\n\n=== THE CONCEPT TO BUILD (decided by the planner) ===\nConcept: {{ $json.concept_title }}\nAngle: {{ $json.angle }}\nBrief: {{ $json.brief }}\n\n=== SOURCE CHAPTER (full text, for grounding) ===\nBook: {{ $json.book_title }} — by {{ $json.book_author }}\nChapter {{ $json.chapter_number }}: {{ $json.chapter_title }}\n\n{{ $json.chapter_text }}\n\n=== ANGLES TO AVOID (rejected on earlier attempts this run) ===\n{{ JSON.stringify($json.avoid_angles) }}\n\n=== RULES ===\n- Build the concept described in the brief. Stay grounded in the chapter text — no invented facts.\n- Exactly 4 to 7 lines, alternating speakers, starting with A.\n- Total spoken length 55-75 words across all lines.\n- Line 1 is the HOOK (6-12 words, from A): contradiction, personal callout, specific number, future shock, or pattern interrupt.\n- Never start with 'Did you know', 'Have you ever', 'Imagine if', 'Scientists discovered', 'A new study'.\n- Never mention the book, author, or that this is a summary.\n- A voices doubt / the dumb-sounding question. B voices the insight, never lectures.\n- Final line lands the thought. No CTA.\n- Each line 1-2 sentences, punchy, sounds like real speech. 8th-grade reading level.\n- Banned words: fascinating, incredible, mind-blowing, game-changer, literally (filler), unhinged, low-key, high-key.\n\n=== OUTPUT (strict JSON, no markdown fences) ===\n{\n  \"title\": \"YouTube Shorts title, <=60 chars, includes a searchable keyword\",\n  \"oneLineSummary\": \"12-18 word neutral description of the core insight\",\n  \"viralScore\": 1-10,\n  \"onScreenCaption\": \"4-8 word bold opening text, different wording from the spoken hook\",\n  \"keywords\": [\"3-5 searchable terms\"],\n  \"lines\": [ { \"speaker\": \"A\", \"text\": \"the spoken line\" } ]\n}",
+        "options": {
+          "systemMessage": "You write punchy two-character dialogue for short-form video. It feels like overheard conversation between a doubter and an explainer — never a podcast, never a lecture. Output strict JSON only, no preamble or markdown fences.",
+          "maxIterations": 8
+        }
+      },
+      "id": "081e3d3c-be36-4f29-acb4-32007b964c08",
+      "name": "Generate Dialogue",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1680,
+        2288
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.ANTHROPIC_MODEL }}",
+          "mode": "id"
+        },
+        "options": {
+          "maxTokensToSample": 2000,
+          "temperature": 0.8
+        }
+      },
+      "id": "9d2287e3-5a8f-4ce4-adf8-3cdb8f300678",
+      "name": "Dialogue Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        1680,
+        2432
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "sUkzGV6H3EB4ekZS",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.output || '';\nconst cleaned = raw.replace(/^```json\\s*/i, '').replace(/^```\\s*/i, '').replace(/```\\s*$/i, '').trim();\nlet idea;\ntry { idea = JSON.parse(cleaned); } catch (e) { throw new Error('Dialogue JSON parse failed: ' + e.message); }\nif (!Array.isArray(idea.lines) || idea.lines.length < 2) throw new Error('Dialogue must have >= 2 lines');\nconst ctx = $('Loop Each Concept').item.json;\nconst fullScript = idea.lines.map(l => `${l.speaker}: ${l.text}`).join('\\n');\nconst spokenOnly = idea.lines.map(l => l.text).join(' ');\nreturn [{\n  json: {\n    ...ctx,\n    chapter_text: undefined,\n    idea_title: idea.title,\n    idea_hook: idea.lines[0].text,\n    idea_one_line_summary: idea.oneLineSummary,\n    idea_lines: idea.lines,\n    idea_full_script: fullScript,\n    idea_spoken_text: spokenOnly,\n    idea_on_screen_caption: idea.onScreenCaption,\n    idea_viral_score: idea.viralScore,\n    idea_keywords: idea.keywords || [],\n    idea_word_count: spokenOnly.split(/\\s+/).length\n  }\n}];"
+      },
+      "id": "614fbedf-1db6-4591-8278-aaf4b645375f",
+      "name": "Parse Dialogue",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1984,
+        2288
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Check whether this candidate video duplicates any past video.\n\n=== PAST VIDEOS (recent first) ===\n{{ JSON.stringify($json.dedup_context || []) }}\n\n=== CANDIDATE ===\nTitle: {{ $json.idea_title }}\nSummary: {{ $json.idea_one_line_summary }}\nHook: {{ $json.idea_hook }}\n\nRules: 'Substantially the same' = same core insight even if framing differs. Different example same insight = duplicate. Same topic different insight = NOT duplicate. Moderately strict, not paranoid.\n\nReturn ONLY valid JSON: { \"duplicate\": true|false, \"similar_to\": \"title or null\", \"reason\": \"one sentence\" }",
+        "options": {
+          "systemMessage": "Content librarian. Strict JSON output only, no markdown fences.",
+          "maxIterations": 2
+        }
+      },
+      "id": "c67268b5-6c92-4ace-a7de-0bf2a2101c6b",
+      "name": "Dedup Check",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2160,
+        2288
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.ANTHROPIC_MODEL_CHEAP }}",
+          "mode": "id"
+        },
+        "options": {
+          "maxTokensToSample": 400,
+          "temperature": 0.1
+        }
+      },
+      "id": "e20bd01e-f003-46c1-ac30-af4ccf0d16c6",
+      "name": "Dedup Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        2160,
+        2432
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "sUkzGV6H3EB4ekZS",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.output || '';\nconst cleaned = raw.replace(/^```json\\s*/i, '').replace(/^```\\s*/i, '').replace(/```\\s*$/i, '').trim();\nlet dedup;\ntry { dedup = JSON.parse(cleaned); } catch (e) { dedup = { duplicate: false, similar_to: null, reason: 'parse-failed' }; }\nconst prev = $('Parse Dialogue').item.json;\nconst minScore = $('Globals').first().json.MIN_VIRAL_SCORE || 7;\nconst maxRetries = $('Globals').first().json.DEDUP_MAX_RETRIES || 2;\nconst isDup = dedup.duplicate === true;\nconst lowScore = Number(prev.idea_viral_score || 0) < minScore;\nconst needsRetry = (isDup || lowScore) && (prev.retry_count || 0) < maxRetries;\nlet avoid = Array.isArray(prev.avoid_angles) ? [...prev.avoid_angles] : [];\nif (isDup || lowScore) {\n  avoid.push({ title: prev.idea_title, summary: prev.idea_one_line_summary, reason: isDup ? 'duplicate of ' + (dedup.similar_to || 'past') : 'viral score too low' });\n}\nreturn [{\n  json: {\n    ...prev,\n    dedup_result: dedup,\n    is_duplicate: isDup,\n    needs_retry: needsRetry,\n    retry_count: (prev.retry_count || 0) + (needsRetry ? 1 : 0),\n    avoid_angles: avoid,\n    skip_concept: (isDup || lowScore) && !needsRetry\n  }\n}];"
+      },
+      "id": "fbb35e88-4a91-40c5-9f5e-390968c5d75e",
+      "name": "Evaluate Quality",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2464,
+        2288
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.needs_retry }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "8aee00c7-1ba6-4517-aa3a-88fed7871c05",
+      "name": "Need Retry?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2640,
+        2288
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json.skip_concept }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1ce1cf1d-b0f0-40ab-87fb-3cf0622727e7",
+      "name": "Skip Concept?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2832,
+        2368
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.ERRORS_LOG_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.ERRORS_LOG_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "date": "={{ $now.toISO() }}",
+            "stage": "skip_concept (dedup/low score, retries exhausted)",
+            "error_message": "={{ JSON.stringify($json.dedup_result || {}) + ' | score ' + $json.idea_viral_score }}",
+            "chapter_attempted": "=ch.{{ $json.chapter_number }} concept {{ $json.concept_index }}",
+            "book_title": "={{ $json.book_title }}"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "a9d6b303-9a12-4109-b196-4491b6d62402",
+      "name": "Log Skipped",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3120,
+        2064
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ednQsic0oBlvB9dg",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Emit one item per dialogue line for the TTS loop.\nconst prev = $json;\nconst lines = prev.idea_lines || [];\nreturn lines.map((l, i) => ({\n  json: {\n    _parent: { ...prev, idea_lines: undefined },\n    line_index: i,\n    speaker: l.speaker,\n    text: l.text,\n    voice_id: l.speaker === 'A' ? $('Globals').first().json.CHARACTER_A_VOICE_ID : $('Globals').first().json.CHARACTER_B_VOICE_ID\n  }\n}));"
+      },
+      "id": "825ed412-d319-49ce-9d23-a3b6da92b4ff",
+      "name": "Fan Out Lines",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1488,
+        2624
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.elevenlabs.io/v1/text-to-speech/{{ $json.voice_id }}/with-timestamps",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: $json.text, model_id: $('Globals').first().json.ELEVENLABS_MODEL_ID, voice_settings: { stability: 0.4, similarity_boost: 0.8, style: 0.15, use_speaker_boost: true }, output_format: 'mp3_44100_128' }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "038cb122-14a3-402c-b83f-6bc473654a6d",
+      "name": "TTS Per Line",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1712,
+        2624
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const fs = require('fs');\nconst path = require('path');\nconst workDir = $('Globals').first().json.WORK_DIR;\nif (!fs.existsSync(workDir)) fs.mkdirSync(workDir, { recursive: true });\n\nconst res = $json;\nconst lineCtx = $('Fan Out Lines').item.json;\nif (!res.audio_base64) throw new Error('ElevenLabs returned no audio_base64 for line ' + lineCtx.line_index);\n\nconst runId = ($execution.id || ('r' + Date.now())) + '_s' + (lineCtx._parent.slot || 0);\nconst filePath = path.join(workDir, `${runId}_line_${lineCtx.line_index}.mp3`);\nfs.writeFileSync(filePath, Buffer.from(res.audio_base64, 'base64'));\n\nconst chars = res.alignment?.characters || [];\nconst starts = res.alignment?.character_start_times_seconds || [];\nconst ends = res.alignment?.character_end_times_seconds || [];\nconst duration = ends.length ? ends[ends.length - 1] : 0;\n\nconst words = [];\nlet curWord = '', curStart = null, curEnd = null;\nfor (let i = 0; i < chars.length; i++) {\n  const c = chars[i];\n  if (/\\s/.test(c)) {\n    if (curWord) { words.push({ word: curWord, start: curStart, end: curEnd }); curWord = ''; curStart = null; curEnd = null; }\n  } else {\n    if (curStart === null) curStart = starts[i];\n    curEnd = ends[i];\n    curWord += c;\n  }\n}\nif (curWord) words.push({ word: curWord, start: curStart, end: curEnd });\n\nreturn [{\n  json: {\n    _parent: lineCtx._parent,\n    line_index: lineCtx.line_index,\n    speaker: lineCtx.speaker,\n    text: lineCtx.text,\n    duration,\n    word_timings: words,\n    audio_path: filePath,\n    run_id: runId\n  }\n}];"
+      },
+      "id": "b439ec5e-0efe-4e4a-b34c-244f4e947b60",
+      "name": "Save Line Audio + Timings",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1936,
+        2624
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "line_index"
+            },
+            {
+              "fieldToAggregate": "speaker"
+            },
+            {
+              "fieldToAggregate": "text"
+            },
+            {
+              "fieldToAggregate": "duration"
+            },
+            {
+              "fieldToAggregate": "word_timings"
+            },
+            {
+              "fieldToAggregate": "audio_path"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f88aacdf-22e1-4949-8ebf-b23afd2ec8e1",
+      "name": "Aggregate Lines",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        2160,
+        2624
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Order lines, compute offsets, build sprite windows, build .ass subtitle file,\n// build the ffmpeg concat list. Write the .ass and concat list to disk.\nconst fs = require('fs');\nconst path = require('path');\n\nconst arr = ($json.line_index || []).map((idx, i) => ({\n  idx,\n  speaker: $json.speaker[i],\n  text: $json.text[i],\n  duration: $json.duration[i],\n  words: $json.word_timings[i],\n  audio_path: $json.audio_path[i]\n}));\narr.sort((a, b) => a.idx - b.idx);\n\nconst parent = $items('Save Line Audio + Timings')[0].json._parent;\nconst runId = $items('Save Line Audio + Timings')[0].json.run_id;\nconst workDir = $('Globals').first().json.WORK_DIR;\nconst font = $('Globals').first().json.CAPTION_FONT || 'Arial';\n\nlet offset = 0;\nconst spriteA = [];\nconst spriteB = [];\nconst globalWords = [];\nfor (const line of arr) {\n  const winStart = offset;\n  const winEnd = offset + line.duration;\n  if (line.speaker === 'A') spriteA.push([winStart, winEnd]);\n  else spriteB.push([winStart, winEnd]);\n  for (const w of (line.words || [])) {\n    if (w.start == null || w.end == null) continue;\n    globalWords.push({ word: w.word, start: offset + w.start, end: offset + w.end });\n  }\n  offset += line.duration;\n}\nconst totalDuration = offset;\n\nfunction assTime(t) {\n  const h = Math.floor(t / 3600);\n  const m = Math.floor((t % 3600) / 60);\n  const s = Math.floor(t % 60);\n  const cs = Math.floor((t - Math.floor(t)) * 100);\n  return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;\n}\nconst assHeader = `[Script Info]\\nScriptType: v4.00+\\nPlayResX: 720\\nPlayResY: 1280\\n\\n[V4+ Styles]\\nFormat: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, Outline, Shadow, Alignment, MarginL, MarginR, MarginV\\nStyle: Cap,${font},64,&H00FFFFFF,&H00000000,&H00000000,1,6,0,2,40,40,260\\n\\n[Events]\\nFormat: Layer, Start, End, Style, Text\\n`;\nconst dialogueLines = globalWords.map(w => {\n  const txt = String(w.word).replace(/[{}]/g, '');\n  return `Dialogue: 0,${assTime(w.start)},${assTime(w.end)},Cap,,0,0,0,,${txt.toUpperCase()}`;\n}).join('\\n');\nconst assPath = path.join(workDir, `${runId}_captions.ass`);\nfs.writeFileSync(assPath, assHeader + dialogueLines + '\\n');\n\nconst listPath = path.join(workDir, `${runId}_concat.txt`);\nfs.writeFileSync(listPath, arr.map(l => `file '${l.audio_path.replace(/'/g, \"'\\\\''\")}'`).join('\\n'));\nconst mergedAudioPath = path.join(workDir, `${runId}_voice.mp3`);\n\nreturn [{\n  json: {\n    ...parent,\n    run_id: runId,\n    total_audio_duration: totalDuration,\n    sprite_a_windows: spriteA,\n    sprite_b_windows: spriteB,\n    ass_path: assPath,\n    concat_list_path: listPath,\n    merged_audio_path: mergedAudioPath\n  }\n}];"
+      },
+      "id": "5bf65503-c581-4e44-8d4b-0825ee47e60e",
+      "name": "Build Timing + Captions",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2384,
+        2624
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=ffmpeg -y -f concat -safe 0 -i \"{{ $json.concat_list_path }}\" -c copy \"{{ $json.merged_audio_path }}\""
+      },
+      "id": "cbe77ce5-9dce-4433-9710-7e3e28f5ad71",
+      "name": "FFmpeg Concat Voice",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2608,
+        2624
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pick a random Minecraft clip from the assets dir, choose a random start offset.\nconst fs = require('fs');\nconst path = require('path');\nconst prev = $('Build Timing + Captions').item.json;\nconst mcDir = $('Globals').first().json.MINECRAFT_DIR;\nif (!fs.existsSync(mcDir)) throw new Error('Minecraft dir not found: ' + mcDir);\nconst clips = fs.readdirSync(mcDir).filter(f => /\\.(mp4|mov|mkv|webm)$/i.test(f));\nif (clips.length === 0) throw new Error('No video clips in ' + mcDir);\nconst pick = clips[Math.floor(Math.random() * clips.length)];\nconst clipPath = path.join(mcDir, pick);\nconst startOffset = Math.floor(Math.random() * 25);\nconst dur = prev.total_audio_duration + 0.5;\nreturn [{ json: { ...prev, mc_clip_path: clipPath, mc_clip_name: pick, mc_start_offset: startOffset, mc_duration: dur } }];"
+      },
+      "id": "a686a873-4966-4024-9e80-be4937507d16",
+      "name": "Pick Minecraft Clip",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2832,
+        2624
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build the master ffmpeg filter_complex command.\n// Inputs: 0 = minecraft bg, 1 = sprite A, 2 = sprite B, 3 = voice, 4 = music\nconst prev = $json;\nconst g = $('Globals').first().json;\nconst path = require('path');\n\nconst outPath = path.join(g.WORK_DIR, `${prev.run_id}_final.mp4`);\n\nconst ena = wins => wins.map(([s, e]) => `between(t,${s.toFixed(3)},${e.toFixed(3)})`).join('+');\nconst aEnable = ena(prev.sprite_a_windows) || '0';\nconst bEnable = ena(prev.sprite_b_windows) || '0';\n\nconst dur = prev.mc_duration.toFixed(3);\nconst musicVol = g.MUSIC_VOLUME || '0.15';\n\nconst assEsc = prev.ass_path.replace(/\\\\/g, '/').replace(/:/g, '\\\\:');\n\nconst filter = [\n  `[0:v]trim=start=${prev.mc_start_offset}:duration=${dur},setpts=PTS-STARTPTS,scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280[bg]`,\n  `[1:v]scale=320:-1[spA]`,\n  `[2:v]scale=320:-1[spB]`,\n  `[bg][spA]overlay=x=20:y=H-h-340:enable='${aEnable}'[t1]`,\n  `[t1][spB]overlay=x=W-w-20:y=H-h-340:enable='${bEnable}'[t2]`,\n  `[t2]subtitles='${assEsc}'[vout]`,\n  `[4:a]volume=${musicVol},aloop=loop=-1:size=2e9[music]`,\n  `[3:a][music]amix=inputs=2:duration=first:dropout_transition=0[aout]`\n].join(';');\n\nconst cmd = [\n  'ffmpeg -y',\n  `-stream_loop -1 -i \"${prev.mc_clip_path}\"`,\n  `-i \"${g.SPRITE_A_PATH}\"`,\n  `-i \"${g.SPRITE_B_PATH}\"`,\n  `-i \"${prev.merged_audio_path}\"`,\n  `-i \"${g.MUSIC_BED_PATH}\"`,\n  `-filter_complex \"${filter}\"`,\n  '-map \"[vout]\" -map \"[aout]\"',\n  `-t ${dur}`,\n  '-c:v libx264 -preset veryfast -crf 21 -pix_fmt yuv420p',\n  '-c:a aac -b:a 192k',\n  `\"${outPath}\"`\n].join(' ');\n\nreturn [{ json: { ...prev, final_video_path: outPath, ffmpeg_cmd: cmd } }];"
+      },
+      "id": "3bc2a1b8-eaad-4c06-b641-ac7d05b9c092",
+      "name": "Build FFmpeg Command",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3056,
+        2624
+      ]
+    },
+    {
+      "parameters": {
+        "command": "={{ $json.ffmpeg_cmd }}"
+      },
+      "id": "3b4369a2-f168-4fb0-896a-fe6bc9629a8f",
+      "name": "FFmpeg Assemble Video",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1488,
+        2848
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const fs = require('fs');\nconst prev = $('Build FFmpeg Command').item.json;\nif (!fs.existsSync(prev.final_video_path)) {\n  throw new Error('FFmpeg produced no output file: ' + prev.final_video_path);\n}\nconst stat = fs.statSync(prev.final_video_path);\nif (stat.size < 100000) {\n  throw new Error('FFmpeg output suspiciously small (' + stat.size + ' bytes): ' + prev.final_video_path);\n}\nconst data = fs.readFileSync(prev.final_video_path);\nreturn [{\n  json: { ...prev, final_video_size: stat.size },\n  binary: {\n    video: {\n      data: data.toString('base64'),\n      mimeType: 'video/mp4',\n      fileName: `${prev.run_id}.mp4`\n    }\n  }\n}];"
+      },
+      "id": "927302f2-376d-4709-8185-69c9b2e1634b",
+      "name": "Load Final Video",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1712,
+        2848
+      ]
+    },
+    {
+      "parameters": {
+        "name": "={{ $json.run_id }}.mp4",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.FINISHED_VIDEOS_DRIVE_FOLDER_ID }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "5e2a92e9-3bd4-46aa-a80e-0b4836433ee4",
+      "name": "Upload Video to Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1936,
+        2848
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "0zoFAIoKxbc72Emc",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const prev = $('Load Final Video').item.json;\nconst driveId = $json.id;\nreturn [{ json: { ...prev, video_drive_id: driveId, video_drive_link: `https://drive.google.com/file/d/${driveId}/view` } }];"
+      },
+      "id": "693a032d-897a-4449-8f62-1f951d451c1e",
+      "name": "Capture Drive Ref",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        2848
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.QUEUE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.QUEUE_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "created_at": "={{ $now.toISO() }}",
+            "status": "pending_review",
+            "title": "={{ $json.idea_title }}",
+            "one_line_summary": "={{ $json.idea_one_line_summary }}",
+            "hook": "={{ $json.idea_hook }}",
+            "full_script": "={{ $json.idea_full_script }}",
+            "on_screen_caption": "={{ $json.idea_on_screen_caption }}",
+            "angle": "={{ $json.angle }}",
+            "viral_score": "={{ $json.idea_viral_score }}",
+            "keywords": "={{ ($json.idea_keywords || []).join(', ') }}",
+            "word_count": "={{ $json.idea_word_count }}",
+            "video_duration": "={{ Math.round(($json.total_audio_duration || 0) * 10) / 10 }}",
+            "source_book": "={{ $json.book_title }}",
+            "source_chapter": "={{ $json.chapter_number }}",
+            "concept_index": "={{ $json.concept_index }}",
+            "drive_file_id": "={{ $json.drive_file_id }}",
+            "minecraft_clip": "={{ $json.mc_clip_name }}",
+            "video_drive_id": "={{ $json.video_drive_id }}",
+            "video_drive_link": "={{ $json.video_drive_link }}",
+            "posted_at": "",
+            "youtube_url": "",
+            "view_count_24h": "",
+            "view_count_7d": "",
+            "retention_pct": "",
+            "likes": ""
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "6f0810f4-6c9d-4ecd-bffe-4168182397fd",
+      "name": "Append Queue Row",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2384,
+        2848
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ednQsic0oBlvB9dg",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.CONTENT_PLAN_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.CONTENT_PLAN_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "drive_file_id": "={{ $('Capture Drive Ref').item.json.drive_file_id }}",
+            "chapter_number": "={{ $('Capture Drive Ref').item.json.chapter_number }}",
+            "concept_index": "={{ $('Capture Drive Ref').item.json.concept_index }}",
+            "status": "generated"
+          },
+          "matchingColumns": [
+            "drive_file_id",
+            "chapter_number",
+            "concept_index"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "f1c2947d-e0c5-4827-9989-183c2a1a768a",
+      "name": "Mark Concept Generated",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2608,
+        2848
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ednQsic0oBlvB9dg",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const fs = require('fs');\nconst path = require('path');\nconst prev = $('Capture Drive Ref').item.json;\nconst workDir = $('Globals').first().json.WORK_DIR;\ntry {\n  const files = fs.readdirSync(workDir).filter(f => f.startsWith(prev.run_id));\n  for (const f of files) { try { fs.unlinkSync(path.join(workDir, f)); } catch (e) {} }\n} catch (e) {}\nreturn [{ json: { run_id: prev.run_id, cleaned: true, title: prev.idea_title } }];"
+      },
+      "id": "c3432d9e-0392-4f1b-801b-09c6b1c45e64",
+      "name": "Cleanup Temp Files",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2832,
+        2848
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Workflow B1 — Shorts Generator (Batch, optimized)\n\n### What changed in this version\n1. **Each book PDF is downloaded + extracted ONCE per run.** `Get Unique Books` dedupes the batch by `drive_file_id`; `Loop Books` downloads + extracts each unique book; `Attach Chapter Text` then slices every concept's chapter text from the cached pages. The main concept loop no longer touches Drive or PDF parsing.\n2. **All `$('Globals')` references use `.first()` instead of `.item`.** Globals has exactly one item, so `.first()` is always unambiguous — needed because the Merge node breaks `.item` lineage. Per-loop references (`Loop Each Concept`, `Fan Out Lines`, etc.) correctly stay on `.item`.\n3. **`drive_file_id` is now written into the `video_queue` row** so downstream (B2) can match plan rows unambiguously even across books with colliding chapter numbers.\n\n### Run order\nA (Indexer) → A2 (Planner) → **B1 (Generator)** → B2 (Poster)\n\n### START SMALL\n`BATCH_SIZE` is 2. Tune the FFmpeg look first, then raise to 20.\n\n### Docker + FFmpeg\nThe n8n container needs ffmpeg:\n```\nFROM n8nio/n8n:latest\nUSER root\nRUN apk add --no-cache ffmpeg\nUSER node\n```\n\n### Local asset folders (mount into the container)\n`MINECRAFT_DIR` (clips >=60s), `SPRITE_A_PATH`, `SPRITE_B_PATH`, `MUSIC_BED_PATH`, `WORK_DIR` (writable scratch).\n\n### video_queue columns (note: drive_file_id added)\n`created_at | status | title | one_line_summary | hook | full_script | on_screen_caption | angle | viral_score | keywords | word_count | video_duration | source_book | source_chapter | concept_index | drive_file_id | minecraft_clip | video_drive_id | video_drive_link | posted_at | youtube_url | view_count_24h | view_count_7d | retention_pct | likes`",
+        "height": 672,
+        "width": 952,
+        "color": 5
+      },
+      "id": "8df3a8d7-4861-4266-a8a6-a51b856e8958",
+      "name": "Sticky Note B1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1168,
+        960
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-05-20T14:50:57.333Z",
+      "createdAt": "2026-05-20T14:50:57.333Z",
+      "role": "workflow:owner",
+      "workflowId": "4uMckfFRptTqiSjT",
+      "projectId": "O6AJ2gZorGSWwg9b"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-05-20T18:43:36.620Z",
+  "versionId": "865b6677-7da1-4a3d-9734-2ed440a33337"
+}
