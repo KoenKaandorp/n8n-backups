@@ -1,0 +1,567 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Cron 3x Daily": {
+      "main": [
+        [
+          {
+            "node": "Globals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Globals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Globals": {
+      "main": [
+        [
+          {
+            "node": "Read Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Queue": {
+      "main": [
+        [
+          {
+            "node": "Pick Random Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Random Approved": {
+      "main": [
+        [
+          {
+            "node": "Queue Empty?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Queue Empty?": {
+      "main": [
+        [
+          {
+            "node": "Notify Empty",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Download Video From Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Video From Drive": {
+      "main": [
+        [
+          {
+            "node": "Build YT Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build YT Metadata": {
+      "main": [
+        [
+          {
+            "node": "Upload to YouTube",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to YouTube": {
+      "main": [
+        [
+          {
+            "node": "Capture YouTube Ref",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capture YouTube Ref": {
+      "main": [
+        [
+          {
+            "node": "Mark Queue Posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Queue Posted": {
+      "main": [
+        [
+          {
+            "node": "Mark Plan Posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Plan Posted": {
+      "main": [
+        [
+          {
+            "node": "Notify Posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-05-20T14:52:51.487Z",
+  "id": "nPgTzKi3DgntQcCM",
+  "isArchived": false,
+  "meta": null,
+  "name": "B2 - Shorts Poster",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9,13,19 * * *"
+            }
+          ]
+        }
+      },
+      "id": "f34145e0-8f52-4bea-9117-3d1cba7115ac",
+      "name": "Cron 3x Daily",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -160,
+        384
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "29e7d69b-a5da-4d71-8a79-deb8cb6e3f21",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "g10",
+              "name": "CONTENT_PLAN_SHEET_ID",
+              "value": "<__PLACEHOLDER__Google Sheet ID for content_plan__>",
+              "type": "string"
+            },
+            {
+              "id": "g11",
+              "name": "CONTENT_PLAN_TAB",
+              "value": "Sheet1",
+              "type": "string"
+            },
+            {
+              "id": "g12",
+              "name": "QUEUE_SHEET_ID",
+              "value": "<__PLACEHOLDER__Google Sheet ID for video_queue__>",
+              "type": "string"
+            },
+            {
+              "id": "g13",
+              "name": "QUEUE_TAB",
+              "value": "Sheet1",
+              "type": "string"
+            },
+            {
+              "id": "g14",
+              "name": "ERRORS_LOG_SHEET_ID",
+              "value": "1Uwo_dzVIcJRIHJoP7blTwIPQaNmSkWhLtO2bKgT7Nds",
+              "type": "string"
+            },
+            {
+              "id": "g15",
+              "name": "ERRORS_LOG_TAB",
+              "value": "Sheet1",
+              "type": "string"
+            },
+            {
+              "id": "g20",
+              "name": "TELEGRAM_CHAT_ID",
+              "value": "<__PLACEHOLDER__Your Telegram chat ID (numeric)__>",
+              "type": "string"
+            },
+            {
+              "id": "g30",
+              "name": "YOUTUBE_CATEGORY_ID",
+              "value": "27",
+              "type": "string"
+            },
+            {
+              "id": "g31",
+              "name": "QUEUE_LOW_THRESHOLD",
+              "value": 6,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bb667f0a-cad7-4a15-9471-1d11448f0500",
+      "name": "Globals",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        64,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $json.QUEUE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $json.QUEUE_TAB }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "e5dbe7ea-fd99-4578-b48a-33486b406994",
+      "name": "Read Queue",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        288,
+        464
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ednQsic0oBlvB9dg",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pick ONE random row with status 'approved'. Report how many approved remain (for the low-queue warning).\nconst rows = $items('Read Queue').map(i => i.json);\nconst approved = rows.filter(r => String(r.status || '').trim().toLowerCase() === 'approved');\n\nif (approved.length === 0) {\n  return [{ json: { _empty: true, approved_remaining: 0, message: 'No approved videos in the queue.' } }];\n}\n\nconst pick = approved[Math.floor(Math.random() * approved.length)];\n// approved_remaining AFTER this one is posted\nconst remaining = approved.length - 1;\n\nreturn [{\n  json: {\n    _empty: false,\n    approved_remaining: remaining,\n    low_queue: remaining < ($('Globals').item.json.QUEUE_LOW_THRESHOLD || 6),\n    video_drive_id: pick.video_drive_id,\n    video_drive_link: pick.video_drive_link,\n    title: pick.title,\n    one_line_summary: pick.one_line_summary,\n    full_script: pick.full_script,\n    keywords: pick.keywords,\n    source_book: pick.source_book,\n    source_chapter: pick.source_chapter,\n    concept_index: pick.concept_index\n  }\n}];"
+      },
+      "id": "dc08fd0c-4bf7-472b-a9ee-c3884eaa2beb",
+      "name": "Pick Random Approved",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        512,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json._empty }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0f257399-cd80-4218-ad75-30956c7325c2",
+      "name": "Queue Empty?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        736,
+        464
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Globals').item.json.TELEGRAM_CHAT_ID }}",
+        "text": "⚠️ Shorts queue is empty — nothing to post. Run the Generator (B1) and approve some videos.",
+        "additionalFields": {}
+      },
+      "id": "6ae8b0ca-efb1-4645-b70e-44df7acceb0c",
+      "name": "Notify Empty",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        960,
+        608
+      ],
+      "webhookId": "b2-empty-notify"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.video_drive_id }}",
+          "mode": "id"
+        },
+        "options": {
+          "binaryPropertyName": "video"
+        }
+      },
+      "id": "3d40a238-c7f4-4c89-b2a5-a87f8513e423",
+      "name": "Download Video From Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        960,
+        336
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "0zoFAIoKxbc72Emc",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build the YouTube description from the queue row. Keep the picked-row fields with the binary.\nconst pick = $('Pick Random Approved').item.json;\nconst kw = (pick.keywords || '').split(',').map(s => s.trim()).filter(Boolean);\nconst hashtags = kw.slice(0, 4).map(k => '#' + k.replace(/[^a-zA-Z0-9]/g, '')).join(' ');\nconst description = `${pick.one_line_summary}\\n\\n${hashtags} #Shorts`;\nconst tags = [...kw, 'psychology', 'shorts'].slice(0, 15);\nreturn [{\n  json: { ...pick, yt_description: description, yt_tags: tags },\n  binary: $binary\n}];"
+      },
+      "id": "b28b6e77-5b2f-49b8-80a7-325e5c42a378",
+      "name": "Build YT Metadata",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1184,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "={{ $json.title }}",
+        "regionCode": "US",
+        "categoryId": "={{ $('Globals').item.json.YOUTUBE_CATEGORY_ID }}",
+        "options": {
+          "description": "={{ $json.yt_description }}",
+          "notifySubscribers": true,
+          "privacyStatus": "public",
+          "selfDeclaredMadeForKids": false,
+          "tags": "={{ ($json.yt_tags || []).join(',') }}"
+        }
+      },
+      "id": "cf7433bd-26ca-44a5-8690-4e575518f9bb",
+      "name": "Upload to YouTube",
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [
+        1408,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const pick = $('Build YT Metadata').item.json;\nconst videoId = $json.id;\nif (!videoId) throw new Error('YouTube upload returned no video ID');\nreturn [{\n  json: {\n    ...pick,\n    youtube_video_id: videoId,\n    youtube_url: `https://youtube.com/shorts/${videoId}`,\n    posted_at: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "f069df7d-14b1-4465-972d-e6f276560c04",
+      "name": "Capture YouTube Ref",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1632,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.QUEUE_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.QUEUE_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "video_drive_id": "={{ $json.video_drive_id }}",
+            "status": "posted",
+            "posted_at": "={{ $json.posted_at }}",
+            "youtube_url": "={{ $json.youtube_url }}"
+          },
+          "matchingColumns": [
+            "video_drive_id"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "ee3d728f-4b00-4d7d-8ab2-b5025c935300",
+      "name": "Mark Queue Posted",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1856,
+        336
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ednQsic0oBlvB9dg",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.CONTENT_PLAN_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.CONTENT_PLAN_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "drive_file_id": "={{ $('Capture YouTube Ref').item.json.source_book_drive_id || '' }}",
+            "chapter_number": "={{ $('Capture YouTube Ref').item.json.source_chapter }}",
+            "concept_index": "={{ $('Capture YouTube Ref').item.json.concept_index }}",
+            "status": "posted"
+          },
+          "matchingColumns": [
+            "chapter_number",
+            "concept_index"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "7ddfc7eb-eeac-4d78-967e-b8db780be9f4",
+      "name": "Mark Plan Posted",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2080,
+        336
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ednQsic0oBlvB9dg",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Globals').item.json.TELEGRAM_CHAT_ID }}",
+        "text": "=✅ Posted: *{{ $('Capture YouTube Ref').item.json.title }}*\n{{ $('Capture YouTube Ref').item.json.youtube_url }}\n\nApproved videos still in queue: {{ $('Pick Random Approved').item.json.approved_remaining }}{{ $('Pick Random Approved').item.json.low_queue ? '  ⚠️ running low — generate more soon' : '' }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "bbf6ea8a-01fd-47c9-9826-23851bcb054a",
+      "name": "Notify Posted",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2304,
+        336
+      ],
+      "webhookId": "b2-posted-notify"
+    },
+    {
+      "parameters": {
+        "content": "## Workflow B2 — Shorts Poster\n\n**Schedule:** cron fires 3x/day at 09:00, 13:00, 19:00 (`0 9,13,19 * * *`). Each fire posts exactly ONE video. The Manual Trigger is there for testing.\n\n**Run order:** A (Indexer) → A2 (Planner) → B1 (Generator) → **B2 (Poster)**\n\n### What each run does\n1. Reads `video_queue`, picks ONE random row with `status = approved`.\n2. If none → Telegram warning, exit.\n3. Downloads that MP4 from the `finished_videos` Drive folder.\n4. Uploads it to YouTube as a public Short.\n5. Sets the queue row `status = posted`, fills `posted_at` + `youtube_url`.\n6. Sets the matching `content_plan` row `status = posted`.\n7. Telegram confirmation, including how many approved videos remain (warns if below `QUEUE_LOW_THRESHOLD`).\n\n### Your approval step (between B1 and B2)\nOpen `video_queue`, watch each `pending_review` video via its Drive link, and set `status` to `approved` or `rejected` by hand. Only `approved` rows get posted.\n\n### Setup\n- Fill `QUEUE_SHEET_ID`, `CONTENT_PLAN_SHEET_ID`, `TELEGRAM_CHAT_ID` in Globals.\n- Set credentials on the YouTube, Telegram, Drive, and Sheets nodes (replace the REPLACE_WITH_* placeholders by re-selecting the credential).\n- YouTube OAuth2 needs the YouTube Data API v3 enabled in Google Cloud Console.\n\n### Note on row matching\nThe queue write-back matches on `video_drive_id` (unique per row). The content_plan write-back matches on `chapter_number` + `concept_index`. If you run multiple books whose chapter numbers collide, add `drive_file_id` to the queue row in B1 and include it here as a third matching column for safety.\n\n### YouTube API quota\nEach upload costs ~1600 units of the 10,000/day default quota. 3 posts/day = ~4800 units. Fine. Don't batch-post more than ~6/day without a quota increase.",
+        "height": 704,
+        "width": 928,
+        "color": 5
+      },
+      "id": "9b5fddfa-a21b-431d-9c06-189d5fe1f30a",
+      "name": "Sticky Note B2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        -480
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-05-20T14:52:51.489Z",
+      "createdAt": "2026-05-20T14:52:51.489Z",
+      "role": "workflow:owner",
+      "workflowId": "nPgTzKi3DgntQcCM",
+      "projectId": "O6AJ2gZorGSWwg9b"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-05-20T14:54:28.404Z",
+  "versionId": "937bf86c-b1c8-4221-8fc8-b76949946579"
+}
