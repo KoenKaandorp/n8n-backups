@@ -1,0 +1,564 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Globals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Globals": {
+      "main": [
+        [
+          {
+            "node": "Read Manifest",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Content Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Manifest": {
+      "main": [
+        [
+          {
+            "node": "Find Unplanned Chapters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Content Plan": {
+      "main": [
+        [
+          {
+            "node": "Find Unplanned Chapters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Unplanned Chapters": {
+      "main": [
+        [
+          {
+            "node": "Has Unplanned?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Unplanned?": {
+      "main": [
+        [
+          {
+            "node": "Loop Each Chapter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Each Chapter": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download PDF": {
+      "main": [
+        [
+          {
+            "node": "Extract PDF Per Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract PDF Per Page": {
+      "main": [
+        [
+          {
+            "node": "Slice To Chapter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slice To Chapter": {
+      "main": [
+        [
+          {
+            "node": "Plan Concepts (Claude)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Plan Concepts (Claude)": {
+      "main": [
+        [
+          {
+            "node": "Parse Concepts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Planner Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Plan Concepts (Claude)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Concepts": {
+      "main": [
+        [
+          {
+            "node": "Append Concept Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Concept Rows": {
+      "main": [
+        [
+          {
+            "node": "Loop Each Chapter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-05-20T14:44:59.556Z",
+  "id": "uEhSLaRl4LwZ3rrP",
+  "isArchived": false,
+  "meta": null,
+  "name": "A2 - Chapter Planner",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "680a0bcd-c358-4faf-9904-53b96cc829bf",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "g1",
+              "name": "ANTHROPIC_MODEL",
+              "value": "claude-sonnet-4-5",
+              "type": "string"
+            },
+            {
+              "id": "g2",
+              "name": "ANTHROPIC_MODEL_CHEAP",
+              "value": "claude-haiku-4-5-20251001",
+              "type": "string"
+            },
+            {
+              "id": "g4",
+              "name": "BOOK_MANIFEST_SHEET_ID",
+              "value": "1GT3DiUOlB_LdA7oqTIxDLUM7SMaCChrV1u7RJ3WjVhM",
+              "type": "string"
+            },
+            {
+              "id": "g5",
+              "name": "BOOK_MANIFEST_TAB",
+              "value": "Sheet1",
+              "type": "string"
+            },
+            {
+              "id": "g6",
+              "name": "CONTENT_PLAN_SHEET_ID",
+              "value": "<__PLACEHOLDER__Google Sheet ID for content_plan__>",
+              "type": "string"
+            },
+            {
+              "id": "g7",
+              "name": "CONTENT_PLAN_TAB",
+              "value": "Sheet1",
+              "type": "string"
+            },
+            {
+              "id": "g8",
+              "name": "ERRORS_LOG_SHEET_ID",
+              "value": "1Uwo_dzVIcJRIHJoP7blTwIPQaNmSkWhLtO2bKgT7Nds",
+              "type": "string"
+            },
+            {
+              "id": "g9",
+              "name": "ERRORS_LOG_TAB",
+              "value": "Sheet1",
+              "type": "string"
+            },
+            {
+              "id": "g10",
+              "name": "NICHE_NAME",
+              "value": "Psychology",
+              "type": "string"
+            },
+            {
+              "id": "g11",
+              "name": "MAX_CONCEPTS_PER_CHAPTER",
+              "value": 4,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b20f56cc-f87d-46db-a2c8-efa87620368e",
+      "name": "Globals",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        112,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $json.BOOK_MANIFEST_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $json.BOOK_MANIFEST_TAB }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "43790233-2924-4cc3-960f-556a838456b4",
+      "name": "Read Manifest",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        320,
+        432
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ednQsic0oBlvB9dg",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.CONTENT_PLAN_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.CONTENT_PLAN_TAB }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "30448c84-c842-49d2-a4ce-ce9e7821447d",
+      "name": "Read Content Plan",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        320,
+        592
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ednQsic0oBlvB9dg",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Find chapters that have NO rows yet in content_plan.\n// A chapter is identified by drive_file_id + chapter_number.\nconst manifest = $items('Read Manifest').map(i => i.json);\nconst plan = $items('Read Content Plan').map(i => i.json);\n\n// Set of already-planned chapter keys\nconst plannedKeys = new Set(\n  plan\n    .filter(r => r.drive_file_id && (r.chapter_number !== undefined && r.chapter_number !== ''))\n    .map(r => `${r.drive_file_id}::${r.chapter_number}`)\n);\n\nconst toPlan = [];\nfor (const book of manifest) {\n  if (book.status !== 'active') continue;\n  let chapters = [];\n  try { chapters = JSON.parse(book.chapter_boundaries_json || '[]'); } catch (e) { continue; }\n  for (const ch of chapters) {\n    const key = `${book.drive_file_id}::${ch.chapter_number}`;\n    if (plannedKeys.has(key)) continue;\n    toPlan.push({\n      drive_file_id: book.drive_file_id,\n      book_title: book.title,\n      book_author: book.author,\n      chapter_number: ch.chapter_number,\n      chapter_title: ch.chapter_title,\n      start_page: ch.start_page,\n      end_page: ch.end_page\n    });\n  }\n}\n\nif (toPlan.length === 0) {\n  return [{ json: { _empty: true, message: 'All chapters already planned.' } }];\n}\nreturn toPlan.map(c => ({ json: c }));"
+      },
+      "id": "d117b057-4e80-4de5-b561-b510a0fb53d2",
+      "name": "Find Unplanned Chapters",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        528,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c1",
+              "leftValue": "={{ $json._empty }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notEqual"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5ddebc89-cdf6-4747-a4f4-bc198e2dd822",
+      "name": "Has Unplanned?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        736,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "af08340a-4f69-4788-93e8-90045e2914cc",
+      "name": "Loop Each Chapter",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -96,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.drive_file_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "d00fd1dd-997b-4caa-a45f-2c2131262f11",
+      "name": "Download PDF",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        112,
+        768
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "0zoFAIoKxbc72Emc",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {
+          "joinPages": false
+        }
+      },
+      "id": "fdf6c793-3efa-44f0-bd4a-50df467bed1e",
+      "name": "Extract PDF Per Page",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        320,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.text || $json.data || '';\nlet pages = [];\nif (Array.isArray(raw)) pages = raw;\nelse if (typeof raw === 'string') {\n  pages = raw.split('\\f');\n  if (pages.length < 3) pages = raw.split(/\\n\\s*\\n\\s*\\n/);\n}\nconst ctx = $('Loop Each Chapter').item.json;\nconst start = Math.max(0, (ctx.start_page || 1) - 1);\nconst end = Math.min(pages.length, ctx.end_page || pages.length);\nconst chapterText = pages.slice(start, end).join('\\n\\n').slice(0, 30000);\nreturn [{ json: { ...ctx, chapter_text: chapterText, chapter_char_count: chapterText.length } }];"
+      },
+      "id": "453a9190-b658-4478-9e64-04470a58c283",
+      "name": "Slice To Chapter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        528,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are planning short-form video content from a book chapter for a {{ $('Globals').item.json.NICHE_NAME }} YouTube Shorts channel.\n\n=== SOURCE CHAPTER ===\nBook: {{ $json.book_title }} — by {{ $json.book_author }}\nChapter {{ $json.chapter_number }}: {{ $json.chapter_title }}\n\n{{ $json.chapter_text }}\n\n=== YOUR TASK ===\nIdentify the DISTINCT video concepts this chapter can support. Each concept becomes one ~25-second short.\n\nA valid concept must:\n- Stand on its own as a single video a viewer would not feel overlaps another\n- Center on ONE counter-intuitive, relatable, or assumption-flipping idea\n- Be genuinely supported by the chapter text (no invention, no exaggeration)\n\nRules:\n- Return between 1 and {{ $('Globals').item.json.MAX_CONCEPTS_PER_CHAPTER }} concepts.\n- Bias toward FEWER, STRONGER concepts. Only split when each piece could truly stand alone.\n- A thin or transitional chapter may yield just 1 concept. A dense chapter may yield 3-4. Do not pad.\n- Each concept's brief is 2-3 sentences: enough for a scriptwriter to later expand it without re-reading the chapter.\n- Order concepts strongest-first (most hook potential first).\n\n=== OUTPUT ===\nReturn ONLY valid JSON (no markdown fences):\n\n{\n  \"concepts\": [\n    {\n      \"concept_index\": 1,\n      \"concept_title\": \"short working title, <60 chars\",\n      \"angle\": \"wait-what | your-life | reframe\",\n      \"brief\": \"2-3 sentence brief describing the single idea and why it matters to a young viewer\",\n      \"richness\": \"one phrase on how strong this concept is, e.g. 'very strong hook' or 'solid but niche'\"\n    }\n  ]\n}",
+        "options": {
+          "systemMessage": "You are a content planner who carves book chapters into distinct, non-overlapping short-form video concepts. You are conservative: you would rather return 1 strong concept than 4 mushy ones. Output strict JSON only, no preamble or markdown fences.",
+          "maxIterations": 4
+        }
+      },
+      "id": "828bd192-c211-42ab-8487-8f6c85c7dd42",
+      "name": "Plan Concepts (Claude)",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        736,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.ANTHROPIC_MODEL }}",
+          "mode": "id"
+        },
+        "options": {
+          "maxTokensToSample": 2000,
+          "temperature": 0.5
+        }
+      },
+      "id": "6c1b898f-2984-47b8-a362-481b8e4691d9",
+      "name": "Planner Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        736,
+        976
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "sUkzGV6H3EB4ekZS",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.output || '';\nconst cleaned = raw.replace(/^```json\\s*/i, '').replace(/^```\\s*/i, '').replace(/```\\s*$/i, '').trim();\nlet parsed;\ntry { parsed = JSON.parse(cleaned); } catch (e) {\n  throw new Error('Planner returned invalid JSON: ' + e.message + ' | raw: ' + raw.slice(0, 300));\n}\nconst concepts = parsed.concepts || [];\nconst ctx = $('Slice To Chapter').item.json;\nif (concepts.length === 0) {\n  // Still emit one row so the chapter is not re-planned forever\n  return [{\n    json: {\n      drive_file_id: ctx.drive_file_id,\n      book_title: ctx.book_title,\n      book_author: ctx.book_author,\n      chapter_number: ctx.chapter_number,\n      chapter_title: ctx.chapter_title,\n      start_page: ctx.start_page,\n      end_page: ctx.end_page,\n      concept_index: 0,\n      concept_title: '(no usable concept)',\n      angle: '',\n      brief: '',\n      richness: 'chapter yielded nothing',\n      status: 'skipped',\n      planned_at: new Date().toISOString()\n    }\n  }];\n}\nreturn concepts.map(c => ({\n  json: {\n    drive_file_id: ctx.drive_file_id,\n    book_title: ctx.book_title,\n    book_author: ctx.book_author,\n    chapter_number: ctx.chapter_number,\n    chapter_title: ctx.chapter_title,\n    start_page: ctx.start_page,\n    end_page: ctx.end_page,\n    concept_index: c.concept_index,\n    concept_title: c.concept_title,\n    angle: c.angle,\n    brief: c.brief,\n    richness: c.richness || '',\n    status: 'planned',\n    planned_at: new Date().toISOString()\n  }\n}));"
+      },
+      "id": "dc333c33-b45e-43a1-a5c5-5d586ce6aca1",
+      "name": "Parse Concepts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        992,
+        768
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.CONTENT_PLAN_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.CONTENT_PLAN_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "d23167ca-5303-4a1f-80f3-b1660240a1e9",
+      "name": "Append Concept Rows",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1184,
+        768
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ednQsic0oBlvB9dg",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Workflow A2 — Chapter Planner\n\nRun manually after the Indexer (Workflow A). For every active book chapter not yet planned, Claude reads the FULL chapter text and carves it into 1-4 distinct video concepts. Each concept becomes one row in the `content_plan` sheet with status `planned`.\n\n**Run order:** A (Indexer) → A2 (Planner) → B1 (Generator) → B2 (Poster)\n\n**Re-running is safe:** chapters already present in `content_plan` (matched by drive_file_id + chapter_number) are skipped, so you can run this again after adding new books.\n\n**Create the `content_plan` sheet with these column headers:**\n`drive_file_id | book_title | book_author | chapter_number | chapter_title | start_page | end_page | concept_index | concept_title | angle | brief | richness | status | planned_at`\n\n`status` values: `planned` (ready for the Generator), `skipped` (chapter had no usable concept), `generated` (Generator has used it), `posted`.",
+        "height": 360,
+        "width": 560,
+        "color": 4
+      },
+      "id": "e7f118bb-508d-444e-8ac5-a5948d098b21",
+      "name": "Sticky Note A2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        48
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-05-20T14:44:59.570Z",
+      "createdAt": "2026-05-20T14:44:59.570Z",
+      "role": "workflow:owner",
+      "workflowId": "uEhSLaRl4LwZ3rrP",
+      "projectId": "O6AJ2gZorGSWwg9b"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-05-20T14:45:05.018Z",
+  "versionId": "5a864d21-6f65-449a-8521-034892db34ce"
+}
