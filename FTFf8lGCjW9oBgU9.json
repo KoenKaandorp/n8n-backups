@@ -437,7 +437,7 @@
       "parameters": {
         "model": {
           "__rl": true,
-          "value": "={{ $('Globals').item.json.ANTHROPIC_MODEL }}",
+          "value": "={{ $('Globals').item.json.ANTHROPIC_MODEL_CHEAP }}",
           "mode": "id"
         },
         "options": {
@@ -545,6 +545,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-05-18T17:06:06.268Z",
-  "versionId": "a6e1f1dd-ce64-4f7b-88eb-301eef1c7ded"
+  "updatedAt": "2026-05-20T14:44:03.141Z",
+  "versionId": "255df29b-5dca-4ebc-92e5-3515a4329cbf"
 }
