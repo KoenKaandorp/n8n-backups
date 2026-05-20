@@ -51,19 +51,7 @@
       "main": [
         [
           {
-            "node": "Has New Books?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Has New Books?": {
-      "main": [
-        [],
-        [
-          {
-            "node": "Loop Over Books",
+            "node": "If Has New Books",
             "type": "main",
             "index": 0
           }
@@ -158,6 +146,17 @@
           }
         ]
       ]
+    },
+    "If Has New Books": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Books",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2026-05-18T11:30:51.095Z",
@@ -166,7 +165,7 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "name": "Book Indexer",
+  "name": "A1 - Book Indexer",
   "nodes": [
     {
       "parameters": {},
@@ -304,7 +303,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const existing = new Set(\n  $items('Read Existing Manifest').map(i => i.json.drive_file_id).filter(Boolean)\n);\nconst pdfs = $items('List PDFs in Drive').map(i => i.json);\nconst unindexed = pdfs\n  .filter(p => !existing.has(p.id))\n  .map(p => ({ json: { drive_file_id: p.id, drive_file_name: p.name } }));\nif (unindexed.length === 0) {\n  return [{ json: { _empty: true, message: 'No new books to index.' } }];\n}\nreturn unindexed;"
+        "jsCode": "const existing = new Set(\n  $items('Read Existing Manifest').map(i => i.json.drive_file_id).filter(Boolean)\n);\nconst pdfs = $items('List PDFs in Drive').map(i => i.json);\nconst unindexed = pdfs\n  .filter(p => !existing.has(p.id))\n  .map(p => ({ json: { drive_file_id: p.id, drive_file_name: p.name } }));\nif (unindexed.length === 0) {\n  return { json: { drive_file_id: \"empty\", drive_file_name: \"empty\" }};\n}\nreturn unindexed;"
       },
       "id": "cf45ade1-0696-4877-a07e-23352e0a6a09",
       "name": "Filter Unindexed",
@@ -312,39 +311,6 @@
       "typeVersion": 2,
       "position": [
         928,
-        -240
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 3
-          },
-          "conditions": [
-            {
-              "id": "c1",
-              "leftValue": "={{ $json._empty }}",
-              "rightValue": true,
-              "operator": {
-                "type": "boolean",
-                "operation": "notEqual"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "id": "0c342911-541b-44d8-a5ff-535a58a931eb",
-      "name": "Has New Books?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.3,
-      "position": [
-        1136,
         -240
       ]
     },
@@ -376,8 +342,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        208,
-        16
+        256,
+        0
       ],
       "credentials": {
         "googleDriveOAuth2Api": {
@@ -398,27 +364,27 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1.1,
       "position": [
-        416,
+        448,
         0
       ]
     },
     {
       "parameters": {
-        "jsCode": "const raw = $json.text || $json.data || '';\nlet pages = [];\nif (Array.isArray(raw)) pages = raw;\nelse if (typeof raw === 'string') {\n  pages = raw.split('\\f');\n  if (pages.length < 3) pages = raw.split(/\\n\\s*\\n\\s*\\n/);\n}\nconst summary = pages.map((p, idx) => {\n  const lines = p.split(/\\r?\\n/).map(l => l.trim()).filter(Boolean);\n  return `[Page ${idx + 1}] ${lines.slice(0, 3).join(' | ')}`;\n});\nconst tocCandidates = pages.slice(0, 8).map((p, idx) => `--- Page ${idx + 1} ---\\n${p.slice(0, 1500)}`).join('\\n\\n');\nreturn [{\n  json: {\n    drive_file_id: $('Loop Over Books').item.json.drive_file_id,\n    drive_file_name: $('Loop Over Books').item.json.drive_file_name,\n    total_pages: pages.length,\n    page_summary: summary.join('\\n').slice(0, 18000),\n    toc_sample: tocCandidates.slice(0, 8000)\n  }\n}];"
+        "jsCode": "const raw = $json.text || $json.data || '';\nlet pages = [];\nif (Array.isArray(raw)) pages = raw;\nelse if (typeof raw === 'string') {\n  pages = raw.split('\\f');\n  if (pages.length < 3) pages = raw.split(/\\n\\s*\\n\\s*\\n/);\n}\nconst summary = pages.map((p, idx) => {\n  const lines = p.split(/\\r?\\n/).map(l => l.trim()).filter(Boolean);\n  return `[Page ${idx + 1}] ${lines.slice(0, 3).join(' | ')}`;\n});\nconst tocCandidates = pages.slice(0, 8).map((p, idx) => `--- Page ${idx + 1} ---\\n${p.slice(0, 1500)}`).join('\\n\\n');\nreturn [{\n  json: {\n    drive_file_id: $('Loop Over Books').item.json.drive_file_id,\n    drive_file_name: $('Loop Over Books').item.json.drive_file_name,\n    total_pages: pages.length,\n    page_summary: summary.join('\\n').slice(0, 180000),\n    toc_sample: tocCandidates.slice(0, 8000)\n  }\n}];"
       },
       "id": "11ce01d6-566f-4c5b-9b5b-98dc1b4c963e",
       "name": "Build TOC Summary",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        624,
+        640,
         0
       ]
     },
     {
       "parameters": {
         "promptType": "define",
-        "text": "=You are analyzing a book PDF to detect chapter boundaries.\n\nFile name: {{ $json.drive_file_name }}\nTotal pages: {{ $json.total_pages }}\n\n=== TABLE OF CONTENTS SAMPLE ===\n{{ $json.toc_sample }}\n\n=== PAGE-BY-PAGE HEAD SUMMARY ===\n{{ $json.page_summary }}\n\nReturn ONLY valid JSON (no markdown fences):\n\n{\n  \"title\": \"clean book title\",\n  \"author\": \"primary author or 'Unknown'\",\n  \"chapters\": [ { \"chapter_number\": 1, \"chapter_title\": \"...\", \"start_page\": 12, \"end_page\": 28 } ]\n}\n\nRules:\n- SKIP front matter (title, copyright, dedication, foreword) and back matter (acknowledgments, bibliography, notes, index)\n- Include Introduction only if substantive\n- Use 1-indexed page numbers matching the [Page N] markers\n- If no chapter structure found, return chapters: []",
+        "text": "=You are analyzing a book PDF to detect chapter boundaries.\n\nFile name: {{ $json.drive_file_name }}\nTotal pages: {{ $json.total_pages }}\n\n=== TABLE OF CONTENTS SAMPLE ===\n{{ $json.toc_sample }}\n\n=== PAGE-BY-PAGE HEAD SUMMARY ===\n{{ $json.page_summary }}\n\nReturn ONLY valid JSON (no markdown fences):\n\n{\n  \"title\": \"clean book title\",\n  \"author\": \"primary author or 'Unknown'\",\n  \"chapters\": [ { \"chapter_number\": 1, \"chapter_title\": \"...\", \"start_page\": 12, \"end_page\": 28 } ]\n}\n\nRules:\n- SKIP front matter (title, copyright, dedication, foreword) and back matter (acknowledgments, bibliography, notes, index)\n- Include Introduction only if substantive\n- Use 1-indexed page numbers matching the [Page N] markers\n- If no chapter structure found, return chapters: []\n- If a Table of Contents is present, rely primarily on it for chapter detection.\nOnly use page summaries to fill gaps or confirm boundaries.",
         "options": {
           "systemMessage": "You are a precise document-structure parser. Output strict JSON only, no preamble or markdown fences. Prefer fewer-but-correct chapters over guessing.",
           "maxIterations": 3
@@ -513,7 +479,7 @@
     },
     {
       "parameters": {
-        "content": "## Workflow A — Book Indexer\n\nRun manually after dropping PDFs into your Drive books folder. Detects chapter boundaries with Claude Haiku and appends one row per book to `book_manifest`.\n\n**Sheet columns:** `drive_file_id | title | author | total_chapters | chapters_covered | chapter_boundaries_json | last_used_at | status | notes | indexed_at`",
+        "content": "## Workflow A — Book Indexer\n\nRun mnaually after dropping pdf into drive books folder. Checks chapter boundaries and writes down the pages in Book Manifest sheet.\n\n**Sheet columns:** `drive_file_id | title | author | total_chapters | chapters_covered | chapter_boundaries_json | last_used_at | status | notes | indexed_at`",
         "height": 240,
         "width": 480,
         "color": 4
@@ -526,6 +492,39 @@
         -640,
         -208
       ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a492e0ea-d6c7-40f6-9e51-745eaf18c021",
+              "leftValue": "={{ $json.drive_file_id }}",
+              "rightValue": "empty",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1088,
+        -240
+      ],
+      "id": "5d687022-76c0-4bdc-9081-0095fffd75fa",
+      "name": "If Has New Books"
     }
   ],
   "pinData": {},
@@ -545,6 +544,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-05-20T14:44:03.141Z",
-  "versionId": "255df29b-5dca-4ebc-92e5-3515a4329cbf"
+  "updatedAt": "2026-05-20T16:57:53.262Z",
+  "versionId": "cb75939d-def8-4830-bae9-b98044c9c21c"
 }
