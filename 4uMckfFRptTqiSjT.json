@@ -442,7 +442,7 @@
   "id": "4uMckfFRptTqiSjT",
   "isArchived": false,
   "meta": null,
-  "name": "B1 - Shorts Generator (Batch, optimized)",
+  "name": "B1 - Shorts Generator",
   "nodes": [
     {
       "parameters": {},
@@ -1413,7 +1413,7 @@
     {
       "parameters": {
         "content": "## Workflow B1 — Shorts Generator (Batch, optimized)\n\n### What changed in this version\n1. **Each book PDF is downloaded + extracted ONCE per run.** `Get Unique Books` dedupes the batch by `drive_file_id`; `Loop Books` downloads + extracts each unique book; `Attach Chapter Text` then slices every concept's chapter text from the cached pages. The main concept loop no longer touches Drive or PDF parsing.\n2. **All `$('Globals')` references use `.first()` instead of `.item`.** Globals has exactly one item, so `.first()` is always unambiguous — needed because the Merge node breaks `.item` lineage. Per-loop references (`Loop Each Concept`, `Fan Out Lines`, etc.) correctly stay on `.item`.\n3. **`drive_file_id` is now written into the `video_queue` row** so downstream (B2) can match plan rows unambiguously even across books with colliding chapter numbers.\n\n### Run order\nA (Indexer) → A2 (Planner) → **B1 (Generator)** → B2 (Poster)\n\n### START SMALL\n`BATCH_SIZE` is 2. Tune the FFmpeg look first, then raise to 20.\n\n### Docker + FFmpeg\nThe n8n container needs ffmpeg:\n```\nFROM n8nio/n8n:latest\nUSER root\nRUN apk add --no-cache ffmpeg\nUSER node\n```\n\n### Local asset folders (mount into the container)\n`MINECRAFT_DIR` (clips >=60s), `SPRITE_A_PATH`, `SPRITE_B_PATH`, `MUSIC_BED_PATH`, `WORK_DIR` (writable scratch).\n\n### video_queue columns (note: drive_file_id added)\n`created_at | status | title | one_line_summary | hook | full_script | on_screen_caption | angle | viral_score | keywords | word_count | video_duration | source_book | source_chapter | concept_index | drive_file_id | minecraft_clip | video_drive_id | video_drive_link | posted_at | youtube_url | view_count_24h | view_count_7d | retention_pct | likes`",
-        "height": 672,
+        "height": 736,
         "width": 952,
         "color": 5
       },
@@ -1423,7 +1423,7 @@
       "typeVersion": 1,
       "position": [
         1168,
-        960
+        896
       ]
     }
   ],
@@ -1444,6 +1444,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-05-20T18:43:36.620Z",
-  "versionId": "865b6677-7da1-4a3d-9734-2ed440a33337"
+  "updatedAt": "2026-05-27T15:38:01.377Z",
+  "versionId": "3f5bb789-3010-42ff-9b49-dc9be1eb9e12"
 }
