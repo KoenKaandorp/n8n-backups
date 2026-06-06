@@ -276,14 +276,14 @@
       "main": [
         [
           {
-            "node": "TTS Per Line",
+            "node": "Convert text to speech",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "TTS Per Line": {
+    "Convert text to speech": {
       "main": [
         [
           {
@@ -436,23 +436,30 @@
           }
         ]
       ]
+    },
+    "Edit Fields": {
+      "main": [
+        []
+      ]
     }
   },
   "createdAt": "2026-05-20T14:50:57.330Z",
   "id": "4uMckfFRptTqiSjT",
   "isArchived": false,
-  "meta": null,
-  "name": "B1 - Shorts Generator",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "B1 - Shorts Generator (ElevenLabs node)",
   "nodes": [
     {
       "parameters": {},
-      "id": "1d6e4687-b0d1-4d0a-8de9-c36edcc0bf9d",
+      "id": "95b0e90c-af38-48b5-a828-7dbe8974ffca",
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        1168,
-        1744
+        2432,
+        3792
       ]
     },
     {
@@ -534,7 +541,7 @@
             {
               "id": "g22",
               "name": "CHARACTER_A_VOICE_ID",
-              "value": "<__PLACEHOLDER__ElevenLabs voice ID for Max__>",
+              "value": "DYkrAHD8iwork3YSUBbs",
               "type": "string"
             },
             {
@@ -552,7 +559,7 @@
             {
               "id": "g25",
               "name": "CHARACTER_B_VOICE_ID",
-              "value": "<__PLACEHOLDER__ElevenLabs voice ID for Doc__>",
+              "value": "g6xIsTj2HwM6VR4iXFCw",
               "type": "string"
             },
             {
@@ -655,13 +662,13 @@
         },
         "options": {}
       },
-      "id": "0e898f59-fd39-4321-a1c1-e32ff72ee134",
+      "id": "deb3da36-2f07-4919-b08a-825873c7760a",
       "name": "Globals",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1360,
-        1744
+        2624,
+        3792
       ]
     },
     {
@@ -678,18 +685,18 @@
         },
         "options": {}
       },
-      "id": "625ee789-892e-49f6-bad9-ce8c2e0e86ff",
+      "id": "4a597ac7-2b0e-4aaf-8bec-fc0360d4e38f",
       "name": "Read Content Plan",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        1584,
-        1664
+        2864,
+        3712
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "ednQsic0oBlvB9dg",
-          "name": "Google Sheets account"
+          "id": "H2pdwVfsMV53qzbq",
+          "name": "Google Sheets account 2"
         }
       }
     },
@@ -707,18 +714,18 @@
         },
         "options": {}
       },
-      "id": "e4e29a67-ad0b-471c-8ac5-f169cddae3c9",
+      "id": "94ec9fd7-b0bc-4e4a-a49e-dd908fc50e2c",
       "name": "Read Queue",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        1584,
-        1824
+        2864,
+        3872
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "ednQsic0oBlvB9dg",
-          "name": "Google Sheets account"
+          "id": "H2pdwVfsMV53qzbq",
+          "name": "Google Sheets account 2"
         }
       }
     },
@@ -727,49 +734,49 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1856,
-        1744
+        3120,
+        3792
       ],
-      "id": "7b14a829-f9c9-4c0e-9d32-64ae007c7d5a",
+      "id": "527288e8-5d81-4a0c-93ff-cc98a2d9d437",
       "name": "Merge"
     },
     {
       "parameters": {
-        "jsCode": "// Select the next BATCH_SIZE concepts with status 'planned', in sheet order.\n// Attach dedup context (recent titles+summaries from the queue).\nconst plan = $items('Read Content Plan').map(i => i.json);\nconst queue = $items('Read Queue').map(i => i.json);\nconst batchSize = $('Globals').first().json.BATCH_SIZE || 2;\nconst lookback = $('Globals').first().json.DEDUP_LOOKBACK || 50;\n\nconst planned = plan.filter(r => r.status === 'planned');\nif (planned.length === 0) throw new Error('No concepts with status \"planned\" in content_plan. Run the Planner (A2) first.');\n\nconst batch = planned.slice(0, batchSize);\n\nconst recent = queue\n  .filter(r => r.created_at)\n  .sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)))\n  .slice(0, lookback)\n  .map(r => ({ title: r.title || '', summary: r.one_line_summary || '' }));\n\nreturn batch.map((c, i) => ({\n  json: {\n    slot: i + 1,\n    drive_file_id: c.drive_file_id,\n    book_title: c.book_title,\n    book_author: c.book_author,\n    chapter_number: c.chapter_number,\n    chapter_title: c.chapter_title,\n    start_page: c.start_page,\n    end_page: c.end_page,\n    concept_index: c.concept_index,\n    concept_title: c.concept_title,\n    angle: c.angle,\n    brief: c.brief,\n    dedup_context: recent,\n    retry_count: 0,\n    avoid_angles: []\n  }\n}));"
+        "jsCode": "const plan = $items('Read Content Plan').map(i => i.json);\nconst queue = $items('Read Queue').map(i => i.json);\nconst batchSize = $('Globals').first().json.BATCH_SIZE || 2;\nconst lookback = $('Globals').first().json.DEDUP_LOOKBACK || 50;\n\nconst planned = plan.filter(r => r.status === 'planned');\nif (planned.length === 0) throw new Error('No concepts with status \"planned\" in content_plan. Run the Planner (A2) first.');\n\nconst batch = planned.slice(0, batchSize);\n\nconst recent = queue\n  .filter(r => r.created_at)\n  .sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)))\n  .slice(0, lookback)\n  .map(r => ({ title: r.title || '', summary: r.one_line_summary || '' }));\n\nreturn batch.map((c, i) => ({\n  json: {\n    slot: i + 1,\n    drive_file_id: c.drive_file_id,\n    book_title: c.book_title,\n    book_author: c.book_author,\n    chapter_number: c.chapter_number,\n    chapter_title: c.chapter_title,\n    start_page: c.start_page,\n    end_page: c.end_page,\n    concept_index: c.concept_index,\n    concept_title: c.concept_title,\n    angle: c.angle,\n    brief: c.brief,\n    dedup_context: recent,\n    retry_count: 0,\n    avoid_angles: []\n  }\n}));"
       },
-      "id": "a55dec3c-97a6-48c8-8e1f-3ec1573edcb4",
+      "id": "5c6e235d-71f0-48d2-8da4-8885841aafdb",
       "name": "Select Batch",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2048,
-        1744
+        3312,
+        3792
       ]
     },
     {
       "parameters": {
-        "jsCode": "// From the full batch of concepts, produce ONE item per unique book (drive_file_id).\n// These get downloaded + extracted once. The full batch is re-read later from this node.\nconst all = $input.all().map(i => i.json);\nconst seen = new Set();\nconst uniqueBooks = [];\nfor (const c of all) {\n  if (!seen.has(c.drive_file_id)) {\n    seen.add(c.drive_file_id);\n    uniqueBooks.push({ json: { drive_file_id: c.drive_file_id, book_title: c.book_title } });\n  }\n}\nreturn uniqueBooks;"
+        "jsCode": "const all = $input.all().map(i => i.json);\nconst seen = new Set();\nconst uniqueBooks = [];\nfor (const c of all) {\n  if (!seen.has(c.drive_file_id)) {\n    seen.add(c.drive_file_id);\n    uniqueBooks.push({ json: { drive_file_id: c.drive_file_id, book_title: c.book_title } });\n  }\n}\nreturn uniqueBooks;"
       },
-      "id": "6c59ad0b-cff2-4d27-ac3c-16344ee939e1",
+      "id": "bd1a5831-06e5-478d-b0a7-8898e834b2c4",
       "name": "Get Unique Books",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2240,
-        1744
+        3504,
+        3792
       ]
     },
     {
       "parameters": {
         "options": {}
       },
-      "id": "342d5e2c-e707-4f83-9528-fad5eddf4d2e",
+      "id": "43b0e827-968c-42d9-9d55-26a19ea6125c",
       "name": "Loop Books",
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        2464,
-        1808
+        3728,
+        3856
       ]
     },
     {
@@ -782,13 +789,13 @@
         },
         "options": {}
       },
-      "id": "92903e88-30d3-4e42-967a-d109dff7d414",
+      "id": "886444df-4b6b-43c9-8e41-15c1965282ed",
       "name": "Download PDF",
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        1872,
-        2064
+        3136,
+        4112
       ],
       "credentials": {
         "googleDriveOAuth2Api": {
@@ -804,52 +811,52 @@
           "joinPages": false
         }
       },
-      "id": "850927cd-6566-49d4-8d00-481fa3d6cb6f",
+      "id": "808783f6-5b12-462e-aa5e-864b1ab0f0aa",
       "name": "Extract PDF Per Page",
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1.1,
       "position": [
-        2096,
-        2064
+        3360,
+        4112
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Normalize the extracted PDF into a pages[] array and tag it with its drive_file_id.\nconst raw = $json.text || $json.data || '';\nlet pages = [];\nif (Array.isArray(raw)) pages = raw;\nelse if (typeof raw === 'string') {\n  pages = raw.split('\\f');\n  if (pages.length < 3) pages = raw.split(/\\n\\s*\\n\\s*\\n/);\n}\nconst book = $('Loop Books').item.json;\nreturn [{ json: { drive_file_id: book.drive_file_id, book_title: book.book_title, pages } }];"
+        "jsCode": "const raw = $json.text || $json.data || '';\nlet pages = [];\nif (Array.isArray(raw)) pages = raw;\nelse if (typeof raw === 'string') {\n  pages = raw.split('\\f');\n  if (pages.length < 3) pages = raw.split(/\\n\\s*\\n\\s*\\n/);\n}\nconst book = $('Loop Books').item.json;\nreturn [{ json: { drive_file_id: book.drive_file_id, book_title: book.book_title, pages } }];"
       },
-      "id": "90dd38ec-de06-448c-8c37-6d513e92ac2a",
+      "id": "44b00428-4acc-4d49-9d2c-6863d02d7abd",
       "name": "Normalize Book Pages",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2320,
-        2064
+        3584,
+        4112
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Runs AFTER the book loop finishes. Build a drive_file_id -> pages cache,\n// then re-read the full concept batch and slice each concept's chapter text.\nconst bookItems = $items('Normalize Book Pages');\nconst cache = {};\nfor (const it of bookItems) {\n  cache[it.json.drive_file_id] = it.json.pages;\n}\n\nconst concepts = $items('Select Batch').map(i => i.json);\nconst out = [];\nfor (const c of concepts) {\n  const pages = cache[c.drive_file_id] || [];\n  const start = Math.max(0, (c.start_page || 1) - 1);\n  const end = Math.min(pages.length, c.end_page || pages.length);\n  const chapterText = pages.slice(start, end).join('\\n\\n').slice(0, 25000);\n  out.push({ json: { ...c, chapter_text: chapterText } });\n}\nreturn out;"
+        "jsCode": "const bookItems = $items('Normalize Book Pages');\nconst cache = {};\nfor (const it of bookItems) {\n  cache[it.json.drive_file_id] = it.json.pages;\n}\n\nconst concepts = $items('Select Batch').map(i => i.json);\nconst out = [];\nfor (const c of concepts) {\n  const pages = cache[c.drive_file_id] || [];\n  const start = Math.max(0, (c.start_page || 1) - 1);\n  const end = Math.min(pages.length, c.end_page || pages.length);\n  const chapterText = pages.slice(start, end).join('\\n\\n').slice(0, 25000);\n  out.push({ json: { ...c, chapter_text: chapterText } });\n}\nreturn out;"
       },
-      "id": "e1fb86e8-154e-446d-9fed-bd68a388e668",
+      "id": "6831ae72-0722-49a6-b547-56be27bd8706",
       "name": "Attach Chapter Text",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1232,
-        2272
+        2496,
+        4320
       ]
     },
     {
       "parameters": {
         "options": {}
       },
-      "id": "7b77329b-b744-4e77-b697-ef461209c7bd",
+      "id": "d5e24b7f-b31e-46d7-82bb-bb3053d00ef8",
       "name": "Loop Each Concept",
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1456,
-        2272
+        2720,
+        4320
       ]
     },
     {
@@ -861,20 +868,20 @@
           "maxIterations": 8
         }
       },
-      "id": "081e3d3c-be36-4f29-acb4-32007b964c08",
+      "id": "6498d31a-9b0c-4ab7-8fa0-e673be18bd82",
       "name": "Generate Dialogue",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        1680,
-        2288
+        2944,
+        4336
       ]
     },
     {
       "parameters": {
         "model": {
           "__rl": true,
-          "value": "={{ $('Globals').first().json.ANTHROPIC_MODEL }}",
+          "value": "={{ $('Globals').first().json.ANTHROPIC_MODEL_CHEAP }}",
           "mode": "id"
         },
         "options": {
@@ -882,13 +889,13 @@
           "temperature": 0.8
         }
       },
-      "id": "9d2287e3-5a8f-4ce4-adf8-3cdb8f300678",
+      "id": "21ebc398-05df-4ceb-b119-26bc2a8c46a9",
       "name": "Dialogue Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
       "typeVersion": 1.3,
       "position": [
-        1680,
-        2432
+        2944,
+        4480
       ],
       "credentials": {
         "anthropicApi": {
@@ -901,13 +908,13 @@
       "parameters": {
         "jsCode": "const raw = $json.output || '';\nconst cleaned = raw.replace(/^```json\\s*/i, '').replace(/^```\\s*/i, '').replace(/```\\s*$/i, '').trim();\nlet idea;\ntry { idea = JSON.parse(cleaned); } catch (e) { throw new Error('Dialogue JSON parse failed: ' + e.message); }\nif (!Array.isArray(idea.lines) || idea.lines.length < 2) throw new Error('Dialogue must have >= 2 lines');\nconst ctx = $('Loop Each Concept').item.json;\nconst fullScript = idea.lines.map(l => `${l.speaker}: ${l.text}`).join('\\n');\nconst spokenOnly = idea.lines.map(l => l.text).join(' ');\nreturn [{\n  json: {\n    ...ctx,\n    chapter_text: undefined,\n    idea_title: idea.title,\n    idea_hook: idea.lines[0].text,\n    idea_one_line_summary: idea.oneLineSummary,\n    idea_lines: idea.lines,\n    idea_full_script: fullScript,\n    idea_spoken_text: spokenOnly,\n    idea_on_screen_caption: idea.onScreenCaption,\n    idea_viral_score: idea.viralScore,\n    idea_keywords: idea.keywords || [],\n    idea_word_count: spokenOnly.split(/\\s+/).length\n  }\n}];"
       },
-      "id": "614fbedf-1db6-4591-8278-aaf4b645375f",
+      "id": "d1f598c3-d77d-4d46-a852-4376f963b2fc",
       "name": "Parse Dialogue",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1984,
-        2288
+        3248,
+        4336
       ]
     },
     {
@@ -919,13 +926,13 @@
           "maxIterations": 2
         }
       },
-      "id": "c67268b5-6c92-4ace-a7de-0bf2a2101c6b",
+      "id": "1e3f0eca-f86f-4677-909e-dd9d8938930f",
       "name": "Dedup Check",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        2160,
-        2288
+        3424,
+        4336
       ]
     },
     {
@@ -940,13 +947,13 @@
           "temperature": 0.1
         }
       },
-      "id": "e20bd01e-f003-46c1-ac30-af4ccf0d16c6",
+      "id": "3e907667-573e-4c78-966b-556662973cd2",
       "name": "Dedup Model",
       "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
       "typeVersion": 1.3,
       "position": [
-        2160,
-        2432
+        3424,
+        4480
       ],
       "credentials": {
         "anthropicApi": {
@@ -959,13 +966,13 @@
       "parameters": {
         "jsCode": "const raw = $json.output || '';\nconst cleaned = raw.replace(/^```json\\s*/i, '').replace(/^```\\s*/i, '').replace(/```\\s*$/i, '').trim();\nlet dedup;\ntry { dedup = JSON.parse(cleaned); } catch (e) { dedup = { duplicate: false, similar_to: null, reason: 'parse-failed' }; }\nconst prev = $('Parse Dialogue').item.json;\nconst minScore = $('Globals').first().json.MIN_VIRAL_SCORE || 7;\nconst maxRetries = $('Globals').first().json.DEDUP_MAX_RETRIES || 2;\nconst isDup = dedup.duplicate === true;\nconst lowScore = Number(prev.idea_viral_score || 0) < minScore;\nconst needsRetry = (isDup || lowScore) && (prev.retry_count || 0) < maxRetries;\nlet avoid = Array.isArray(prev.avoid_angles) ? [...prev.avoid_angles] : [];\nif (isDup || lowScore) {\n  avoid.push({ title: prev.idea_title, summary: prev.idea_one_line_summary, reason: isDup ? 'duplicate of ' + (dedup.similar_to || 'past') : 'viral score too low' });\n}\nreturn [{\n  json: {\n    ...prev,\n    dedup_result: dedup,\n    is_duplicate: isDup,\n    needs_retry: needsRetry,\n    retry_count: (prev.retry_count || 0) + (needsRetry ? 1 : 0),\n    avoid_angles: avoid,\n    skip_concept: (isDup || lowScore) && !needsRetry\n  }\n}];"
       },
-      "id": "fbb35e88-4a91-40c5-9f5e-390968c5d75e",
+      "id": "f71b07cb-44e9-4eee-a474-e14a5f22786a",
       "name": "Evaluate Quality",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2464,
-        2288
+        3728,
+        4336
       ]
     },
     {
@@ -992,13 +999,13 @@
         },
         "options": {}
       },
-      "id": "8aee00c7-1ba6-4517-aa3a-88fed7871c05",
+      "id": "a8cb18f3-f818-4ca6-9924-7d2c9e2feb00",
       "name": "Need Retry?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        2640,
-        2288
+        3904,
+        4336
       ]
     },
     {
@@ -1025,13 +1032,13 @@
         },
         "options": {}
       },
-      "id": "1ce1cf1d-b0f0-40ab-87fb-3cf0622727e7",
+      "id": "88ff462b-9074-4931-81e1-85940b175d95",
       "name": "Skip Concept?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        2832,
-        2368
+        4096,
+        4416
       ]
     },
     {
@@ -1063,71 +1070,76 @@
         },
         "options": {}
       },
-      "id": "a9d6b303-9a12-4109-b196-4491b6d62402",
+      "id": "e6450742-7363-454a-a26b-51ad32e18420",
       "name": "Log Skipped",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        3120,
-        2064
+        4320,
+        4320
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "ednQsic0oBlvB9dg",
-          "name": "Google Sheets account"
+          "id": "H2pdwVfsMV53qzbq",
+          "name": "Google Sheets account 2"
         }
       }
     },
     {
       "parameters": {
-        "jsCode": "// Emit one item per dialogue line for the TTS loop.\nconst prev = $json;\nconst lines = prev.idea_lines || [];\nreturn lines.map((l, i) => ({\n  json: {\n    _parent: { ...prev, idea_lines: undefined },\n    line_index: i,\n    speaker: l.speaker,\n    text: l.text,\n    voice_id: l.speaker === 'A' ? $('Globals').first().json.CHARACTER_A_VOICE_ID : $('Globals').first().json.CHARACTER_B_VOICE_ID\n  }\n}));"
+        "jsCode": "const prev = $json;\nconst lines = prev.idea_lines || [];\nreturn lines.map((l, i) => ({\n  json: {\n    _parent: { ...prev, idea_lines: undefined },\n    line_index: i,\n    speaker: l.speaker,\n    text: l.text,\n    voice_id: l.speaker === 'A' ? $('Globals').first().json.CHARACTER_A_VOICE_ID : $('Globals').first().json.CHARACTER_B_VOICE_ID\n  }\n}));"
       },
-      "id": "825ed412-d319-49ce-9d23-a3b6da92b4ff",
+      "id": "5f9a6a7f-4e08-4954-bff6-cf698ecb8d72",
       "name": "Fan Out Lines",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1488,
-        2624
+        2832,
+        4672
       ]
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "=https://api.elevenlabs.io/v1/text-to-speech/{{ $json.voice_id }}/with-timestamps",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ text: $json.text, model_id: $('Globals').first().json.ELEVENLABS_MODEL_ID, voice_settings: { stability: 0.4, similarity_boost: 0.8, style: 0.15, use_speaker_boost: true }, output_format: 'mp3_44100_128' }) }}",
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "json"
-            }
-          }
+        "resource": "speech",
+        "voice": {
+          "__rl": true,
+          "value": "={{ $json.voice_id }}",
+          "mode": "id"
+        },
+        "text": "={{ $json.text }}",
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "type": "@elevenlabs/n8n-nodes-elevenlabs.elevenLabs",
+      "typeVersion": 1,
+      "position": [
+        3008,
+        4672
+      ],
+      "id": "697628e8-b886-47d8-a5ed-cd9e951aaf05",
+      "name": "Convert text to speech",
+      "retryOnFail": true,
+      "executeOnce": false,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "elevenLabsApi": {
+          "id": "TI4ppX7kubPpBihl",
+          "name": "ElevenLabs account 2"
         }
       },
-      "id": "038cb122-14a3-402c-b83f-6bc473654a6d",
-      "name": "TTS Per Line",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.4,
-      "position": [
-        1712,
-        2624
-      ]
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
-        "jsCode": "const fs = require('fs');\nconst path = require('path');\nconst workDir = $('Globals').first().json.WORK_DIR;\nif (!fs.existsSync(workDir)) fs.mkdirSync(workDir, { recursive: true });\n\nconst res = $json;\nconst lineCtx = $('Fan Out Lines').item.json;\nif (!res.audio_base64) throw new Error('ElevenLabs returned no audio_base64 for line ' + lineCtx.line_index);\n\nconst runId = ($execution.id || ('r' + Date.now())) + '_s' + (lineCtx._parent.slot || 0);\nconst filePath = path.join(workDir, `${runId}_line_${lineCtx.line_index}.mp3`);\nfs.writeFileSync(filePath, Buffer.from(res.audio_base64, 'base64'));\n\nconst chars = res.alignment?.characters || [];\nconst starts = res.alignment?.character_start_times_seconds || [];\nconst ends = res.alignment?.character_end_times_seconds || [];\nconst duration = ends.length ? ends[ends.length - 1] : 0;\n\nconst words = [];\nlet curWord = '', curStart = null, curEnd = null;\nfor (let i = 0; i < chars.length; i++) {\n  const c = chars[i];\n  if (/\\s/.test(c)) {\n    if (curWord) { words.push({ word: curWord, start: curStart, end: curEnd }); curWord = ''; curStart = null; curEnd = null; }\n  } else {\n    if (curStart === null) curStart = starts[i];\n    curEnd = ends[i];\n    curWord += c;\n  }\n}\nif (curWord) words.push({ word: curWord, start: curStart, end: curEnd });\n\nreturn [{\n  json: {\n    _parent: lineCtx._parent,\n    line_index: lineCtx.line_index,\n    speaker: lineCtx.speaker,\n    text: lineCtx.text,\n    duration,\n    word_timings: words,\n    audio_path: filePath,\n    run_id: runId\n  }\n}];"
+        "jsCode": "// Estimate audio duration from binary size (no fs / ffprobe)\n// and generate evenly distributed word timings\n\nconst lineCtx = $('Fan Out Lines').item.json;\n\n// Get binary data from ElevenLabs node\nconst binaryProps = Object.keys($binary || {});\nif (binaryProps.length === 0) {\n  throw new Error('No binary attached to item from ElevenLabs node.');\n}\n\nconst binKey = binaryProps[0];\nconst bin = $binary[binKey];\n\nif (!bin || !bin.data) {\n  throw new Error('Binary key ' + binKey + ' has no data');\n}\n\n// Generate run ID (kept from your original logic)\nconst runId = ($execution.id || ('r' + Date.now())) + '_s' + (lineCtx._parent?.slot || 0);\n\n// --- Duration estimation (replaces ffprobe) ---\nconst buffer = Buffer.from(bin.data, 'base64');\nconst byteLength = buffer.length;\n\n// You used: mp3_44100_128 → 128 kbps\nconst bitrate = 128000; // bits per second\n\nlet duration = (byteLength * 8) / bitrate;\n\n// Fallback safety (in case something weird happens)\nif (!duration || duration <= 0) {\n  const wc = (lineCtx.text || '').trim().split(/\\s+/).length;\n  duration = Math.max(1.0, wc / 2.5);\n}\n\n// --- Word timing synthesis ---\nconst words = (lineCtx.text || '').trim().split(/\\s+/).filter(Boolean);\n\nconst perWord = words.length > 0 ? duration / words.length : 0;\n\nconst word_timings = words.map((w, i) => ({\n  word: w,\n  start: +(i * perWord).toFixed(3),\n  end: +((i + 1) * perWord).toFixed(3)\n}));\n\n// Return WITHOUT filesystem path (since we didn't save file)\nreturn [{\n  json: {\n    _parent: lineCtx._parent,\n    line_index: lineCtx.line_index,\n    speaker: lineCtx.speaker,\n    text: lineCtx.text,\n    duration,\n    word_timings,\n    run_id: runId\n  },\n  binary: {\n    [binKey]: bin // keep audio attached for next nodes\n  }\n}];"
       },
-      "id": "b439ec5e-0efe-4e4a-b34c-244f4e947b60",
+      "id": "d30d893b-5654-44d4-8251-a3fe5c7ed794",
       "name": "Save Line Audio + Timings",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1936,
-        2624
+        3200,
+        4672
       ]
     },
     {
@@ -1156,91 +1168,91 @@
         },
         "options": {}
       },
-      "id": "f88aacdf-22e1-4949-8ebf-b23afd2ec8e1",
+      "id": "404a4dc5-d2ee-42b1-9cff-0bce02af1625",
       "name": "Aggregate Lines",
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        2160,
-        2624
+        3424,
+        4672
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Order lines, compute offsets, build sprite windows, build .ass subtitle file,\n// build the ffmpeg concat list. Write the .ass and concat list to disk.\nconst fs = require('fs');\nconst path = require('path');\n\nconst arr = ($json.line_index || []).map((idx, i) => ({\n  idx,\n  speaker: $json.speaker[i],\n  text: $json.text[i],\n  duration: $json.duration[i],\n  words: $json.word_timings[i],\n  audio_path: $json.audio_path[i]\n}));\narr.sort((a, b) => a.idx - b.idx);\n\nconst parent = $items('Save Line Audio + Timings')[0].json._parent;\nconst runId = $items('Save Line Audio + Timings')[0].json.run_id;\nconst workDir = $('Globals').first().json.WORK_DIR;\nconst font = $('Globals').first().json.CAPTION_FONT || 'Arial';\n\nlet offset = 0;\nconst spriteA = [];\nconst spriteB = [];\nconst globalWords = [];\nfor (const line of arr) {\n  const winStart = offset;\n  const winEnd = offset + line.duration;\n  if (line.speaker === 'A') spriteA.push([winStart, winEnd]);\n  else spriteB.push([winStart, winEnd]);\n  for (const w of (line.words || [])) {\n    if (w.start == null || w.end == null) continue;\n    globalWords.push({ word: w.word, start: offset + w.start, end: offset + w.end });\n  }\n  offset += line.duration;\n}\nconst totalDuration = offset;\n\nfunction assTime(t) {\n  const h = Math.floor(t / 3600);\n  const m = Math.floor((t % 3600) / 60);\n  const s = Math.floor(t % 60);\n  const cs = Math.floor((t - Math.floor(t)) * 100);\n  return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;\n}\nconst assHeader = `[Script Info]\\nScriptType: v4.00+\\nPlayResX: 720\\nPlayResY: 1280\\n\\n[V4+ Styles]\\nFormat: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, Outline, Shadow, Alignment, MarginL, MarginR, MarginV\\nStyle: Cap,${font},64,&H00FFFFFF,&H00000000,&H00000000,1,6,0,2,40,40,260\\n\\n[Events]\\nFormat: Layer, Start, End, Style, Text\\n`;\nconst dialogueLines = globalWords.map(w => {\n  const txt = String(w.word).replace(/[{}]/g, '');\n  return `Dialogue: 0,${assTime(w.start)},${assTime(w.end)},Cap,,0,0,0,,${txt.toUpperCase()}`;\n}).join('\\n');\nconst assPath = path.join(workDir, `${runId}_captions.ass`);\nfs.writeFileSync(assPath, assHeader + dialogueLines + '\\n');\n\nconst listPath = path.join(workDir, `${runId}_concat.txt`);\nfs.writeFileSync(listPath, arr.map(l => `file '${l.audio_path.replace(/'/g, \"'\\\\''\")}'`).join('\\n'));\nconst mergedAudioPath = path.join(workDir, `${runId}_voice.mp3`);\n\nreturn [{\n  json: {\n    ...parent,\n    run_id: runId,\n    total_audio_duration: totalDuration,\n    sprite_a_windows: spriteA,\n    sprite_b_windows: spriteB,\n    ass_path: assPath,\n    concat_list_path: listPath,\n    merged_audio_path: mergedAudioPath\n  }\n}];"
+        "jsCode": "const fs = require('fs');\nconst path = require('path');\n\nconst arr = ($json.line_index || []).map((idx, i) => ({\n  idx,\n  speaker: $json.speaker[i],\n  text: $json.text[i],\n  duration: $json.duration[i],\n  words: $json.word_timings[i],\n  audio_path: $json.audio_path[i]\n}));\narr.sort((a, b) => a.idx - b.idx);\n\nconst parent = $items('Save Line Audio + Timings')[0].json._parent;\nconst runId = $items('Save Line Audio + Timings')[0].json.run_id;\nconst workDir = $('Globals').first().json.WORK_DIR;\nconst font = $('Globals').first().json.CAPTION_FONT || 'Arial';\n\nlet offset = 0;\nconst spriteA = [];\nconst spriteB = [];\nconst globalWords = [];\nfor (const line of arr) {\n  const winStart = offset;\n  const winEnd = offset + line.duration;\n  if (line.speaker === 'A') spriteA.push([winStart, winEnd]);\n  else spriteB.push([winStart, winEnd]);\n  for (const w of (line.words || [])) {\n    if (w.start == null || w.end == null) continue;\n    globalWords.push({ word: w.word, start: offset + w.start, end: offset + w.end });\n  }\n  offset += line.duration;\n}\nconst totalDuration = offset;\n\nfunction assTime(t) {\n  const h = Math.floor(t / 3600);\n  const m = Math.floor((t % 3600) / 60);\n  const s = Math.floor(t % 60);\n  const cs = Math.floor((t - Math.floor(t)) * 100);\n  return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;\n}\nconst assHeader = `[Script Info]\\nScriptType: v4.00+\\nPlayResX: 720\\nPlayResY: 1280\\n\\n[V4+ Styles]\\nFormat: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, Outline, Shadow, Alignment, MarginL, MarginR, MarginV\\nStyle: Cap,${font},64,&H00FFFFFF,&H00000000,&H00000000,1,6,0,2,40,40,260\\n\\n[Events]\\nFormat: Layer, Start, End, Style, Text\\n`;\nconst dialogueLines = globalWords.map(w => {\n  const txt = String(w.word).replace(/[{}]/g, '');\n  return `Dialogue: 0,${assTime(w.start)},${assTime(w.end)},Cap,,0,0,0,,${txt.toUpperCase()}`;\n}).join('\\n');\nconst assPath = path.join(workDir, `${runId}_captions.ass`);\nfs.writeFileSync(assPath, assHeader + dialogueLines + '\\n');\n\nconst listPath = path.join(workDir, `${runId}_concat.txt`);\nfs.writeFileSync(listPath, arr.map(l => `file '${l.audio_path.replace(/'/g, \"'\\\\''\")}'`).join('\\n'));\nconst mergedAudioPath = path.join(workDir, `${runId}_voice.mp3`);\n\nreturn [{\n  json: {\n    ...parent,\n    run_id: runId,\n    total_audio_duration: totalDuration,\n    sprite_a_windows: spriteA,\n    sprite_b_windows: spriteB,\n    ass_path: assPath,\n    concat_list_path: listPath,\n    merged_audio_path: mergedAudioPath\n  }\n}];"
       },
-      "id": "5bf65503-c581-4e44-8d4b-0825ee47e60e",
+      "id": "90d1146b-c146-440e-b8c8-5549ac1a5081",
       "name": "Build Timing + Captions",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2384,
-        2624
+        3648,
+        4672
       ]
     },
     {
       "parameters": {
         "command": "=ffmpeg -y -f concat -safe 0 -i \"{{ $json.concat_list_path }}\" -c copy \"{{ $json.merged_audio_path }}\""
       },
-      "id": "cbe77ce5-9dce-4433-9710-7e3e28f5ad71",
+      "id": "5c6996b2-14d3-4db9-b532-3f5ac64345bc",
       "name": "FFmpeg Concat Voice",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        2608,
-        2624
+        3872,
+        4672
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Pick a random Minecraft clip from the assets dir, choose a random start offset.\nconst fs = require('fs');\nconst path = require('path');\nconst prev = $('Build Timing + Captions').item.json;\nconst mcDir = $('Globals').first().json.MINECRAFT_DIR;\nif (!fs.existsSync(mcDir)) throw new Error('Minecraft dir not found: ' + mcDir);\nconst clips = fs.readdirSync(mcDir).filter(f => /\\.(mp4|mov|mkv|webm)$/i.test(f));\nif (clips.length === 0) throw new Error('No video clips in ' + mcDir);\nconst pick = clips[Math.floor(Math.random() * clips.length)];\nconst clipPath = path.join(mcDir, pick);\nconst startOffset = Math.floor(Math.random() * 25);\nconst dur = prev.total_audio_duration + 0.5;\nreturn [{ json: { ...prev, mc_clip_path: clipPath, mc_clip_name: pick, mc_start_offset: startOffset, mc_duration: dur } }];"
+        "jsCode": "const fs = require('fs');\nconst path = require('path');\nconst prev = $('Build Timing + Captions').item.json;\nconst mcDir = $('Globals').first().json.MINECRAFT_DIR;\nif (!fs.existsSync(mcDir)) throw new Error('Minecraft dir not found: ' + mcDir);\nconst clips = fs.readdirSync(mcDir).filter(f => /\\.(mp4|mov|mkv|webm)$/i.test(f));\nif (clips.length === 0) throw new Error('No video clips in ' + mcDir);\nconst pick = clips[Math.floor(Math.random() * clips.length)];\nconst clipPath = path.join(mcDir, pick);\nconst startOffset = Math.floor(Math.random() * 25);\nconst dur = prev.total_audio_duration + 0.5;\nreturn [{ json: { ...prev, mc_clip_path: clipPath, mc_clip_name: pick, mc_start_offset: startOffset, mc_duration: dur } }];"
       },
-      "id": "a686a873-4966-4024-9e80-be4937507d16",
+      "id": "06f4d62b-8f21-4d1c-8577-d5546517fa9d",
       "name": "Pick Minecraft Clip",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2832,
-        2624
+        4096,
+        4672
       ]
     },
     {
       "parameters": {
-        "jsCode": "// Build the master ffmpeg filter_complex command.\n// Inputs: 0 = minecraft bg, 1 = sprite A, 2 = sprite B, 3 = voice, 4 = music\nconst prev = $json;\nconst g = $('Globals').first().json;\nconst path = require('path');\n\nconst outPath = path.join(g.WORK_DIR, `${prev.run_id}_final.mp4`);\n\nconst ena = wins => wins.map(([s, e]) => `between(t,${s.toFixed(3)},${e.toFixed(3)})`).join('+');\nconst aEnable = ena(prev.sprite_a_windows) || '0';\nconst bEnable = ena(prev.sprite_b_windows) || '0';\n\nconst dur = prev.mc_duration.toFixed(3);\nconst musicVol = g.MUSIC_VOLUME || '0.15';\n\nconst assEsc = prev.ass_path.replace(/\\\\/g, '/').replace(/:/g, '\\\\:');\n\nconst filter = [\n  `[0:v]trim=start=${prev.mc_start_offset}:duration=${dur},setpts=PTS-STARTPTS,scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280[bg]`,\n  `[1:v]scale=320:-1[spA]`,\n  `[2:v]scale=320:-1[spB]`,\n  `[bg][spA]overlay=x=20:y=H-h-340:enable='${aEnable}'[t1]`,\n  `[t1][spB]overlay=x=W-w-20:y=H-h-340:enable='${bEnable}'[t2]`,\n  `[t2]subtitles='${assEsc}'[vout]`,\n  `[4:a]volume=${musicVol},aloop=loop=-1:size=2e9[music]`,\n  `[3:a][music]amix=inputs=2:duration=first:dropout_transition=0[aout]`\n].join(';');\n\nconst cmd = [\n  'ffmpeg -y',\n  `-stream_loop -1 -i \"${prev.mc_clip_path}\"`,\n  `-i \"${g.SPRITE_A_PATH}\"`,\n  `-i \"${g.SPRITE_B_PATH}\"`,\n  `-i \"${prev.merged_audio_path}\"`,\n  `-i \"${g.MUSIC_BED_PATH}\"`,\n  `-filter_complex \"${filter}\"`,\n  '-map \"[vout]\" -map \"[aout]\"',\n  `-t ${dur}`,\n  '-c:v libx264 -preset veryfast -crf 21 -pix_fmt yuv420p',\n  '-c:a aac -b:a 192k',\n  `\"${outPath}\"`\n].join(' ');\n\nreturn [{ json: { ...prev, final_video_path: outPath, ffmpeg_cmd: cmd } }];"
+        "jsCode": "const prev = $json;\nconst g = $('Globals').first().json;\nconst path = require('path');\n\nconst outPath = path.join(g.WORK_DIR, `${prev.run_id}_final.mp4`);\n\nconst ena = wins => wins.map(([s, e]) => `between(t,${s.toFixed(3)},${e.toFixed(3)})`).join('+');\nconst aEnable = ena(prev.sprite_a_windows) || '0';\nconst bEnable = ena(prev.sprite_b_windows) || '0';\n\nconst dur = prev.mc_duration.toFixed(3);\nconst musicVol = g.MUSIC_VOLUME || '0.15';\n\nconst assEsc = prev.ass_path.replace(/\\\\/g, '/').replace(/:/g, '\\\\:');\n\nconst filter = [\n  `[0:v]trim=start=${prev.mc_start_offset}:duration=${dur},setpts=PTS-STARTPTS,scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280[bg]`,\n  `[1:v]scale=320:-1[spA]`,\n  `[2:v]scale=320:-1[spB]`,\n  `[bg][spA]overlay=x=20:y=H-h-340:enable='${aEnable}'[t1]`,\n  `[t1][spB]overlay=x=W-w-20:y=H-h-340:enable='${bEnable}'[t2]`,\n  `[t2]subtitles='${assEsc}'[vout]`,\n  `[4:a]volume=${musicVol},aloop=loop=-1:size=2e9[music]`,\n  `[3:a][music]amix=inputs=2:duration=first:dropout_transition=0[aout]`\n].join(';');\n\nconst cmd = [\n  'ffmpeg -y',\n  `-stream_loop -1 -i \"${prev.mc_clip_path}\"`,\n  `-i \"${g.SPRITE_A_PATH}\"`,\n  `-i \"${g.SPRITE_B_PATH}\"`,\n  `-i \"${prev.merged_audio_path}\"`,\n  `-i \"${g.MUSIC_BED_PATH}\"`,\n  `-filter_complex \"${filter}\"`,\n  '-map \"[vout]\" -map \"[aout]\"',\n  `-t ${dur}`,\n  '-c:v libx264 -preset veryfast -crf 21 -pix_fmt yuv420p',\n  '-c:a aac -b:a 192k',\n  `\"${outPath}\"`\n].join(' ');\n\nreturn [{ json: { ...prev, final_video_path: outPath, ffmpeg_cmd: cmd } }];"
       },
-      "id": "3bc2a1b8-eaad-4c06-b641-ac7d05b9c092",
+      "id": "63b9c3ad-6de8-49de-9230-08179e28708c",
       "name": "Build FFmpeg Command",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3056,
-        2624
+        4320,
+        4672
       ]
     },
     {
       "parameters": {
         "command": "={{ $json.ffmpeg_cmd }}"
       },
-      "id": "3b4369a2-f168-4fb0-896a-fe6bc9629a8f",
+      "id": "fbe9fc7f-684a-45a3-a2fb-eae6c31b7e29",
       "name": "FFmpeg Assemble Video",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        1488,
-        2848
+        2752,
+        4896
       ]
     },
     {
       "parameters": {
         "jsCode": "const fs = require('fs');\nconst prev = $('Build FFmpeg Command').item.json;\nif (!fs.existsSync(prev.final_video_path)) {\n  throw new Error('FFmpeg produced no output file: ' + prev.final_video_path);\n}\nconst stat = fs.statSync(prev.final_video_path);\nif (stat.size < 100000) {\n  throw new Error('FFmpeg output suspiciously small (' + stat.size + ' bytes): ' + prev.final_video_path);\n}\nconst data = fs.readFileSync(prev.final_video_path);\nreturn [{\n  json: { ...prev, final_video_size: stat.size },\n  binary: {\n    video: {\n      data: data.toString('base64'),\n      mimeType: 'video/mp4',\n      fileName: `${prev.run_id}.mp4`\n    }\n  }\n}];"
       },
-      "id": "927302f2-376d-4709-8185-69c9b2e1634b",
+      "id": "13ec272d-9083-4109-a46a-42a07d3d096b",
       "name": "Load Final Video",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1712,
-        2848
+        2976,
+        4896
       ]
     },
     {
@@ -1258,13 +1270,13 @@
         },
         "options": {}
       },
-      "id": "5e2a92e9-3bd4-46aa-a80e-0b4836433ee4",
+      "id": "3f62c402-c3ed-425c-bf4a-ebaa72163ca2",
       "name": "Upload Video to Drive",
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        1936,
-        2848
+        3200,
+        4896
       ],
       "credentials": {
         "googleDriveOAuth2Api": {
@@ -1277,13 +1289,13 @@
       "parameters": {
         "jsCode": "const prev = $('Load Final Video').item.json;\nconst driveId = $json.id;\nreturn [{ json: { ...prev, video_drive_id: driveId, video_drive_link: `https://drive.google.com/file/d/${driveId}/view` } }];"
       },
-      "id": "693a032d-897a-4449-8f62-1f951d451c1e",
+      "id": "bf59ae9a-57c6-434c-b8a6-d5ce20623119",
       "name": "Capture Drive Ref",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2160,
-        2848
+        3424,
+        4896
       ]
     },
     {
@@ -1335,18 +1347,18 @@
         },
         "options": {}
       },
-      "id": "6f0810f4-6c9d-4ecd-bffe-4168182397fd",
+      "id": "f12fca01-1133-40b4-99dc-6e8ee37e6db2",
       "name": "Append Queue Row",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        2384,
-        2848
+        3648,
+        4896
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "ednQsic0oBlvB9dg",
-          "name": "Google Sheets account"
+          "id": "H2pdwVfsMV53qzbq",
+          "name": "Google Sheets account 2"
         }
       }
     },
@@ -1382,18 +1394,18 @@
         },
         "options": {}
       },
-      "id": "f1c2947d-e0c5-4827-9989-183c2a1a768a",
+      "id": "87327d15-6fbc-4593-a253-85e93695ae82",
       "name": "Mark Concept Generated",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        2608,
-        2848
+        3872,
+        4896
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "ednQsic0oBlvB9dg",
-          "name": "Google Sheets account"
+          "id": "H2pdwVfsMV53qzbq",
+          "name": "Google Sheets account 2"
         }
       }
     },
@@ -1401,30 +1413,77 @@
       "parameters": {
         "jsCode": "const fs = require('fs');\nconst path = require('path');\nconst prev = $('Capture Drive Ref').item.json;\nconst workDir = $('Globals').first().json.WORK_DIR;\ntry {\n  const files = fs.readdirSync(workDir).filter(f => f.startsWith(prev.run_id));\n  for (const f of files) { try { fs.unlinkSync(path.join(workDir, f)); } catch (e) {} }\n} catch (e) {}\nreturn [{ json: { run_id: prev.run_id, cleaned: true, title: prev.idea_title } }];"
       },
-      "id": "c3432d9e-0392-4f1b-801b-09c6b1c45e64",
+      "id": "d29acdcc-1fe1-4026-9073-fc23d5ad8195",
       "name": "Cleanup Temp Files",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2832,
-        2848
+        4096,
+        4896
       ]
     },
     {
       "parameters": {
-        "content": "## Workflow B1 — Shorts Generator (Batch, optimized)\n\n### What changed in this version\n1. **Each book PDF is downloaded + extracted ONCE per run.** `Get Unique Books` dedupes the batch by `drive_file_id`; `Loop Books` downloads + extracts each unique book; `Attach Chapter Text` then slices every concept's chapter text from the cached pages. The main concept loop no longer touches Drive or PDF parsing.\n2. **All `$('Globals')` references use `.first()` instead of `.item`.** Globals has exactly one item, so `.first()` is always unambiguous — needed because the Merge node breaks `.item` lineage. Per-loop references (`Loop Each Concept`, `Fan Out Lines`, etc.) correctly stay on `.item`.\n3. **`drive_file_id` is now written into the `video_queue` row** so downstream (B2) can match plan rows unambiguously even across books with colliding chapter numbers.\n\n### Run order\nA (Indexer) → A2 (Planner) → **B1 (Generator)** → B2 (Poster)\n\n### START SMALL\n`BATCH_SIZE` is 2. Tune the FFmpeg look first, then raise to 20.\n\n### Docker + FFmpeg\nThe n8n container needs ffmpeg:\n```\nFROM n8nio/n8n:latest\nUSER root\nRUN apk add --no-cache ffmpeg\nUSER node\n```\n\n### Local asset folders (mount into the container)\n`MINECRAFT_DIR` (clips >=60s), `SPRITE_A_PATH`, `SPRITE_B_PATH`, `MUSIC_BED_PATH`, `WORK_DIR` (writable scratch).\n\n### video_queue columns (note: drive_file_id added)\n`created_at | status | title | one_line_summary | hook | full_script | on_screen_caption | angle | viral_score | keywords | word_count | video_duration | source_book | source_chapter | concept_index | drive_file_id | minecraft_clip | video_drive_id | video_drive_link | posted_at | youtube_url | view_count_24h | view_count_7d | retention_pct | likes`",
-        "height": 736,
+        "content": "## Workflow B1 — ElevenLabs community node\n\n### What's different from the HTTP version\n- Audio is generated by the **ElevenLabs community node** (`Convert text to speech`), one call per dialogue line, with the voice ID switched per speaker.\n- The ElevenLabs node returns binary audio only (no word timings). **Per-word caption timings are synthesized** by measuring the MP3 with `ffprobe` and spacing the line's words evenly across that measured duration. Sprite-swap windows remain exact (they're line-level), captions drift by a few hundred ms at most.\n\n### If your ElevenLabs node version differs\nThe `Save Line Audio + Timings` code auto-detects the binary property name returned by the node (it grabs the first key on `$binary`). If you have multiple binaries floating around for some reason, force a specific key name in the node's output settings.\n\n### Fixed bugs from the previous version\n- `Skip Concept?` true-branch was forking to both Log Skipped *and* the loop, double-advancing it. Now linear: Skip → Log Skipped → Loop.\n- Orphan `TTS Per Line` node removed.\n- ElevenLabs node was hardcoded to Character A's voice. Now reads `$json.voice_id` per line.\n- `.item` → `.first()` on the one straggling Globals reference inside the ElevenLabs node.\n\n### Same Docker requirement\nffmpeg AND ffprobe in the container — both come from the same `apk add --no-cache ffmpeg` package, so the same Dockerfile works:\n```\nFROM n8nio/n8n:latest\nUSER root\nRUN apk add --no-cache ffmpeg\nUSER node\n```",
+        "height": 540,
         "width": 952,
         "color": 5
       },
-      "id": "8df3a8d7-4861-4266-a8a6-a51b856e8958",
+      "id": "99980fff-5890-49d7-90b5-72eead3dda6a",
       "name": "Sticky Note B1",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1168,
-        896
+        2432,
+        3104
       ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3243d6aa-f61f-4129-b9f1-ade27c3d8eee",
+              "name": "_parent",
+              "value": "={{ $json._parent }}",
+              "type": "object"
+            },
+            {
+              "id": "ea8a527b-3676-4717-b0d8-cdc9dd78342e",
+              "name": "line_index",
+              "value": "={{ $json.line_index }}",
+              "type": "number"
+            },
+            {
+              "id": "78416c24-55dd-41d1-9f56-1fb78a100977",
+              "name": "speaker",
+              "value": "={{ $json.speaker }}",
+              "type": "string"
+            },
+            {
+              "id": "bb02d7f3-9372-42d9-967f-71e418f91af2",
+              "name": "text",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            },
+            {
+              "id": "bbb913da-4ce9-45c3-b50e-d072e7e4c435",
+              "name": "voice_id",
+              "value": "={{ $json.voice_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2464,
+        4800
+      ],
+      "id": "c78f3e65-4f30-463f-829f-886208b2d0c3",
+      "name": "Edit Fields"
     }
   ],
   "pinData": {},
@@ -1444,6 +1503,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-05-27T15:38:01.377Z",
-  "versionId": "3f5bb789-3010-42ff-9b49-dc9be1eb9e12"
+  "updatedAt": "2026-05-29T14:24:58.589Z",
+  "versionId": "c8fcb8ff-f797-4742-9f32-4297dc97a30b"
 }
