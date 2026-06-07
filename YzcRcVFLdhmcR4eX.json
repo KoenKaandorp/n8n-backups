@@ -1,0 +1,547 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Globals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Unindexed": {
+      "main": [
+        [
+          {
+            "node": "If Has New Papers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Has New Papers": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Papers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Papers": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download PDF": {
+      "main": [
+        [
+          {
+            "node": "Extract PDF Per Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract PDF Per Page": {
+      "main": [
+        [
+          {
+            "node": "Build Metadata Sample",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Metadata Sample": {
+      "main": [
+        [
+          {
+            "node": "Extract Metadata (Claude)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Metadata Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Extract Metadata (Claude)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Metadata (Claude)": {
+      "main": [
+        [
+          {
+            "node": "Parse Metadata",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Metadata": {
+      "main": [
+        [
+          {
+            "node": "Append Paper Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List PDFs in Drive": {
+      "main": [
+        [
+          {
+            "node": "Read Existing Papers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Existing Papers": {
+      "main": [
+        [
+          {
+            "node": "Filter Unindexed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Paper Row": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Papers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Globals": {
+      "main": [
+        [
+          {
+            "node": "List PDFs in Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-06-06T11:37:26.075Z",
+  "id": "YzcRcVFLdhmcR4eX",
+  "isArchived": false,
+  "meta": null,
+  "name": "B. Paper Indexer",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "623a01e0-5e11-4500-aed6-43dcfb9cd642",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        1472,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const existing = new Set(\n  $items('Read Existing Papers').map(i => i.json.drive_file_id).filter(Boolean)\n);\nconst pdfs = $items('List PDFs in Drive').map(i => i.json);\nconst unindexed = pdfs\n  .filter(p => !existing.has(p.id))\n  .map(p => ({ json: { drive_file_id: p.id, drive_file_name: p.name } }));\nif (unindexed.length === 0) {\n  return [{ json: { drive_file_id: 'empty', drive_file_name: 'empty' } }];\n}\nreturn unindexed;"
+      },
+      "id": "af2b3f25-6781-4e81-a048-6845fadd5a43",
+      "name": "Filter Unindexed",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2304,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "w1-cond-has-new",
+              "leftValue": "={{ $json.drive_file_id }}",
+              "rightValue": "empty",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "29ffb3cb-e6a4-4720-9e0d-65f2b92c637a",
+      "name": "If Has New Papers",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2512,
+        -112
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "215b9478-0d65-4721-a2ec-336c55ef87ee",
+      "name": "Loop Over Papers",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1472,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.drive_file_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "d622abca-a887-421f-9ae9-8f5c9744d8f6",
+      "name": "Download PDF",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1728,
+        144
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "qNwyljWWXKPmObNF",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {
+          "joinPages": false
+        }
+      },
+      "id": "fd293566-5d17-43a0-8f65-790d49ffdf70",
+      "name": "Extract PDF Per Page",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        1936,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build a sample for Claude: first ~8 pages tend to hold title/authors/abstract/intro\nconst raw = $json.text || $json.data || '';\nlet pages = [];\nif (Array.isArray(raw)) pages = raw;\nelse if (typeof raw === 'string') {\n  pages = raw.split('\\f');\n  if (pages.length < 3) pages = raw.split(/\\n\\s*\\n\\s*\\n/);\n}\nconst headSample = pages.slice(0, 8)\n  .map((p, idx) => `--- Page ${idx + 1} ---\\n${p.slice(0, 2500)}`)\n  .join('\\n\\n')\n  .slice(0, 18000);\nconst ctx = $('Loop Over Papers').item.json;\nreturn [{\n  json: {\n    drive_file_id: ctx.drive_file_id,\n    drive_file_name: ctx.drive_file_name,\n    total_pages: pages.length,\n    head_sample: headSample\n  }\n}];"
+      },
+      "id": "80a60eb7-1072-454c-b0c2-0d8c9028ce8c",
+      "name": "Build Metadata Sample",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2144,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are extracting metadata from an academic research paper.\n\nFile name: {{ $json.drive_file_name }}\nTotal pages: {{ $json.total_pages }}\n\n=== FIRST PAGES OF PAPER ===\n{{ $json.head_sample }}\n\nReturn ONLY valid JSON (no markdown fences, no preamble):\n\n{\n  \"title\": \"clean paper title (strip subtitles after a colon if very long)\",\n  \"authors\": \"comma-separated list of primary authors (max 4, then 'et al.')\",\n  \"field\": \"specific subfield, e.g. 'Cognitive Psychology', 'Social Neuroscience', 'Developmental Psychology'\",\n  \"abstract_snippet\": \"first ~200 chars of the abstract verbatim (or a tight paraphrase if no abstract exists)\",\n  \"study_type\": \"one of: experimental | observational | meta-analysis | review | theoretical | other\"\n}\n\nRules:\n- Use information ONLY visible in the sample. If something is missing, use 'Unknown'.\n- Title should be the actual paper title, not the running header or journal name.\n- Do not invent authors or affiliations.",
+        "options": {
+          "systemMessage": "You are a precise academic metadata extractor. Output strict JSON only, no preamble or markdown fences. When uncertain, prefer 'Unknown' over guessing.",
+          "maxIterations": 3
+        }
+      },
+      "id": "584b85b9-ea51-4912-9d7d-df79ea8a50a6",
+      "name": "Extract Metadata (Claude)",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2352,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.ANTHROPIC_MODEL_CHEAP }}",
+          "mode": "id"
+        },
+        "options": {
+          "maxTokensToSample": 1500,
+          "temperature": 0.1
+        }
+      },
+      "id": "2aefa865-c6d5-4f16-89e5-ea1a0179c169",
+      "name": "Metadata Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        2352,
+        368
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "sUkzGV6H3EB4ekZS",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.output || '';\nconst cleaned = raw.replace(/^```json\\s*/i, '').replace(/^```\\s*/i, '').replace(/```\\s*$/i, '').trim();\nlet parsed;\ntry { parsed = JSON.parse(cleaned); } catch (e) {\n  throw new Error('Metadata extraction returned invalid JSON: ' + e.message + ' | raw: ' + raw.slice(0, 300));\n}\nconst meta = $('Build Metadata Sample').item.json;\nreturn [{\n  json: {\n    drive_file_id: meta.drive_file_id,\n    drive_file_name: meta.drive_file_name,\n    title: parsed.title || meta.drive_file_name.replace(/\\.pdf$/i, ''),\n    authors: parsed.authors || 'Unknown',\n    field: parsed.field || 'Unknown',\n    abstract_snippet: (parsed.abstract_snippet || '').slice(0, 500),\n    study_type: parsed.study_type || 'other',\n    indexed_at: new Date().toISOString(),\n    status: 'pending',\n    content_hook: '',\n    content_brief: '',\n    slide_urls: '',\n    caption: '',\n    hashtags: '',\n    generated_at: '',\n    scheduled_for: '',\n    posted_at: '',\n    instagram_post_id: '',\n    error_message: '',\n    notes: ''\n  }\n}];"
+      },
+      "id": "8fc82ee7-f144-403e-ad8b-1c7614c4da41",
+      "name": "Parse Metadata",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2640,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "content": "\n## Workflow 1 — Paper Indexer\n\nRun manually after dropping PDFs into the papers Drive folder. Scans the folder, dedupes against the papers sheet, extracts paper metadata (title, authors, field, abstract) with Claude Haiku, and appends one row per new paper with `status=pending`.\n\n**Status values:** `pending` (ready for Generator) → `generated` (carousel made, awaiting approval) → `approved` (human flipped it manually) → `posted` (live on Instagram). Plus `failed` / `skipped` for problem rows.\n",
+        "height": 228,
+        "width": 560,
+        "color": 4
+      },
+      "id": "648fe99a-3372-48a4-8ffb-252b43f4ce12",
+      "name": "Sticky Note W1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        832,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "searchMethod": "query",
+        "queryString": "=mimeType='application/pdf'",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $json.PAPERS_DRIVE_FOLDER_ID }}",
+            "mode": "id"
+          }
+        },
+        "options": {}
+      },
+      "id": "483d1f3d-9a8e-48eb-9262-4afd31e78768",
+      "name": "List PDFs in Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1888,
+        -112
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "qNwyljWWXKPmObNF",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.PAPERS_TAB }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "e3c210a9-482b-4e16-aef2-288702b9d62c",
+      "name": "Read Existing Papers",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2096,
+        -112
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.PAPERS_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "17074062-f54e-4c57-84c6-811fcc1e8f09",
+      "name": "Append Paper Row",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2816,
+        144
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "g1",
+              "name": "ANTHROPIC_MODEL",
+              "value": "claude-sonnet-4-5",
+              "type": "string"
+            },
+            {
+              "id": "g2",
+              "name": "ANTHROPIC_MODEL_CHEAP",
+              "value": "claude-haiku-4-5-20251001",
+              "type": "string"
+            },
+            {
+              "id": "g3",
+              "name": "PAPERS_DRIVE_FOLDER_ID",
+              "value": "1GO035QxYUt8vsaJ2DywLwAHfOzXDzHAi",
+              "type": "string"
+            },
+            {
+              "id": "g4",
+              "name": "PAPERS_SHEET_ID",
+              "value": "1l-XuaEKcY9cC0aLHNGh-q2ZConnzFD-7VZV3UQSelDQ",
+              "type": "string"
+            },
+            {
+              "id": "g5",
+              "name": "PAPERS_TAB",
+              "value": "papers",
+              "type": "string"
+            },
+            {
+              "id": "g6",
+              "name": "ERRORS_LOG_SHEET_ID",
+              "value": "1l-XuaEKcY9cC0aLHNGh-q2ZConnzFD-7VZV3UQSelDQ",
+              "type": "string"
+            },
+            {
+              "id": "g7",
+              "name": "ERRORS_LOG_TAB",
+              "value": "errors_log",
+              "type": "string"
+            },
+            {
+              "id": "g8",
+              "name": "FACULTY_NAME",
+              "value": "Psychology",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9bab72bd-a5b5-4366-ac82-0e1ec42e7837",
+      "name": "Globals",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1664,
+        -112
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-06-06T11:37:26.082Z",
+      "createdAt": "2026-06-06T11:37:26.082Z",
+      "role": "workflow:owner",
+      "workflowId": "YzcRcVFLdhmcR4eX",
+      "projectId": "O6AJ2gZorGSWwg9b"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-06-07T09:28:54.784Z",
+  "versionId": "24b15878-fb1a-473f-ad7c-2846836e98e8"
+}
