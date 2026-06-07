@@ -1,0 +1,1014 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Assemble Sheet Row": {
+      "main": [
+        [
+          {
+            "node": "Update Paper Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Slides": {
+      "main": [
+        [
+          {
+            "node": "Assemble Sheet Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capture Slide Ref": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Slide Image": {
+      "main": [
+        [
+          {
+            "node": "Upload Slide to Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Bannerbear Response": {
+      "main": [
+        [
+          {
+            "node": "Download Slide Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fan Out Slides": {
+      "main": [
+        [
+          {
+            "node": "Create an image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Concept": {
+      "main": [
+        [
+          {
+            "node": "Fan Out Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Carousel Concept (Claude)": {
+      "main": [
+        [
+          {
+            "node": "Parse Concept",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Concept Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Carousel Concept (Claude)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Paper Text": {
+      "main": [
+        [
+          {
+            "node": "Generate Carousel Concept (Claude)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract PDF Per Page": {
+      "main": [
+        [
+          {
+            "node": "Build Paper Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Papers": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Has Pending": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Papers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Pending": {
+      "main": [
+        [
+          {
+            "node": "If Has Pending",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Globals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Globals": {
+      "main": [
+        [
+          {
+            "node": "Read Papers Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Papers Sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter Pending",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download PDF": {
+      "main": [
+        [
+          {
+            "node": "Extract PDF Per Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Slide to Drive": {
+      "main": [
+        [
+          {
+            "node": "Capture Slide Ref",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Paper Row": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Papers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an image": {
+      "main": [
+        [
+          {
+            "node": "Parse Bannerbear Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-06-06T11:50:27.629Z",
+  "id": "uo4N2HZB5PkPCuCq",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "C. Carousel Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Workflow 2 — Carousel Generator\n\nRuns manually. For each paper with `status=pending`, Claude Sonnet reads the full PDF text and outputs a carousel concept (hook + content slides + CTA + IG caption + hashtags). Each slide is then rendered by **Bannerbear sync API**, downloaded, backed up to Drive, and the slide URLs are written back to the paper's row with `status=generated`.\n\n### Credentials & setup needed\n1. **Bannerbear Header Auth credential**: create a new \"Header Auth\" credential in n8n with `Name = Authorization`, `Value = Bearer YOUR_BANNERBEAR_API_KEY`. Then attach it to the `Bannerbear Render Slide` node.\n2. **Bannerbear templates**: create three templates (or reuse one). Each template MUST have three named text layers: `headline`, `body`, `footer`. Paste each template's UID into the matching global.\n3. **Drive backup folder**: create a folder for backup PNGs and put its ID in `IMAGES_BACKUP_DRIVE_FOLDER_ID`.\n\n### What gets written to the sheet\n- `status` flips `pending` → `generated`\n- `slide_urls` holds the **Bannerbear-hosted URLs**, one per line, in slide order — these are what the poster workflow feeds to Instagram\n- `notes` holds the Drive backup links (for you to eyeball before approving)\n- `caption`, `hashtags`, `content_hook`, `content_brief`, `generated_at` filled in\n\n### Approval gate\nAfter this runs, open the sheet, review the row, and **manually change `status` from `generated` → `approved`** to release it to the poster. Anything left at `generated` will not post.\n\n### Re-running is safe\nOnly rows with `status=pending` are picked up. A failed row stays `pending` so it retries next run — but check the n8n execution log to see why it failed first.",
+        "height": 580,
+        "width": 600,
+        "color": 4
+      },
+      "id": "72c4d2c5-2fe6-41b1-b8b4-6ea9573866f0",
+      "name": "Sticky Note W2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const arr = ($json.slide_number || []).map((n, i) => ({\n  slide_number: n,\n  slide_type: $json.slide_type[i],\n  bannerbear_image_url: $json.bannerbear_image_url[i],\n  drive_file_id: $json.drive_file_id[i],\n  drive_view_link: $json.drive_view_link[i]\n}));\narr.sort((a, b) => a.slide_number - b.slide_number);\n\nconst parent = $items('Capture Slide Ref')[0].json._parent;\n\nreturn [{\n  json: {\n    drive_file_id: parent.drive_file_id,\n    title: parent.title,\n    content_hook: parent.content_hook,\n    content_brief: parent.content_brief,\n    slide_urls: arr.map(s => s.bannerbear_image_url).join('\\n'),\n    drive_backup_links: arr.map(s => s.drive_view_link).join('\\n'),\n    caption: parent.caption,\n    hashtags: (parent.hashtags || []).join(' '),\n    generated_at: new Date().toISOString(),\n    status: 'generated'\n  }\n}];"
+      },
+      "id": "52b675f8-142a-4dc7-9d02-99e51e92c572",
+      "name": "Assemble Sheet Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1936,
+        496
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "slide_number"
+            },
+            {
+              "fieldToAggregate": "slide_type"
+            },
+            {
+              "fieldToAggregate": "bannerbear_image_url"
+            },
+            {
+              "fieldToAggregate": "drive_file_id"
+            },
+            {
+              "fieldToAggregate": "drive_view_link"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bb88d4ca-c470-4701-a8dc-9284eef925d5",
+      "name": "Aggregate Slides",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1712,
+        496
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const prev = $('Parse Bannerbear Response').item.json;\nconst driveResp = $json;\nreturn {\n  json: {\n    _parent: prev._parent,\n    slide_number: prev.slide_number,\n    slide_type: prev.slide_type,\n    bannerbear_image_url: prev.bannerbear_image_url,\n    drive_file_id: driveResp.id,\n    drive_view_link: `https://drive.google.com/file/d/${driveResp.id}/view`\n  }\n};"
+      },
+      "id": "6146a968-5c87-4d12-ab53-ef4109899b2a",
+      "name": "Capture Slide Ref",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1504,
+        496
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.bannerbear_image_url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "f8cf306c-0c33-4a00-b205-78dd82b464f6",
+      "name": "Download Slide Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1088,
+        496
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const prev = $('Fan Out Slides').item.json;\nconst resp = $json;\nconst imageUrl = resp.image_url || resp.image_url_png;\nif (!imageUrl) {\n  throw new Error('Bannerbear returned no image_url. Response: ' + JSON.stringify(resp).slice(0, 400));\n}\nreturn {\n  json: {\n    ...prev,\n    bannerbear_status: resp.status || 'completed',\n    bannerbear_image_url: imageUrl\n  }\n};"
+      },
+      "id": "8341bacc-1af0-4088-8bdb-56baa84a6d6e",
+      "name": "Parse Bannerbear Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        496
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const parent = $json;\nconst g = $('Globals').first().json;\nconst total = parent.total_slides;\n\nfunction pickTemplate(slideType) {\n  if (slideType === 'hook') return g.BANNERBEAR_TEMPLATE_HOOK;\n  if (slideType === 'cta') return g.BANNERBEAR_TEMPLATE_CTA;\n  return g.BANNERBEAR_TEMPLATE_CONTENT;\n}\n\nreturn parent.slides.map(slide => ({\n  json: {\n    _parent: { ...parent, slides: undefined },\n    slide_number: slide.slide_number,\n    slide_type: slide.slide_type,\n    headline: slide.headline,\n    body: slide.body,\n    footer: `${slide.slide_number}/${total} \\u00b7 ${g.FACULTY_NAME}`,\n    template_id: pickTemplate(slide.slide_type)\n  }\n}));"
+      },
+      "id": "dae6b9c1-2c9f-443d-b687-151d0d15999e",
+      "name": "Fan Out Slides",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        496
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.output || '';\nconst cleaned = raw.replace(/^```json\\s*/i, '').replace(/^```\\s*/i, '').replace(/```\\s*$/i, '').trim();\nlet parsed;\ntry { parsed = JSON.parse(cleaned); } catch (e) {\n  throw new Error('Carousel concept invalid JSON: ' + e.message + ' | raw: ' + raw.slice(0, 300));\n}\nconst expected = $('Globals').first().json.TOTAL_SLIDES;\nif (!Array.isArray(parsed.slides) || parsed.slides.length !== expected) {\n  throw new Error(`Expected ${expected} slides, got ${(parsed.slides || []).length}`);\n}\nconst ctx = $('Build Paper Text').item.json;\nreturn [{\n  json: {\n    drive_file_id: ctx.drive_file_id,\n    drive_file_name: ctx.drive_file_name,\n    title: ctx.title,\n    authors: ctx.authors,\n    field: ctx.field,\n    content_hook: parsed.content_hook || '',\n    content_brief: parsed.content_brief || '',\n    slides: parsed.slides,\n    caption: parsed.caption || '',\n    hashtags: parsed.hashtags || [],\n    total_slides: expected\n  }\n}];"
+      },
+      "id": "90047602-7620-46da-a3b1-118a3fa632bd",
+      "name": "Parse Concept",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1632,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.ANTHROPIC_MODEL }}",
+          "mode": "id"
+        },
+        "options": {
+          "maxTokensToSample": 2500,
+          "temperature": 0.6
+        }
+      },
+      "id": "e4b424ec-82bf-4218-925d-58b87a6bb76a",
+      "name": "Concept Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        1296,
+        352
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "sUkzGV6H3EB4ekZS",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are creating an Instagram carousel from a psychology research paper. The goal is to invite students to participate in similar studies at our faculty — so the carousel needs to be intellectually honest, specific, and intriguing without being clickbait.\n\n=== PAPER ===\nTitle: {{ $json.title }}\nAuthors: {{ $json.authors }}\nField: {{ $json.field }}\nStudy type: {{ $json.study_type }}\n\n=== FULL PAPER TEXT ===\n{{ $json.paper_text }}\n\n=== AUDIENCE ===\nUniversity students 18-25 scrolling Instagram. They are smart, skeptical of academic jargon, and drawn to findings that connect to their own minds and behaviour. They will scroll past anything that feels textbooky or salesy.\n\n=== CAROUSEL STRUCTURE ===\nMake exactly {{ $('Globals').first().json.TOTAL_SLIDES }} slides in this structure. If only 1 slide needs to be generated only do the first from below:\n- Slide 1: HOOK — one specific, surprising, or assumption-flipping idea from the paper. Pulls the thumb-stop.\n- Slides 2 to {{ $('Globals').first().json.TOTAL_SLIDES - 1 }}: CONTENT — set up the question, give the actual finding, give the implication. One idea per slide.\n- Slide {{ $('Globals').first().json.TOTAL_SLIDES }}: CTA — invite the viewer to take part in studies like this at the faculty.\n\n=== RULES ===\n- Stay grounded in the paper. No invented findings. No exaggeration.\n- Headline: max 8 words, bold, declarative. Body: 1-2 short sentences, max ~25 words.\n- Do not start with \"Did you know\", \"Imagine if\", \"Scientists discovered\", \"A new study\".\n- Banned words: mind-blowing, fascinating, incredible, game-changer, shocking.\n- The Instagram caption: ~120-160 words, conversational, paraphrases the finding (no abstract quotes), ends with a soft CTA inviting participation. Mention the faculty by name.\n- Hashtags: 4-7, mix of broad (#psychology) and specific (#cognitivebias, #memoryresearch). Lowercase, no spaces.\n\n=== OUTPUT (strict JSON, no markdown fences) ===\n{\n  \"content_hook\": \"one-line internal summary of what makes this paper post-worthy (for the sheet, not shown to viewers)\",\n  \"content_brief\": \"2-3 sentence rationale for the angle chosen and why it will land with students\",\n  \"slides\": [\n    {\n      \"slide_number\": 1,\n      \"slide_type\": \"hook\",\n      \"headline\": \"<= 8 words\",\n      \"body\": \"1 short sentence, 10-15 words\"\n    },\n    {\n      \"slide_number\": 2,\n      \"slide_type\": \"content\",\n      \"headline\": \"<= 8 words\",\n      \"body\": \"1-2 short sentences\"\n    },\n    {\n      \"slide_number\": {{ $('Globals').first().json.TOTAL_SLIDES }},\n      \"slide_type\": \"cta\",\n      \"headline\": \"Want to take part?\",\n      \"body\": \"Sign up for studies at {{ $('Globals').first().json.FACULTY_NAME }} — {{ $('Globals').first().json.ENROLL_URL_HINT }}.\"\n    }\n  ],\n  \"caption\": \"Instagram caption, 120-160 words, no hashtags inside (those go in their own field)\",\n  \"hashtags\": [\"#psychology\", \"#research\"]\n}",
+        "options": {
+          "systemMessage": "You translate academic psychology papers into short, honest Instagram carousels that recruit students into research. You are specific, not salesy. Output strict JSON only, no preamble or markdown fences.",
+          "maxIterations": 4
+        }
+      },
+      "id": "cfdb188b-2d52-4588-8167-a843df866343",
+      "name": "Generate Carousel Concept (Claude)",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1296,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.text || $json.data || '';\nlet pages = [];\nif (Array.isArray(raw)) pages = raw;\nelse if (typeof raw === 'string') {\n  pages = raw.split('\\f');\n  if (pages.length < 3) pages = raw.split(/\\n\\s*\\n\\s*\\n/);\n}\n// Cap to 30k chars to stay friendly with the model context\nconst paperText = pages.join('\\n\\n').slice(0, 30000);\nconst ctx = $('Loop Over Papers').item.json;\nreturn [{ json: { ...ctx, paper_text: paperText, paper_total_pages: pages.length } }];"
+      },
+      "id": "6e56d85a-da62-4e35-9906-c1ca3f9059f6",
+      "name": "Build Paper Text",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1088,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {
+          "joinPages": false
+        }
+      },
+      "id": "7402e063-7457-46ec-98b5-fdf35bf83acd",
+      "name": "Extract PDF Per Page",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "75569df7-f5fb-431a-b827-413aaa0da669",
+      "name": "Loop Over Papers",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        416,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "w2-cond-has-pending",
+              "leftValue": "={{ $json._empty }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f3742272-635c-463e-9c59-5777f2296bc5",
+      "name": "If Has Pending",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1248,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const all = $input.all().map(i => i.json);\nconst batchSize = $('Globals').first().json.BATCH_SIZE || 1;\nconst pending = all.filter(r => r.status === 'pending');\nif (pending.length === 0) {\n  return [{ json: { _empty: true } }];\n}\nconst batch = pending.slice(0, batchSize);\nreturn batch.map(r => ({ json: r }));"
+      },
+      "id": "c0d29399-0e99-4852-894d-e24ec12ae9ac",
+      "name": "Filter Pending",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        -128
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "07697ba2-1b72-43a1-87f0-a67c422e1aba",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        416,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "g1",
+              "name": "ANTHROPIC_MODEL",
+              "value": "claude-sonnet-4-5",
+              "type": "string"
+            },
+            {
+              "id": "g2",
+              "name": "ANTHROPIC_MODEL_CHEAP",
+              "value": "claude-haiku-4-5-20251001",
+              "type": "string"
+            },
+            {
+              "id": "g3",
+              "name": "PAPERS_SHEET_ID",
+              "value": "1l-XuaEKcY9cC0aLHNGh-q2ZConnzFD-7VZV3UQSelDQ",
+              "type": "string"
+            },
+            {
+              "id": "g4",
+              "name": "PAPERS_TAB",
+              "value": "papers",
+              "type": "string"
+            },
+            {
+              "id": "g5",
+              "name": "ERRORS_LOG_SHEET_ID",
+              "value": "1l-XuaEKcY9cC0aLHNGh-q2ZConnzFD-7VZV3UQSelDQ",
+              "type": "string"
+            },
+            {
+              "id": "g6",
+              "name": "ERRORS_LOG_TAB",
+              "value": "errors_log",
+              "type": "string"
+            },
+            {
+              "id": "g7",
+              "name": "IMAGES_BACKUP_DRIVE_FOLDER_ID",
+              "value": "1KRa1989VXArqGUIqcDvKiJGmg721t_5E",
+              "type": "string"
+            },
+            {
+              "id": "g8",
+              "name": "BANNERBEAR_TEMPLATE_HOOK",
+              "value": "RnxGpW5l00KY5EXrJ1",
+              "type": "string"
+            },
+            {
+              "id": "g9",
+              "name": "BANNERBEAR_TEMPLATE_CONTENT",
+              "value": "RnxGpW5l00KY5EXrJ1",
+              "type": "string"
+            },
+            {
+              "id": "g10",
+              "name": "BANNERBEAR_TEMPLATE_CTA",
+              "value": "RnxGpW5l00KY5EXrJ1",
+              "type": "string"
+            },
+            {
+              "id": "g11",
+              "name": "BANNERBEAR_SYNC_URL",
+              "value": "https://sync.api.bannerbear.com/v2/images",
+              "type": "string"
+            },
+            {
+              "id": "g12",
+              "name": "FACULTY_NAME",
+              "value": "Faculty of Innovation Sciences",
+              "type": "string"
+            },
+            {
+              "id": "g13",
+              "name": "ENROLL_URL_HINT",
+              "value": "link in bio",
+              "type": "string"
+            },
+            {
+              "id": "g14",
+              "name": "TOTAL_SLIDES",
+              "value": 2,
+              "type": "number"
+            },
+            {
+              "id": "g15",
+              "name": "BATCH_SIZE",
+              "value": 1,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9444daa2-06a4-4cef-bd00-b79713e1efb8",
+      "name": "Globals",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        640,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "value": "={{ $json.PAPERS_TAB }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "594ff084-957e-40ec-9cd3-dce689655c45",
+      "name": "Read Papers Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        848,
+        -128
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "value": "={{ $json.drive_file_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "b3454295-eed4-42a6-99c7-538f7c3cfe5d",
+      "name": "Download PDF",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        672,
+        128
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "qNwyljWWXKPmObNF",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ ($json._parent.title || $json._parent.drive_file_name).replace(/[^a-zA-Z0-9_-]/g,'_').slice(0,40) }}_slide_{{ $json.slide_number }}.png",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "value": "={{ $('Globals').first().json.IMAGES_BACKUP_DRIVE_FOLDER_ID }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "148971d1-cd89-4d1d-bc83-c6cd977d52f8",
+      "name": "Upload Slide to Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1296,
+        496
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "qNwyljWWXKPmObNF",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Globals').first().json.PAPERS_SHEET_ID }}"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $('Globals').first().json.PAPERS_TAB }}"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "drive_file_id"
+          ],
+          "schema": [
+            {
+              "id": "drive_file_id",
+              "displayName": "drive_file_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "drive_file_name",
+              "displayName": "drive_file_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "authors",
+              "displayName": "authors",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "field",
+              "displayName": "field",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "abstract_snippet",
+              "displayName": "abstract_snippet",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "indexed_at",
+              "displayName": "indexed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content_hook",
+              "displayName": "content_hook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content_brief",
+              "displayName": "content_brief",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "slide_urls",
+              "displayName": "slide_urls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "caption",
+              "displayName": "caption",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "hashtags",
+              "displayName": "hashtags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "generated_at",
+              "displayName": "generated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "scheduled_for",
+              "displayName": "scheduled_for",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "posted_at",
+              "displayName": "posted_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "instagram_post_id",
+              "displayName": "instagram_post_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "study_type",
+              "displayName": "study_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "093ac5a7-ca21-40cb-b52d-34beda223f74",
+      "name": "Update Paper Row",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        2112,
+        496
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "templateId": "={{ $json.template_id }}",
+        "additionalFields": {
+          "waitForImage": true
+        },
+        "modificationsUi": {
+          "modificationsValues": [
+            {
+              "name": "headline",
+              "text": "={{ $json.headline }}"
+            },
+            {
+              "name": "body",
+              "text": "={{ $json.body }}"
+            },
+            {
+              "name": "footer",
+              "text": "={{ $json.footer }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.bannerbear",
+      "typeVersion": 1,
+      "position": [
+        672,
+        496
+      ],
+      "id": "38078fca-b884-4442-b20b-4247b8b5b54e",
+      "name": "Create an image",
+      "credentials": {
+        "bannerbearApi": {
+          "id": "DTui8YnSYwdIIsUj",
+          "name": "Bannerbear account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-06-06T11:50:27.633Z",
+      "createdAt": "2026-06-06T11:50:27.633Z",
+      "role": "workflow:owner",
+      "workflowId": "uo4N2HZB5PkPCuCq",
+      "projectId": "O6AJ2gZorGSWwg9b"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-06-07T09:29:03.209Z",
+  "versionId": "d0785cd4-bd92-46d2-b098-a8a888908261"
+}
