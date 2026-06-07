@@ -1,0 +1,593 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Globals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Globals": {
+      "main": [
+        [
+          {
+            "node": "Read Papers Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Papers Sheet": {
+      "main": [
+        [
+          {
+            "node": "Pick Row To Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Row To Post": {
+      "main": [
+        [
+          {
+            "node": "If Has Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Has Row": {
+      "main": [
+        [
+          {
+            "node": "Fan Out Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fan Out Slides": {
+      "main": [
+        [
+          {
+            "node": "Create Item Container",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Item Container": {
+      "main": [
+        [
+          {
+            "node": "Capture Container ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capture Container ID": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Containers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Containers": {
+      "main": [
+        [
+          {
+            "node": "Build Carousel Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Carousel Payload": {
+      "main": [
+        [
+          {
+            "node": "Create Carousel Container",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Carousel Container": {
+      "main": [
+        [
+          {
+            "node": "Capture Carousel ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capture Carousel ID": {
+      "main": [
+        [
+          {
+            "node": "Wait For IG Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait For IG Processing": {
+      "main": [
+        [
+          {
+            "node": "Publish Carousel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish Carousel": {
+      "main": [
+        [
+          {
+            "node": "Build Sheet Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Sheet Update": {
+      "main": [
+        [
+          {
+            "node": "Mark Row Posted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-06-06T11:53:02.999Z",
+  "id": "CCdRLxGg99pJnnye",
+  "isArchived": false,
+  "meta": null,
+  "name": "D. Instagram Poster",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 12
+            }
+          ]
+        }
+      },
+      "id": "db04da67-41b4-40c0-954a-3c90c1e9919c",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "g1",
+              "name": "PAPERS_SHEET_ID",
+              "value": "1l-XuaEKcY9cC0aLHNGh-q2ZConnzFD-7VZV3UQSelDQ",
+              "type": "string"
+            },
+            {
+              "id": "g2",
+              "name": "PAPERS_TAB",
+              "value": "papers",
+              "type": "string"
+            },
+            {
+              "id": "g3",
+              "name": "IG_USER_ID",
+              "value": "1l-XuaEKcY9cC0aLHNGh-q2ZConnzFD-7VZV3UQSelDQ",
+              "type": "string"
+            },
+            {
+              "id": "g4",
+              "name": "IG_GRAPH_API_VERSION",
+              "value": "v21.0",
+              "type": "string"
+            },
+            {
+              "id": "g6",
+              "name": "IG_PROCESSING_WAIT_SECONDS",
+              "value": 30,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1ff47635-13c8-4dec-8723-e09d8e777554",
+      "name": "Globals",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        688,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $json.PAPERS_TAB }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "dc8f58a4-6b08-4029-b27f-b0dda1ac5f27",
+      "name": "Read Papers Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        896,
+        96
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nIRGvN8ZksGyHldu",
+          "name": "Google Sheets account def"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pick the oldest 'approved' row whose scheduled_for is empty or <= today\nconst today = new Date(); today.setHours(23, 59, 59, 999);\nconst todayISO = today.toISOString().slice(0, 10);\nconst rows = $input.all().map(i => i.json);\nconst eligible = rows.filter(r => {\n  if (r.status !== 'approved') return false;\n  if (!r.scheduled_for || String(r.scheduled_for).trim() === '') return true;\n  return String(r.scheduled_for).slice(0, 10) <= todayISO;\n});\nif (eligible.length === 0) {\n  return [{ json: { _empty: true, message: 'No approved rows due today.' } }];\n}\n// Oldest first: prefer scheduled_for ascending, then generated_at ascending\neligible.sort((a, b) => {\n  const aKey = (a.scheduled_for || a.generated_at || '');\n  const bKey = (b.scheduled_for || b.generated_at || '');\n  return String(aKey).localeCompare(String(bKey));\n});\nconst pick = eligible[0];\nconst slideUrls = String(pick.slide_urls || '').split(/\\r?\\n/).map(s => s.trim()).filter(Boolean);\nif (slideUrls.length < 2) {\n  return [{ json: { _empty: true, message: 'Picked row has <2 slide URLs, skipping. row=' + pick.drive_file_id } }];\n}\nreturn [{\n  json: {\n    drive_file_id: pick.drive_file_id,\n    title: pick.title,\n    caption: pick.caption || '',\n    hashtags: pick.hashtags || '',\n    slide_urls: slideUrls\n  }\n}];"
+      },
+      "id": "ce1ea40c-ce56-4ba8-84d9-58167f9daad2",
+      "name": "Pick Row To Post",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "w3-cond-has-row",
+              "leftValue": "={{ $json._empty }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "cb4783d8-c250-4d9d-a3ec-5105f2f191f9",
+      "name": "If Has Row",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1312,
+        96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Fan out one item per slide for container creation\nconst parent = $json;\nreturn parent.slide_urls.map((url, idx) => ({\n  json: {\n    _parent: { ...parent, slide_urls: undefined },\n    slide_index: idx,\n    image_url: url\n  }\n}));"
+      },
+      "id": "0151b238-947f-474f-a70a-e0e70ec83bb2",
+      "name": "Fan Out Slides",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('Globals').first().json.IG_GRAPH_API_VERSION }}/{{ $('Globals').first().json.IG_USER_ID }}/media",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "={{ $json.image_url }}"
+            },
+            {
+              "name": "is_carousel_item",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "261e02fa-cfcf-4185-99aa-2560c70f9cab",
+      "name": "Create Item Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        736,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const prev = $('Fan Out Slides').item.json;\nconst resp = $json;\nif (!resp.id) {\n  throw new Error('IG /media returned no id. Response: ' + JSON.stringify(resp).slice(0, 400));\n}\nreturn [{\n  json: {\n    _parent: prev._parent,\n    slide_index: prev.slide_index,\n    container_id: resp.id\n  }\n}];"
+      },
+      "id": "b431ca71-faff-46a6-96bc-94553480e060",
+      "name": "Capture Container ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        944,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "slide_index"
+            },
+            {
+              "fieldToAggregate": "container_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8d776ca9-5a33-4675-9965-b1a119195ee7",
+      "name": "Aggregate Containers",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const arr = ($json.slide_index || []).map((idx, i) => ({\n  slide_index: idx,\n  container_id: $json.container_id[i]\n}));\narr.sort((a, b) => a.slide_index - b.slide_index);\n\nconst parent = $items('Capture Container ID')[0].json._parent;\nconst caption = [parent.caption, parent.hashtags].filter(Boolean).join('\\n\\n');\n\nreturn [{\n  json: {\n    ...parent,\n    children_csv: arr.map(c => c.container_id).join(','),\n    full_caption: caption\n  }\n}];"
+      },
+      "id": "c7749de7-05b9-4672-a762-355d3d8dd507",
+      "name": "Build Carousel Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('Globals').first().json.IG_GRAPH_API_VERSION }}/{{ $('Globals').first().json.IG_USER_ID }}/media",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "media_type",
+              "value": "CAROUSEL"
+            },
+            {
+              "name": "children",
+              "value": "={{ $json.children_csv }}"
+            },
+            {
+              "name": "caption",
+              "value": "={{ $json.full_caption }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "535c5dae-7c46-412c-8619-0660e094835e",
+      "name": "Create Carousel Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1568,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const prev = $('Build Carousel Payload').item.json;\nconst resp = $json;\nif (!resp.id) {\n  throw new Error('IG carousel container creation returned no id. Response: ' + JSON.stringify(resp).slice(0, 400));\n}\nreturn [{ json: { ...prev, carousel_container_id: resp.id } }];"
+      },
+      "id": "568c4d18-87b4-4b7f-b735-a8ba5f3b565b",
+      "name": "Capture Carousel ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1776,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{ $('Globals').first().json.IG_PROCESSING_WAIT_SECONDS }}"
+      },
+      "id": "13b0af45-0f2e-4551-a5cb-46cfcef0617d",
+      "name": "Wait For IG Processing",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1984,
+        352
+      ],
+      "webhookId": "w3-wait-webhook"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('Globals').first().json.IG_GRAPH_API_VERSION }}/{{ $('Globals').first().json.IG_USER_ID }}/media_publish",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "creation_id",
+              "value": "={{ $('Capture Carousel ID').item.json.carousel_container_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7a0996f7-5ae4-4b5e-ac0f-2e58a5584da5",
+      "name": "Publish Carousel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2192,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const prev = $('Capture Carousel ID').item.json;\nconst resp = $json;\nif (!resp.id) {\n  throw new Error('IG /media_publish returned no id. Response: ' + JSON.stringify(resp).slice(0, 400));\n}\nreturn [{\n  json: {\n    drive_file_id: prev.drive_file_id,\n    status: 'posted',\n    posted_at: new Date().toISOString(),\n    instagram_post_id: resp.id\n  }\n}];"
+      },
+      "id": "5d56790b-7a9d-44bb-8543-198723704869",
+      "name": "Build Sheet Update",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.PAPERS_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "drive_file_id": "={{ $json.drive_file_id }}",
+            "status": "={{ $json.status }}",
+            "posted_at": "={{ $json.posted_at }}",
+            "instagram_post_id": "={{ $json.instagram_post_id }}"
+          },
+          "matchingColumns": [
+            "drive_file_id"
+          ],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "630f07ff-da4b-4981-a903-2075ca4d3593",
+      "name": "Mark Row Posted",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        736,
+        608
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nIRGvN8ZksGyHldu",
+          "name": "Google Sheets account def"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Workflow 3 — Instagram Poster\n\nRuns on schedule (default: daily at 12:00). Picks the oldest `approved` row whose `scheduled_for` is empty or due, posts it as an Instagram carousel via Meta Graph API, and marks the row `posted`.\n\n### Setup (one-time)\n1. **Instagram Business or Creator account** linked to a Facebook Page.\n2. **Meta App** with `instagram_basic`, `instagram_content_publish`, `pages_show_list`, `pages_read_engagement` permissions, reviewed and approved.\n3. Generate a **long-lived Page access token** (~60 days) — refresh before expiry or set a reminder.\n4. Get the **Instagram Business Account ID** (not the @username) and paste it into `IG_USER_ID`.\n5. In n8n, create a **\"Query Auth\" credential** with `Name=access_token`, `Value=<your long-lived token>`. Attach it to all three Instagram HTTP nodes.\n\n### Post flow (per Meta Graph API)\n1. For each slide URL: POST `/media` with `image_url` + `is_carousel_item=true` → returns an item container ID.\n2. POST `/media` with `media_type=CAROUSEL` + `children=<csv of item IDs>` + `caption` → returns the carousel container ID.\n3. **Wait 30s** for Instagram to finish processing the container (skipping this often returns errors on publish).\n4. POST `/media_publish` with `creation_id=<carousel container ID>` → returns the live post ID.\n5. Update the sheet row: `status=posted`, `posted_at`, `instagram_post_id`.\n\n### Notes\n- The poster uses the **Bannerbear-hosted URLs** from `slide_urls` (Instagram fetches them server-side; they must be publicly accessible — Bannerbear's CDN is).\n- If you need to order posts by date, fill in the `scheduled_for` column (YYYY-MM-DD). Empty = post whenever it's the oldest approved.\n- Default schedule = 1 post/day at noon. Adjust the Schedule Trigger if you want a different cadence.\n- Failed posts: the row stays `approved`, so it retries on the next run. Check n8n execution logs for the actual API error.",
+        "height": 580,
+        "width": 600,
+        "color": 4
+      },
+      "id": "bd2508e9-40b2-4968-977b-a26a75779e52",
+      "name": "Sticky Note W3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        96
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-06-06T11:53:03.001Z",
+      "createdAt": "2026-06-06T11:53:03.001Z",
+      "role": "workflow:owner",
+      "workflowId": "CCdRLxGg99pJnnye",
+      "projectId": "O6AJ2gZorGSWwg9b"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-06-07T09:29:13.402Z",
+  "versionId": "98ee7a7a-93de-4651-aecd-270295f16178"
+}
