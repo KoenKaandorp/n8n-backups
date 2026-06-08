@@ -449,7 +449,7 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "name": "B1 - Shorts Generator (ElevenLabs node)",
+  "name": "B1 - Shorts Generator",
   "nodes": [
     {
       "parameters": {},
@@ -583,7 +583,7 @@
             {
               "id": "g40",
               "name": "WORK_DIR",
-              "value": "/tmp/n8n-shorts",
+              "value": "/files/temp",
               "type": "string"
             },
             {
@@ -656,6 +656,12 @@
               "id": "g71",
               "name": "CAPTION_FONT",
               "value": "Arial",
+              "type": "string"
+            },
+            {
+              "id": "c1523b0f-f274-4aa8-aeaf-d3dbe17c830b",
+              "name": "FINAL_DIR",
+              "value": "/files/final",
               "type": "string"
             }
           ]
@@ -800,7 +806,7 @@
       "credentials": {
         "googleDriveOAuth2Api": {
           "id": "0zoFAIoKxbc72Emc",
-          "name": "Google Drive account"
+          "name": "Google Drive account old"
         }
       }
     },
@@ -1179,7 +1185,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const fs = require('fs');\nconst path = require('path');\n\nconst arr = ($json.line_index || []).map((idx, i) => ({\n  idx,\n  speaker: $json.speaker[i],\n  text: $json.text[i],\n  duration: $json.duration[i],\n  words: $json.word_timings[i],\n  audio_path: $json.audio_path[i]\n}));\narr.sort((a, b) => a.idx - b.idx);\n\nconst parent = $items('Save Line Audio + Timings')[0].json._parent;\nconst runId = $items('Save Line Audio + Timings')[0].json.run_id;\nconst workDir = $('Globals').first().json.WORK_DIR;\nconst font = $('Globals').first().json.CAPTION_FONT || 'Arial';\n\nlet offset = 0;\nconst spriteA = [];\nconst spriteB = [];\nconst globalWords = [];\nfor (const line of arr) {\n  const winStart = offset;\n  const winEnd = offset + line.duration;\n  if (line.speaker === 'A') spriteA.push([winStart, winEnd]);\n  else spriteB.push([winStart, winEnd]);\n  for (const w of (line.words || [])) {\n    if (w.start == null || w.end == null) continue;\n    globalWords.push({ word: w.word, start: offset + w.start, end: offset + w.end });\n  }\n  offset += line.duration;\n}\nconst totalDuration = offset;\n\nfunction assTime(t) {\n  const h = Math.floor(t / 3600);\n  const m = Math.floor((t % 3600) / 60);\n  const s = Math.floor(t % 60);\n  const cs = Math.floor((t - Math.floor(t)) * 100);\n  return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;\n}\nconst assHeader = `[Script Info]\\nScriptType: v4.00+\\nPlayResX: 720\\nPlayResY: 1280\\n\\n[V4+ Styles]\\nFormat: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, Outline, Shadow, Alignment, MarginL, MarginR, MarginV\\nStyle: Cap,${font},64,&H00FFFFFF,&H00000000,&H00000000,1,6,0,2,40,40,260\\n\\n[Events]\\nFormat: Layer, Start, End, Style, Text\\n`;\nconst dialogueLines = globalWords.map(w => {\n  const txt = String(w.word).replace(/[{}]/g, '');\n  return `Dialogue: 0,${assTime(w.start)},${assTime(w.end)},Cap,,0,0,0,,${txt.toUpperCase()}`;\n}).join('\\n');\nconst assPath = path.join(workDir, `${runId}_captions.ass`);\nfs.writeFileSync(assPath, assHeader + dialogueLines + '\\n');\n\nconst listPath = path.join(workDir, `${runId}_concat.txt`);\nfs.writeFileSync(listPath, arr.map(l => `file '${l.audio_path.replace(/'/g, \"'\\\\''\")}'`).join('\\n'));\nconst mergedAudioPath = path.join(workDir, `${runId}_voice.mp3`);\n\nreturn [{\n  json: {\n    ...parent,\n    run_id: runId,\n    total_audio_duration: totalDuration,\n    sprite_a_windows: spriteA,\n    sprite_b_windows: spriteB,\n    ass_path: assPath,\n    concat_list_path: listPath,\n    merged_audio_path: mergedAudioPath\n  }\n}];"
+        "jsCode": "const fs = require('fs');\nconst path = require('path');\n\nconst arr = ($json.line_index || []).map((idx, i) => ({\n  idx,\n  speaker: $json.speaker[i],\n  text: $json.text[i],\n  duration: $json.duration[i],\n  words: $json.word_timings[i],\n  audio_path: $json.audio_path[i]\n}));\narr.sort((a, b) => a.idx - b.idx);\n\nconst parent = $items('Save Line Audio + Timings')[0].json._parent;\nconst runId = $items('Save Line Audio + Timings')[0].json.run_id;\nconst workDir = $('Globals').first().json.WORK_DIR;\nconst font = $('Globals').first().json.CAPTION_FONT || 'Arial';\n\nlet offset = 0;\nconst spriteA = [];\nconst spriteB = [];\nconst globalWords = [];\nfor (const line of arr) {\n  const winStart = offset;\n  const winEnd = offset + line.duration;\n  if (line.speaker === 'A') spriteA.push([winStart, winEnd]);\n  else spriteB.push([winStart, winEnd]);\n  for (const w of (line.words || [])) {\n    if (w.start == null || w.end == null) continue;\n    globalWords.push({ word: w.word, start: offset + w.start, end: offset + w.end });\n  }\n  offset += line.duration;\n}\nconst totalDuration = offset;\n\nfunction assTime(t) {\n  const h = Math.floor(t / 3600);\n  const m = Math.floor((t % 3600) / 60);\n  const s = Math.floor(t % 60);\n  const cs = Math.floor((t - Math.floor(t)) * 100);\n  return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;\n}\nconst assHeader = `[Script Info]\\nScriptType: v4.00+\\nPlayResX: 720\\nPlayResY: 1280\\n\\n[V4+ Styles]\\nFormat: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, Outline, Shadow, Alignment, MarginL, MarginR, MarginV\\nStyle: Cap,${font},64,&H00FFFFFF,&H00000000,&H00000000,1,6,0,2,40,40,260\\n\\n[Events]\\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\\n`;\nconst dialogueLines = globalWords.map(w => {\n  const txt = String(w.word).replace(/[{}]/g, '');\n  return `Dialogue: 0,${assTime(w.start)},${assTime(w.end)},Cap,,0,0,0,,${txt.toUpperCase()}`;\n}).join('\\n');\nconst assPath = path.join(workDir, `${runId}_captions.ass`);\nfs.writeFileSync(assPath, assHeader + dialogueLines + '\\n');\n\nconst listPath = path.join(workDir, `${runId}_concat.txt`);\nfs.writeFileSync(listPath, arr.map(l => `file '${l.audio_path.replace(/'/g, \"'\\\\''\")}'`).join('\\n'));\nconst mergedAudioPath = path.join(workDir, `${runId}_voice.mp3`);\n\nreturn [{\n  json: {\n    ...parent,\n    run_id: runId,\n    total_audio_duration: totalDuration,\n    sprite_a_windows: spriteA,\n    sprite_b_windows: spriteB,\n    ass_path: assPath,\n    concat_list_path: listPath,\n    merged_audio_path: mergedAudioPath\n  }\n}];"
       },
       "id": "90d1146b-c146-440e-b8c8-5549ac1a5081",
       "name": "Build Timing + Captions",
@@ -1218,7 +1224,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const prev = $json;\nconst g = $('Globals').first().json;\nconst path = require('path');\n\nconst outPath = path.join(g.WORK_DIR, `${prev.run_id}_final.mp4`);\n\nconst ena = wins => wins.map(([s, e]) => `between(t,${s.toFixed(3)},${e.toFixed(3)})`).join('+');\nconst aEnable = ena(prev.sprite_a_windows) || '0';\nconst bEnable = ena(prev.sprite_b_windows) || '0';\n\nconst dur = prev.mc_duration.toFixed(3);\nconst musicVol = g.MUSIC_VOLUME || '0.15';\n\nconst assEsc = prev.ass_path.replace(/\\\\/g, '/').replace(/:/g, '\\\\:');\n\nconst filter = [\n  `[0:v]trim=start=${prev.mc_start_offset}:duration=${dur},setpts=PTS-STARTPTS,scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280[bg]`,\n  `[1:v]scale=320:-1[spA]`,\n  `[2:v]scale=320:-1[spB]`,\n  `[bg][spA]overlay=x=20:y=H-h-340:enable='${aEnable}'[t1]`,\n  `[t1][spB]overlay=x=W-w-20:y=H-h-340:enable='${bEnable}'[t2]`,\n  `[t2]subtitles='${assEsc}'[vout]`,\n  `[4:a]volume=${musicVol},aloop=loop=-1:size=2e9[music]`,\n  `[3:a][music]amix=inputs=2:duration=first:dropout_transition=0[aout]`\n].join(';');\n\nconst cmd = [\n  'ffmpeg -y',\n  `-stream_loop -1 -i \"${prev.mc_clip_path}\"`,\n  `-i \"${g.SPRITE_A_PATH}\"`,\n  `-i \"${g.SPRITE_B_PATH}\"`,\n  `-i \"${prev.merged_audio_path}\"`,\n  `-i \"${g.MUSIC_BED_PATH}\"`,\n  `-filter_complex \"${filter}\"`,\n  '-map \"[vout]\" -map \"[aout]\"',\n  `-t ${dur}`,\n  '-c:v libx264 -preset veryfast -crf 21 -pix_fmt yuv420p',\n  '-c:a aac -b:a 192k',\n  `\"${outPath}\"`\n].join(' ');\n\nreturn [{ json: { ...prev, final_video_path: outPath, ffmpeg_cmd: cmd } }];"
+        "jsCode": "const prev = $json;\nconst g = $('Globals').first().json;\nconst path = require('path');\n\nconst outPath = path.join(g.FINAL_DIR, `${prev.run_id}_final.mp4`);\n\nconst ena = wins => wins.map(([s, e]) => `between(t,${s.toFixed(3)},${e.toFixed(3)})`).join('+');\nconst aEnable = ena(prev.sprite_a_windows) || '0';\nconst bEnable = ena(prev.sprite_b_windows) || '0';\n\nconst dur = prev.mc_duration.toFixed(3);\nconst musicVol = g.MUSIC_VOLUME || '0.15';\n\nconst assEsc = prev.ass_path.replace(/\\\\/g, '/').replace(/:/g, '\\\\:');\n\nconst filter = [\n  `[0:v]trim=start=${prev.mc_start_offset}:duration=${dur},setpts=PTS-STARTPTS,scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280[bg]`,\n  `[1:v]scale=480:-1[spA]`,\n  `[2:v]scale=480:-1[spB]`,\n  `[bg][spA]overlay=x=20:y=H-h-340:enable='${aEnable}'[t1]`,\n  `[t1][spB]overlay=x=W-w-20:y=H-h-340:enable='${bEnable}'[t2]`,\n  `[t2]subtitles='${assEsc}'[vout]`,\n  `[4:a]volume=${musicVol},aloop=loop=-1:size=2e9[music]`,\n  `[3:a][music]amix=inputs=2:duration=first:dropout_transition=0[aout]`\n].join(';');\n\nconst cmd = [\n  'ffmpeg -y',\n  `-stream_loop -1 -i \"${prev.mc_clip_path}\"`,\n  `-i \"${g.SPRITE_A_PATH}\"`,\n  `-i \"${g.SPRITE_B_PATH}\"`,\n  `-i \"${prev.merged_audio_path}\"`,\n  `-i \"${g.MUSIC_BED_PATH}\"`,\n  `-filter_complex \"${filter}\"`,\n  '-map \"[vout]\" -map \"[aout]\"',\n  `-t ${dur}`,\n  '-c:v libx264 -preset veryfast -crf 21 -pix_fmt yuv420p',\n  '-c:a aac -b:a 192k',\n  `\"${outPath}\"`\n].join(' ');\n\nreturn [{ json: { ...prev, final_video_path: outPath, ffmpeg_cmd: cmd } }];"
       },
       "id": "63b9c3ad-6de8-49de-9230-08179e28708c",
       "name": "Build FFmpeg Command",
@@ -1281,7 +1287,7 @@
       "credentials": {
         "googleDriveOAuth2Api": {
           "id": "0zoFAIoKxbc72Emc",
-          "name": "Google Drive account"
+          "name": "Google Drive account old"
         }
       }
     },
@@ -1503,6 +1509,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-06-07T09:30:03.760Z",
-  "versionId": "c8fcb8ff-f797-4742-9f32-4297dc97a30b"
+  "updatedAt": "2026-06-08T14:44:40.627Z",
+  "versionId": "3f942fef-35bf-4c73-a20c-f7753c24385e"
 }
