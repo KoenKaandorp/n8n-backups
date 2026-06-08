@@ -1,0 +1,394 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Globals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Webpage": {
+      "main": [
+        [
+          {
+            "node": "Extract PDF Links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract PDF Links": {
+      "main": [
+        [
+          {
+            "node": "Normalize PDF List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize PDF List": {
+      "main": [
+        [
+          {
+            "node": "Read Tracking Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Tracking Sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter Out Already Downloaded",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Out Already Downloaded": {
+      "main": [
+        [
+          {
+            "node": "Download PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download PDF": {
+      "main": [
+        [
+          {
+            "node": "Upload to Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Log to Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Globals": {
+      "main": [
+        [
+          {
+            "node": "Fetch Webpage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-06-08T17:35:06.264Z",
+  "id": "EdOKaNtpnB62cKh5",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "A. Scraper",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "551b57d9-6e8e-4b5b-ae1f-981162d33e95",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.PURE_LINK }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "655a7207-d08e-494b-bd98-6fd085354a71",
+      "name": "Fetch Webpage",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        256,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "pdfLinks",
+              "cssSelector": "a[href$=\".pdf\"], a[href*=\".pdf?\"]",
+              "returnValue": "attribute",
+              "attribute": "href",
+              "returnArray": true
+            },
+            {
+              "key": "pdfTitles",
+              "cssSelector": "a[href$=\".pdf\"], a[href*=\".pdf?\"]",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d5a7de87-de43-44ec-a1ab-d78e554e5efe",
+      "name": "Extract PDF Links",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1,
+      "position": [
+        448,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// === CONFIGURE THIS ===\nconst BASE_URL = 'https://REPLACE_WITH_TARGET_URL.com';\n\nconst input = $input.first().json;\nconst links = input.pdfLinks || [];\nconst titles = input.pdfTitles || [];\n\nconst items = links.map((link, i) => {\n  let fullUrl = link;\n  if (link.startsWith('//')) {\n    fullUrl = 'https:' + link;\n  } else if (link.startsWith('/')) {\n    fullUrl = BASE_URL.replace(/\\/$/, '') + link;\n  } else if (!link.startsWith('http')) {\n    fullUrl = BASE_URL.replace(/\\/$/, '') + '/' + link;\n  }\n\n  const urlParts = fullUrl.split('?')[0].split('/');\n  const filename = decodeURIComponent(urlParts[urlParts.length - 1]);\n  const title = (titles[i] || filename).trim().replace(/\\s+/g, ' ');\n\n  return {\n    json: {\n      url: fullUrl,\n      filename: filename,\n      title: title\n    }\n  };\n});\n\n// Deduplicate by URL within this run\nconst seen = new Set();\nreturn items.filter(item => {\n  if (seen.has(item.json.url)) return false;\n  seen.add(item.json.url);\n  return true;\n});\n"
+      },
+      "id": "c58559df-7608-4541-8702-47cb3fc8652f",
+      "name": "Normalize PDF List",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.PAPERS_TAB }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "174075bb-91cb-4ea9-985f-54e4329eeb33",
+      "name": "Read Tracking Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        880,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get existing URLs from the tracking sheet\nconst existingRows = $('Read Tracking Sheet').all();\nconst existingUrls = new Set(\n  existingRows\n    .map(r => (r.json.url || '').trim())\n    .filter(u => u.length > 0)\n);\n\n// Get freshly scraped PDF list\nconst scraped = $('Normalize PDF List').all();\n\n// Keep only ones not already in the sheet\nconst newOnes = scraped.filter(item => !existingUrls.has(item.json.url));\n\nreturn newOnes;\n"
+      },
+      "id": "76f6685d-dc1c-46c6-987c-4e17cfb22209",
+      "name": "Filter Out Already Downloaded",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "1f158e7f-97d2-46c4-b045-ddc38a111c1a",
+      "name": "Download PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1328,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "name": "={{ $json.filename }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.PAPERS_DRIVE_FOLDER_ID }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "136399eb-3966-4172-b69c-f13391687443",
+      "name": "Upload to Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1552,
+        0
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "qNwyljWWXKPmObNF",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.PAPERS_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "url": "={{ $('Download PDF').item.json.url }}",
+            "filename": "={{ $('Download PDF').item.json.filename }}",
+            "title": "={{ $('Download PDF').item.json.title }}",
+            "downloaded_at": "={{ $now.toISO() }}",
+            "drive_file_id": "={{ $json.id }}",
+            "drive_link": "={{ $json.webViewLink }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "2db2f67e-ca94-4f39-8b6c-28741e338b44",
+      "name": "Log to Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1760,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "g3",
+              "name": "PAPERS_DRIVE_FOLDER_ID",
+              "value": "1GO035QxYUt8vsaJ2DywLwAHfOzXDzHAi",
+              "type": "string"
+            },
+            {
+              "id": "g4",
+              "name": "PAPERS_SHEET_ID",
+              "value": "1l-XuaEKcY9cC0aLHNGh-q2ZConnzFD-7VZV3UQSelDQ",
+              "type": "string"
+            },
+            {
+              "id": "g5",
+              "name": "PAPERS_TAB",
+              "value": "papers",
+              "type": "string"
+            },
+            {
+              "id": "g6",
+              "name": "ERRORS_LOG_SHEET_ID",
+              "value": "1l-XuaEKcY9cC0aLHNGh-q2ZConnzFD-7VZV3UQSelDQ",
+              "type": "string"
+            },
+            {
+              "id": "g7",
+              "name": "ERRORS_LOG_TAB",
+              "value": "errors_log",
+              "type": "string"
+            },
+            {
+              "id": "6ed07794-bba6-430a-9e3e-dd8ca13303c4",
+              "name": "PURE_LINK",
+              "value": "PLACEHOLDER",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b63f13c1-dc37-4294-9d65-5240cd1f4b95",
+      "name": "Globals",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        64,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-06-08T17:35:06.274Z",
+      "createdAt": "2026-06-08T17:35:06.274Z",
+      "role": "workflow:owner",
+      "workflowId": "EdOKaNtpnB62cKh5",
+      "projectId": "O6AJ2gZorGSWwg9b"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-06-08T17:40:03.429Z",
+  "versionId": "70e493b5-f9e2-4870-b570-ef7d62c22ab5"
+}
