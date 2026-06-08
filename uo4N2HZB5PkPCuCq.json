@@ -246,8 +246,8 @@
   "nodes": [
     {
       "parameters": {
-        "content": "## Workflow 2 — Carousel Generator\n\nRuns manually. For each paper with `status=pending`, Claude Sonnet reads the full PDF text and outputs a carousel concept (hook + content slides + CTA + IG caption + hashtags). Each slide is then rendered by **Bannerbear sync API**, downloaded, backed up to Drive, and the slide URLs are written back to the paper's row with `status=generated`.\n\n### Credentials & setup needed\n1. **Bannerbear Header Auth credential**: create a new \"Header Auth\" credential in n8n with `Name = Authorization`, `Value = Bearer YOUR_BANNERBEAR_API_KEY`. Then attach it to the `Bannerbear Render Slide` node.\n2. **Bannerbear templates**: create three templates (or reuse one). Each template MUST have three named text layers: `headline`, `body`, `footer`. Paste each template's UID into the matching global.\n3. **Drive backup folder**: create a folder for backup PNGs and put its ID in `IMAGES_BACKUP_DRIVE_FOLDER_ID`.\n\n### What gets written to the sheet\n- `status` flips `pending` → `generated`\n- `slide_urls` holds the **Bannerbear-hosted URLs**, one per line, in slide order — these are what the poster workflow feeds to Instagram\n- `notes` holds the Drive backup links (for you to eyeball before approving)\n- `caption`, `hashtags`, `content_hook`, `content_brief`, `generated_at` filled in\n\n### Approval gate\nAfter this runs, open the sheet, review the row, and **manually change `status` from `generated` → `approved`** to release it to the poster. Anything left at `generated` will not post.\n\n### Re-running is safe\nOnly rows with `status=pending` are picked up. A failed row stays `pending` so it retries next run — but check the n8n execution log to see why it failed first.",
-        "height": 580,
+        "content": "## Workflow 2 — Carousel Generator\n\nRuns manually. For each paper with `status=pending`, Claude Sonnet reads the full PDF text and outputs a carousel concept (hook + content slides + CTA + IG caption + hashtags). Each slide is then rendered by **Bannerbear sync API**, downloaded, backed up to Drive, and the slide URLs are written back to the paper's row with `status=generated`.\n\n### What gets written to the sheet\n- `status` flips `pending` → `generated`\n- `slide_urls` holds the **Bannerbear-hosted URLs**, one per line, in slide order — these are what the poster workflow feeds to Instagram\n- `notes` holds the Drive backup links (for you to eyeball before approving)\n- `caption`, `hashtags`, `content_hook`, `content_brief`, `generated_at` filled in\n\n### Approval gate\nAfter this runs, open the sheet, review the row, and **manually change `status` from `generated` → `approved`** to release it to the poster. Anything left at `generated` will not post.\n",
+        "height": 404,
         "width": 600,
         "color": 4
       },
@@ -1009,6 +1009,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-06-07T09:29:03.209Z",
-  "versionId": "d0785cd4-bd92-46d2-b098-a8a888908261"
+  "updatedAt": "2026-06-08T17:34:30.789Z",
+  "versionId": "3d859eca-610c-4008-8607-77a81b22d082"
 }
