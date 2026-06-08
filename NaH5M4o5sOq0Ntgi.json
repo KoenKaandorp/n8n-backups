@@ -709,21 +709,6 @@
         368
       ],
       "typeVersion": 1.2
-    },
-    {
-      "parameters": {
-        "content": "### 💡 **Want to learn advanced n8n skills and earn money building workflows?**\n‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎Check out [Scrapes Academy](https://www.skool.com/scrapes/about?ref=21f10ad99f4d46ba9b8aaea8c9f58c34)",
-        "width": 640,
-        "color": 4
-      },
-      "id": "1045ca0a-a273-4f97-8779-15428140837b",
-      "name": "Sticky Note16",
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        272,
-        0
-      ],
-      "typeVersion": 1
     }
   ],
   "pinData": {},
@@ -743,6 +728,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-05-11T18:23:42.025Z",
-  "versionId": "c8572d52-eca5-453f-bb89-eb0587e6e521"
+  "updatedAt": "2026-06-07T09:29:45.461Z",
+  "versionId": "914e2897-b877-4a62-86bb-4fb436f0a2e8"
 }
