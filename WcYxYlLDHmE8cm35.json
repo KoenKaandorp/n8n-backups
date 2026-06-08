@@ -1,0 +1,465 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Globals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Globals": {
+      "main": [
+        [
+          {
+            "node": "Fake Dialogue Lines",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fake Dialogue Lines": {
+      "main": [
+        [
+          {
+            "node": "Loop Each Line",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Each Line": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Lines",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build Synth Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Synth Command": {
+      "main": [
+        [
+          {
+            "node": "FFmpeg Synth Silent Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FFmpeg Synth Silent Audio": {
+      "main": [
+        [
+          {
+            "node": "Build Fake Timings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Fake Timings": {
+      "main": [
+        [
+          {
+            "node": "Loop Each Line",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Lines": {
+      "main": [
+        [
+          {
+            "node": "Build Timing + Captions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Timing + Captions": {
+      "main": [
+        [
+          {
+            "node": "FFmpeg Concat Voice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FFmpeg Concat Voice": {
+      "main": [
+        [
+          {
+            "node": "Pick Minecraft Clip",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick Minecraft Clip": {
+      "main": [
+        [
+          {
+            "node": "Build FFmpeg Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build FFmpeg Command": {
+      "main": [
+        [
+          {
+            "node": "FFmpeg Assemble Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FFmpeg Assemble Video": {
+      "main": [
+        [
+          {
+            "node": "Verify Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-06-07T09:36:23.283Z",
+  "id": "WcYxYlLDHmE8cm35",
+  "isArchived": false,
+  "meta": null,
+  "name": "FFMPEG Test",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "e094e800-6fa2-4446-bf77-73402ad734c0",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "g40",
+              "name": "WORK_DIR",
+              "value": "/files/temp",
+              "type": "string"
+            },
+            {
+              "id": "g42",
+              "name": "MINECRAFT_DIR",
+              "value": "/data/assets/minecraft",
+              "type": "string"
+            },
+            {
+              "id": "g43",
+              "name": "SPRITE_A_PATH",
+              "value": "/data/assets/sprites/max.png",
+              "type": "string"
+            },
+            {
+              "id": "g44",
+              "name": "SPRITE_B_PATH",
+              "value": "/data/assets/sprites/doc.png",
+              "type": "string"
+            },
+            {
+              "id": "g45",
+              "name": "MUSIC_BED_PATH",
+              "value": "/data/assets/music/bed.mp3",
+              "type": "string"
+            },
+            {
+              "id": "g70",
+              "name": "MUSIC_VOLUME",
+              "value": "0.15",
+              "type": "string"
+            },
+            {
+              "id": "g71",
+              "name": "CAPTION_FONT",
+              "value": "Arial",
+              "type": "string"
+            },
+            {
+              "id": "g80",
+              "name": "TEST_TITLE",
+              "value": "TEST: Why your brain trusts confidence over competence",
+              "type": "string"
+            },
+            {
+              "id": "g81",
+              "name": "TEST_ON_SCREEN_CAPTION",
+              "value": "Confidence wins more than competence",
+              "type": "string"
+            },
+            {
+              "id": "16cebb54-b1a9-4326-8f1a-f5d8d980c9f1",
+              "name": "FINAL_DIR",
+              "value": "/files/final",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a244757f-0ad5-4224-971f-0dc9a663557c",
+      "name": "Globals",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// === Edit the dialogue and durations below to test different shapes ===\n// speaker: 'A' = Max, 'B' = Doc\n// duration: seconds for that line — match what you'd expect ElevenLabs to produce\n// (~2.5 wpm gives realistic pacing). Mix short hooks with longer lines.\n\nconst lines = [\n  { speaker: 'A', text: \"You ever notice the loudest person in the room usually wins?\", duration: 3.4 },\n  { speaker: 'B', text: \"That's because your brain treats confidence as evidence of skill.\", duration: 3.6 },\n  { speaker: 'A', text: \"Even when they're completely wrong?\", duration: 2.1 },\n  { speaker: 'B', text: \"Especially when they're wrong. Doubt sounds like weakness.\", duration: 3.8 },\n  { speaker: 'A', text: \"So the quiet experts just get steamrolled.\", duration: 2.9 }\n];\n\nconst runId = ('test_' + Date.now());\n\nreturn lines.map((l, i) => ({\n  json: {\n    _parent: {\n      // Minimal parent object — only fields the downstream FFmpeg code reads\n      slot: 1,\n      run_id: runId,\n      // These are only used by Append Queue Row (cut out of this test), so we keep them empty\n      idea_title: $('Globals').first().json.TEST_TITLE,\n      idea_on_screen_caption: $('Globals').first().json.TEST_ON_SCREEN_CAPTION\n    },\n    run_id: runId,\n    line_index: i,\n    speaker: l.speaker,\n    text: l.text,\n    duration: l.duration\n  }\n}));"
+      },
+      "id": "1ed40631-1aad-410d-b393-8330f8b9dea5",
+      "name": "Fake Dialogue Lines",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "3558f6b3-3f1a-4dc0-8e31-ee17d6ccc440",
+      "name": "Loop Each Line",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        672,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build an ffmpeg command that creates a silent MP3 of the desired duration.\n// (anullsrc generates silence; aevalsrc='sin(440*2*PI*t)' would generate a tone if you prefer audible test audio.)\nconst fs = require('fs');\nconst path = require('path');\n\nconst workDir = $('Globals').first().json.WORK_DIR;\nif (!fs.existsSync(workDir)) fs.mkdirSync(workDir, { recursive: true });\n\nconst lineCtx = $json;\nconst outPath = path.join(workDir, `${lineCtx.run_id}_line_${lineCtx.line_index}.mp3`);\nconst dur = Number(lineCtx.duration || 2).toFixed(3);\n\n// Silent MP3 of the requested duration\nconst cmd = `ffmpeg -y -f lavfi -i anullsrc=r=44100:cl=mono -t ${dur} -c:a libmp3lame -b:a 128k \"${outPath}\"`;\n\nreturn [{ json: { ...lineCtx, audio_path: outPath, ffmpeg_synth_cmd: cmd } }];"
+      },
+      "id": "77d9e162-cecd-4783-801d-aca756a65258",
+      "name": "Build Synth Command",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "command": "={{ $json.ffmpeg_synth_cmd }}"
+      },
+      "id": "58d30929-5e0b-48eb-950a-7a6e6e7405bf",
+      "name": "FFmpeg Synth Silent Audio",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Build per-line word_timings the same way the real workflow does: evenly distribute words across measured (here = requested) duration.\nconst lineCtx = $('Build Synth Command').item.json;\nconst words = (lineCtx.text || '').trim().split(/\\s+/).filter(Boolean);\nconst perWord = words.length > 0 ? lineCtx.duration / words.length : 0;\nconst word_timings = words.map((w, i) => ({\n  word: w,\n  start: +(i * perWord).toFixed(3),\n  end: +((i + 1) * perWord).toFixed(3)\n}));\n\nreturn [{\n  json: {\n    _parent: lineCtx._parent,\n    line_index: lineCtx.line_index,\n    speaker: lineCtx.speaker,\n    text: lineCtx.text,\n    duration: lineCtx.duration,\n    word_timings,\n    audio_path: lineCtx.audio_path,\n    run_id: lineCtx.run_id\n  }\n}];"
+      },
+      "id": "044d2c4c-83f0-41b5-9f01-d2f1b909a658",
+      "name": "Build Fake Timings",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "line_index"
+            },
+            {
+              "fieldToAggregate": "speaker"
+            },
+            {
+              "fieldToAggregate": "text"
+            },
+            {
+              "fieldToAggregate": "duration"
+            },
+            {
+              "fieldToAggregate": "word_timings"
+            },
+            {
+              "fieldToAggregate": "audio_path"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "86967d20-fdf8-4df0-b167-415448748bee",
+      "name": "Aggregate Lines",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        896,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// === Same code as the real B1, copied verbatim so this test exercises the real assembly path ===\nconst fs = require('fs');\nconst path = require('path');\n\nconst arr = ($json.line_index || []).map((idx, i) => ({\n  idx,\n  speaker: $json.speaker[i],\n  text: $json.text[i],\n  duration: $json.duration[i],\n  words: $json.word_timings[i],\n  audio_path: $json.audio_path[i]\n}));\narr.sort((a, b) => a.idx - b.idx);\n\nconst parent = $items('Build Fake Timings')[0].json._parent;\nconst runId = $items('Build Fake Timings')[0].json.run_id;\nconst workDir = $('Globals').first().json.WORK_DIR;\nconst font = $('Globals').first().json.CAPTION_FONT || 'Arial';\n\nlet offset = 0;\nconst spriteA = [];\nconst spriteB = [];\nconst globalWords = [];\nfor (const line of arr) {\n  const winStart = offset;\n  const winEnd = offset + line.duration;\n  if (line.speaker === 'A') spriteA.push([winStart, winEnd]);\n  else spriteB.push([winStart, winEnd]);\n  for (const w of (line.words || [])) {\n    if (w.start == null || w.end == null) continue;\n    globalWords.push({ word: w.word, start: offset + w.start, end: offset + w.end });\n  }\n  offset += line.duration;\n}\nconst totalDuration = offset;\n\nfunction assTime(t) {\n  const h = Math.floor(t / 3600);\n  const m = Math.floor((t % 3600) / 60);\n  const s = Math.floor(t % 60);\n  const cs = Math.floor((t - Math.floor(t)) * 100);\n  return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;\n}\nconst assHeader = `[Script Info]\\nScriptType: v4.00+\\nPlayResX: 720\\nPlayResY: 1280\\n\\n[V4+ Styles]\\nFormat: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, Outline, Shadow, Alignment, MarginL, MarginR, MarginV\\nStyle: Cap,${font},64,&H00FFFFFF,&H00000000,&H00000000,1,6,0,2,40,40,260\\n\\n[Events]\\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\\n`;\nconst dialogueLines = globalWords.map(w => {\n  const txt = String(w.word).replace(/[{}]/g, '');\n  return `Dialogue: 0,${assTime(w.start)},${assTime(w.end)},Cap,,0,0,0,,${txt.toUpperCase()}`;\n}).join('\\n');\nconst assPath = path.join(workDir, `${runId}_captions.ass`);\nfs.writeFileSync(assPath, assHeader + dialogueLines + '\\n');\n\nconst listPath = path.join(workDir, `${runId}_concat.txt`);\nfs.writeFileSync(listPath, arr.map(l => `file '${l.audio_path.replace(/'/g, \"'\\\\''\")}'`).join('\\n'));\nconst mergedAudioPath = path.join(workDir, `${runId}_voice.mp3`);\n\nreturn [{\n  json: {\n    ...parent,\n    run_id: runId,\n    total_audio_duration: totalDuration,\n    sprite_a_windows: spriteA,\n    sprite_b_windows: spriteB,\n    ass_path: assPath,\n    concat_list_path: listPath,\n    merged_audio_path: mergedAudioPath\n  }\n}];"
+      },
+      "id": "8dd0bbbb-cdde-448e-9f4c-659ed36577ae",
+      "name": "Build Timing + Captions",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=ffmpeg -y -f concat -safe 0 -i \"{{ $json.concat_list_path }}\" -c copy \"{{ $json.merged_audio_path }}\""
+      },
+      "id": "9be6ad3b-6e2f-4ec8-b14a-3742af426e7e",
+      "name": "FFmpeg Concat Voice",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const fs = require('fs');\nconst path = require('path');\nconst prev = $('Build Timing + Captions').item.json;\nconst mcDir = $('Globals').first().json.MINECRAFT_DIR;\nif (!fs.existsSync(mcDir)) throw new Error('Minecraft dir not found: ' + mcDir);\nconst clips = fs.readdirSync(mcDir).filter(f => /\\.(mp4|mov|mkv|webm)$/i.test(f));\nif (clips.length === 0) throw new Error('No video clips in ' + mcDir);\nconst pick = clips[Math.floor(Math.random() * clips.length)];\nconst clipPath = path.join(mcDir, pick);\nconst startOffset = Math.floor(Math.random() * 25);\nconst dur = prev.total_audio_duration + 0.5;\nreturn [{ json: { ...prev, mc_clip_path: clipPath, mc_clip_name: pick, mc_start_offset: startOffset, mc_duration: dur } }];"
+      },
+      "id": "742fd109-664b-498f-af6e-16fddad6775f",
+      "name": "Pick Minecraft Clip",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// === Same code as the real B1, copied verbatim ===\nconst prev = $json;\nconst g = $('Globals').first().json;\nconst path = require('path');\n\nconst outPath = path.join(g.FINAL_DIR, `${prev.run_id}_final.mp4`);\n\nconst ena = wins => wins.map(([s, e]) => `between(t,${s.toFixed(3)},${e.toFixed(3)})`).join('+');\nconst aEnable = ena(prev.sprite_a_windows) || '0';\nconst bEnable = ena(prev.sprite_b_windows) || '0';\n\nconst dur = prev.mc_duration.toFixed(3);\nconst musicVol = g.MUSIC_VOLUME || '0.15';\n\nconst assEsc = prev.ass_path.replace(/\\\\/g, '/').replace(/:/g, '\\\\:');\n\nconst filter = [\n  `[0:v]trim=start=${prev.mc_start_offset}:duration=${dur},setpts=PTS-STARTPTS,scale=720:1280:force_original_aspect_ratio=increase,crop=720:1280[bg]`,\n  `[1:v]scale=480:-1[spA]`,\n  `[2:v]scale=480:-1[spB]`,\n  `[bg][spA]overlay=x=20:y=H-h-340:enable='${aEnable}'[t1]`,\n  `[t1][spB]overlay=x=W-w-20:y=H-h-340:enable='${bEnable}'[t2]`,\n  `[t2]subtitles='${assEsc}'[vout]`,\n  `[4:a]volume=${musicVol},aloop=loop=-1:size=2e9[music]`,\n  `[3:a][music]amix=inputs=2:duration=first:dropout_transition=0[aout]`\n].join(';');\n\nconst cmd = [\n  'ffmpeg -y',\n  `-stream_loop -1 -i \"${prev.mc_clip_path}\"`,\n  `-i \"${g.SPRITE_A_PATH}\"`,\n  `-i \"${g.SPRITE_B_PATH}\"`,\n  `-i \"${prev.merged_audio_path}\"`,\n  `-i \"${g.MUSIC_BED_PATH}\"`,\n  `-filter_complex \"${filter}\"`,\n  '-map \"[vout]\" -map \"[aout]\"',\n  `-t ${dur}`,\n  '-c:v libx264 -preset veryfast -crf 21 -pix_fmt yuv420p',\n  '-c:a aac -b:a 192k',\n  `\"${outPath}\"`\n].join(' ');\n\nreturn [{ json: { ...prev, final_video_path: outPath, ffmpeg_cmd: cmd } }];"
+      },
+      "id": "00f6286b-6ed6-4251-9615-d94456885eea",
+      "name": "Build FFmpeg Command",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1792,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "command": "={{ $json.ffmpeg_cmd }}"
+      },
+      "id": "654fb4a1-6be3-41cf-aff8-e80b7385410b",
+      "name": "FFmpeg Assemble Video",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2016,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Verify output and report stats. Does NOT upload anywhere; just leaves the MP4 on disk for inspection.\nconst fs = require('fs');\nconst prev = $('Build FFmpeg Command').item.json;\n\nconst report = {\n  final_video_path: prev.final_video_path,\n  exists: fs.existsSync(prev.final_video_path),\n  size_bytes: 0,\n  size_mb: 0,\n  expected_duration_sec: prev.mc_duration,\n  ass_path: prev.ass_path,\n  audio_path: prev.merged_audio_path,\n  minecraft_clip: prev.mc_clip_name,\n  sprite_a_windows: prev.sprite_a_windows,\n  sprite_b_windows: prev.sprite_b_windows\n};\n\nif (report.exists) {\n  const stat = fs.statSync(prev.final_video_path);\n  report.size_bytes = stat.size;\n  report.size_mb = +(stat.size / 1024 / 1024).toFixed(2);\n  if (stat.size < 100000) {\n    report.warning = 'Output is suspiciously small (<100KB). FFmpeg likely produced a broken file.';\n  }\n} else {\n  report.error = 'FFmpeg did not produce an output file. Check the FFmpeg Assemble Video stderr in the previous node.';\n}\n\nreturn [{ json: report }];"
+      },
+      "id": "27e7285a-569c-4beb-8915-f4ebb59b7b49",
+      "name": "Verify Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2240,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## TEST workflow — FFmpeg only, no ElevenLabs\n\n### What this is\nStandalone workflow to iterate on the FFmpeg assembly stage of B1 without burning ElevenLabs credits. It synthesizes silent MP3s of realistic durations in place of TTS, then runs the **same** assembly path as B1 (caption building, concat, sprite overlay, music mix, subtitle burn).\n\n### How to use\n1. Edit the `lines` array inside **Fake Dialogue Lines** — change speaker / text / duration to test different shapes.\n2. Make sure the same Minecraft clips, sprite PNGs, and music bed referenced in Globals exist in the container.\n3. Run. Inspect the file at `WORK_DIR/{run_id}_final.mp4` on the host (mount your `/tmp/n8n-shorts` to a host path to make this easy).\n4. **Verify Output** node shows file size, expected duration, sprite windows, and the path to the rendered MP4.\n\n### What it does NOT do (deliberately)\n- No Drive upload\n- No Sheets writes\n- No queue / content_plan updates\n- No Claude calls\n- No ElevenLabs calls\n\nThis means the only cost per test run is whatever electricity FFmpeg uses on your laptop.\n\n### If the output is broken\nCheck the **FFmpeg Assemble Video** node's execution data — its stderr is in the output. The most likely failure points:\n- subtitles filter can't find/parse the .ass file (path escaping)\n- music bed file missing or unreadable\n- sprite PNG path wrong\n- minecraft clip shorter than `mc_start_offset + total_audio_duration`\n\n### Want audible test audio instead of silence?\nIn **Build Synth Command**, change `anullsrc=r=44100:cl=mono` to `aevalsrc='sin(440*2*PI*t)':s=44100` for a 440Hz tone. Useful to verify the audio mix landed correctly.",
+        "height": 580,
+        "width": 720,
+        "color": 5
+      },
+      "id": "ff458539-d5ba-4277-8c36-299cbc5e1396",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-06-07T09:36:23.302Z",
+      "createdAt": "2026-06-07T09:36:23.302Z",
+      "role": "workflow:owner",
+      "workflowId": "WcYxYlLDHmE8cm35",
+      "projectId": "O6AJ2gZorGSWwg9b"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-06-08T14:29:41.570Z",
+  "versionId": "c79783f7-adef-4989-9d60-fdf5f3266c86"
+}
