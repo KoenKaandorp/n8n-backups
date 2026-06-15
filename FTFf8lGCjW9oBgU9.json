@@ -25,28 +25,6 @@
         ]
       ]
     },
-    "List PDFs in Drive": {
-      "main": [
-        [
-          {
-            "node": "Read Existing Manifest",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Read Existing Manifest": {
-      "main": [
-        [
-          {
-            "node": "Filter Unindexed",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Filter Unindexed": {
       "main": [
         [
@@ -64,17 +42,6 @@
         [
           {
             "node": "Download PDF",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Download PDF": {
-      "main": [
-        [
-          {
-            "node": "Extract PDF Per Page",
             "type": "main",
             "index": 0
           }
@@ -125,17 +92,6 @@
         ]
       ]
     },
-    "Append Manifest Row": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Books",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Chapter Detect Model": {
       "ai_languageModel": [
         [
@@ -148,6 +104,50 @@
       ]
     },
     "If Has New Books": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Books",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List PDFs in Drive": {
+      "main": [
+        [
+          {
+            "node": "Read Existing Manifest",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download PDF": {
+      "main": [
+        [
+          {
+            "node": "Extract PDF Per Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Existing Manifest": {
+      "main": [
+        [
+          {
+            "node": "Filter Unindexed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Manifest Row": {
       "main": [
         [
           {
@@ -245,64 +245,6 @@
     },
     {
       "parameters": {
-        "resource": "fileFolder",
-        "searchMethod": "query",
-        "queryString": "=mimeType='application/pdf'",
-        "filter": {
-          "folderId": {
-            "__rl": true,
-            "value": "={{ $json.GOOGLE_DRIVE_BOOKS_FOLDER_ID }}",
-            "mode": "id"
-          }
-        },
-        "options": {}
-      },
-      "id": "11e40cb6-cfd8-42fc-b440-fd7350462e33",
-      "name": "List PDFs in Drive",
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        512,
-        -240
-      ],
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "0zoFAIoKxbc72Emc",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "documentId": {
-          "__rl": true,
-          "value": "={{ $('Globals').item.json.BOOK_MANIFEST_SHEET_ID }}",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "Sheet1",
-          "mode": "name"
-        },
-        "options": {}
-      },
-      "id": "c7f54c7b-d9db-4a40-9780-c6681a75ca7d",
-      "name": "Read Existing Manifest",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        720,
-        -240
-      ],
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "ednQsic0oBlvB9dg",
-          "name": "Google Sheets account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "jsCode": "const existing = new Set(\n  $items('Read Existing Manifest').map(i => i.json.drive_file_id).filter(Boolean)\n);\nconst pdfs = $items('List PDFs in Drive').map(i => i.json);\nconst unindexed = pdfs\n  .filter(p => !existing.has(p.id))\n  .map(p => ({ json: { drive_file_id: p.id, drive_file_name: p.name } }));\nif (unindexed.length === 0) {\n  return { json: { drive_file_id: \"empty\", drive_file_name: \"empty\" }};\n}\nreturn unindexed;"
       },
       "id": "cf45ade1-0696-4877-a07e-23352e0a6a09",
@@ -326,31 +268,6 @@
         0,
         0
       ]
-    },
-    {
-      "parameters": {
-        "operation": "download",
-        "fileId": {
-          "__rl": true,
-          "value": "={{ $json.drive_file_id }}",
-          "mode": "id"
-        },
-        "options": {}
-      },
-      "id": "a2bbe1da-7ee5-4296-8b1e-11c2c085c8d1",
-      "name": "Download PDF",
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        256,
-        0
-      ],
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "0zoFAIoKxbc72Emc",
-          "name": "Google Drive account"
-        }
-      }
     },
     {
       "parameters": {
@@ -441,44 +358,6 @@
     },
     {
       "parameters": {
-        "operation": "append",
-        "documentId": {
-          "__rl": true,
-          "value": "={{ $('Globals').item.json.BOOK_MANIFEST_SHEET_ID }}",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "mode": "name",
-          "value": "=Sheet1"
-        },
-        "columns": {
-          "mappingMode": "autoMapInputData",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "id": "6384e15e-a966-4db8-9db9-746049f186e6",
-      "name": "Append Manifest Row",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        1248,
-        0
-      ],
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "ednQsic0oBlvB9dg",
-          "name": "Google Sheets account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "content": "## Workflow A — Book Indexer\n\nRun mnaually after dropping pdf into drive books folder. Checks chapter boundaries and writes down the pages in Book Manifest sheet.\n\n**Sheet columns:** `drive_file_id | title | author | total_chapters | chapters_covered | chapter_boundaries_json | last_used_at | status | notes | indexed_at`",
         "height": 240,
         "width": 480,
@@ -525,6 +404,127 @@
       ],
       "id": "5d687022-76c0-4bdc-9081-0095fffd75fa",
       "name": "If Has New Books"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "searchMethod": "query",
+        "queryString": "=mimeType='application/pdf'",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $json.GOOGLE_DRIVE_BOOKS_FOLDER_ID }}",
+            "mode": "id"
+          }
+        },
+        "options": {}
+      },
+      "id": "010f06a8-1e78-4586-a1a1-ad48904fda8e",
+      "name": "List PDFs in Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        512,
+        -240
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "qNwyljWWXKPmObNF",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.drive_file_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "d2635541-ff08-47fd-bc09-5068ebee70a7",
+      "name": "Download PDF",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        240,
+        0
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "qNwyljWWXKPmObNF",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.BOOK_MANIFEST_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "889bfa84-4df8-4730-b4d4-f235eeedc460",
+      "name": "Read Existing Manifest",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        720,
+        -240
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.BOOK_MANIFEST_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "=Sheet1"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "220eedf7-3fa2-4f86-99d0-52c5369ed6dc",
+      "name": "Append Manifest Row",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1264,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -544,6 +544,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-05-20T16:57:53.262Z",
-  "versionId": "cb75939d-def8-4830-bae9-b98044c9c21c"
+  "updatedAt": "2026-06-15T14:48:32.549Z",
+  "versionId": "38f7be02-d09c-4506-a43c-444b25b73ed6"
 }
