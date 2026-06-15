@@ -409,7 +409,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=You are creating an Instagram carousel from a psychology research paper. The goal is to invite students to participate in similar studies at our faculty — so the carousel needs to be intellectually honest, specific, and intriguing without being clickbait.\n\n=== PAPER ===\nTitle: {{ $json.title }}\nAuthors: {{ $json.authors }}\nField: {{ $json.field }}\nStudy type: {{ $json.study_type }}\n\n=== FULL PAPER TEXT ===\n{{ $json.paper_text }}\n\n=== AUDIENCE ===\nUniversity students 18-25 scrolling Instagram. They are smart, skeptical of academic jargon, and drawn to findings that connect to their own minds and behaviour. They will scroll past anything that feels textbooky or salesy.\n\n=== CAROUSEL STRUCTURE ===\nMake exactly {{ $('Globals').first().json.TOTAL_SLIDES }} slides in this structure. If only 1 slide needs to be generated only do the first from below:\n- Slide 1: HOOK — one specific, surprising, or assumption-flipping idea from the paper. Pulls the thumb-stop.\n- Slides 2 to {{ $('Globals').first().json.TOTAL_SLIDES - 1 }}: CONTENT — set up the question, give the actual finding, give the implication. One idea per slide.\n- Slide {{ $('Globals').first().json.TOTAL_SLIDES }}: CTA — invite the viewer to take part in studies like this at the faculty.\n\n=== RULES ===\n- Stay grounded in the paper. No invented findings. No exaggeration.\n- Headline: max 8 words, bold, declarative. Body: 1-2 short sentences, max ~25 words.\n- Do not start with \"Did you know\", \"Imagine if\", \"Scientists discovered\", \"A new study\".\n- Banned words: mind-blowing, fascinating, incredible, game-changer, shocking.\n- The Instagram caption: ~120-160 words, conversational, paraphrases the finding (no abstract quotes), ends with a soft CTA inviting participation. Mention the faculty by name.\n- Hashtags: 4-7, mix of broad (#psychology) and specific (#cognitivebias, #memoryresearch). Lowercase, no spaces.\n\n=== OUTPUT (strict JSON, no markdown fences) ===\n{\n  \"content_hook\": \"one-line internal summary of what makes this paper post-worthy (for the sheet, not shown to viewers)\",\n  \"content_brief\": \"2-3 sentence rationale for the angle chosen and why it will land with students\",\n  \"slides\": [\n    {\n      \"slide_number\": 1,\n      \"slide_type\": \"hook\",\n      \"headline\": \"<= 8 words\",\n      \"body\": \"1 short sentence, 10-15 words\"\n    },\n    {\n      \"slide_number\": 2,\n      \"slide_type\": \"content\",\n      \"headline\": \"<= 8 words\",\n      \"body\": \"1-2 short sentences\"\n    },\n    {\n      \"slide_number\": {{ $('Globals').first().json.TOTAL_SLIDES }},\n      \"slide_type\": \"cta\",\n      \"headline\": \"Want to take part?\",\n      \"body\": \"Sign up for studies at {{ $('Globals').first().json.FACULTY_NAME }} — {{ $('Globals').first().json.ENROLL_URL_HINT }}.\"\n    }\n  ],\n  \"caption\": \"Instagram caption, 120-160 words, no hashtags inside (those go in their own field)\",\n  \"hashtags\": [\"#psychology\", \"#research\"]\n}",
+        "text": "=You are creating an Instagram carousel from a psychology research paper. The goal is to invite students to participate in similar studies at our faculty — so the carousel needs to be intellectually honest, specific, and intriguing without being clickbait.\n\n=== PAPER ===\nTitle: {{ $json.title }}\nAuthors: {{ $json.authors }}\nField: {{ $json.field }}\nStudy type: {{ $json.study_type }}\n\n=== FULL PAPER TEXT ===\n{{ $json.paper_text }}\n\n=== AUDIENCE ===\nUniversity students 18-25 scrolling Instagram. They are smart, skeptical of academic jargon, and drawn to findings that connect to their own minds and behaviour. They will scroll past anything that feels textbooky or salesy.\n\n=== CAROUSEL STRUCTURE ===\nMake exactly {{ $('Globals').first().json.TOTAL_SLIDES }} slides in this structure:\n- Slide 1: HOOK — one specific, surprising, or assumption-flipping idea from the paper. Pulls the thumb-stop.\n- Slides 2 to {{ $('Globals').first().json.TOTAL_SLIDES - 1 }}: CONTENT — set up the question, give the actual finding, give the implication. One idea per slide.\n- Slide {{ $('Globals').first().json.TOTAL_SLIDES }}: CTA — invite the viewer to take part in studies like this at the faculty.\n\n=== RULES ===\n- Stay grounded in the paper. No invented findings. No exaggeration.\n- Headline: max 8 words, bold, declarative. Body: 1-2 short sentences, max ~25 words.\n- Do not start with \"Did you know\", \"Imagine if\", \"Scientists discovered\", \"A new study\".\n- Banned words: mind-blowing, fascinating, incredible, game-changer, shocking.\n- The Instagram caption: ~120-160 words, conversational, paraphrases the finding (no abstract quotes), ends with a soft CTA inviting participation. Mention the faculty by name.\n- Hashtags: 4-7, mix of broad (#psychology) and specific (#cognitivebias, #memoryresearch). Lowercase, no spaces.\n\n=== OUTPUT (strict JSON, no markdown fences) ===\n{\n  \"content_hook\": \"one-line internal summary of what makes this paper post-worthy (for the sheet, not shown to viewers)\",\n  \"content_brief\": \"2-3 sentence rationale for the angle chosen and why it will land with students\",\n  \"slides\": [\n    {\n      \"slide_number\": 1,\n      \"slide_type\": \"hook\",\n      \"headline\": \"<= 8 words\",\n      \"body\": \"1 short sentence, 10-15 words\"\n    },\n    {\n      \"slide_number\": 2,\n      \"slide_type\": \"content\",\n      \"headline\": \"<= 8 words\",\n      \"body\": \"1-2 short sentences\"\n    },\n    {\n      \"slide_number\": {{ $('Globals').first().json.TOTAL_SLIDES }},\n      \"slide_type\": \"cta\",\n      \"headline\": \"Want to take part?\",\n      \"body\": \"Sign up for studies at {{ $('Globals').first().json.FACULTY_NAME }} — {{ $('Globals').first().json.ENROLL_URL_HINT }}.\"\n    }\n  ],\n  \"caption\": \"Instagram caption, 120-160 words, no hashtags inside (those go in their own field)\",\n  \"hashtags\": [\"#psychology\", \"#research\"]\n}",
         "options": {
           "systemMessage": "You translate academic psychology papers into short, honest Instagram carousels that recruit students into research. You are specific, not salesy. Output strict JSON only, no preamble or markdown fences.",
           "maxIterations": 4
@@ -481,8 +481,8 @@
               "leftValue": "={{ $json._empty }}",
               "rightValue": "",
               "operator": {
-                "type": "string",
-                "operation": "notExists",
+                "type": "boolean",
+                "operation": "false",
                 "singleValue": true
               }
             }
@@ -509,7 +509,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1040,
+        1056,
         -128
       ]
     },
@@ -609,7 +609,7 @@
             {
               "id": "g14",
               "name": "TOTAL_SLIDES",
-              "value": 2,
+              "value": 5,
               "type": "number"
             },
             {
@@ -1009,6 +1009,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-06-08T17:34:30.789Z",
-  "versionId": "3d859eca-610c-4008-8607-77a81b22d082"
+  "updatedAt": "2026-06-15T14:44:12.096Z",
+  "versionId": "8b73083a-3b0b-4902-b04d-9a7f82d05e85"
 }
