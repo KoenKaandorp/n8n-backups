@@ -30,28 +30,6 @@
         ]
       ]
     },
-    "Read Manifest": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Read Content Plan": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
     "Find Unplanned Chapters": {
       "main": [
         [
@@ -69,17 +47,6 @@
         [
           {
             "node": "Download PDF",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Download PDF": {
-      "main": [
-        [
-          {
-            "node": "Extract PDF Per Page",
             "type": "main",
             "index": 0
           }
@@ -141,17 +108,6 @@
         ]
       ]
     },
-    "Append Concept Rows": {
-      "main": [
-        [
-          {
-            "node": "Loop Each Chapter",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Merge": {
       "main": [
         [
@@ -168,6 +124,50 @@
         [
           {
             "node": "Loop Each Chapter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Content Plan": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Read Manifest": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append Concept Rows": {
+      "main": [
+        [
+          {
+            "node": "Loop Each Chapter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download PDF": {
+      "main": [
+        [
+          {
+            "node": "Extract PDF Per Page",
             "type": "main",
             "index": 0
           }
@@ -271,64 +271,6 @@
     },
     {
       "parameters": {
-        "documentId": {
-          "__rl": true,
-          "value": "={{ $json.BOOK_MANIFEST_SHEET_ID }}",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "={{ $json.BOOK_MANIFEST_TAB }}",
-          "mode": "name"
-        },
-        "options": {}
-      },
-      "id": "43790233-2924-4cc3-960f-556a838456b4",
-      "name": "Read Manifest",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        320,
-        432
-      ],
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "ednQsic0oBlvB9dg",
-          "name": "Google Sheets account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "documentId": {
-          "__rl": true,
-          "value": "={{ $('Globals').item.json.CONTENT_PLAN_SHEET_ID }}",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "={{ $('Globals').item.json.CONTENT_PLAN_TAB }}",
-          "mode": "name"
-        },
-        "options": {}
-      },
-      "id": "30448c84-c842-49d2-a4ce-ce9e7821447d",
-      "name": "Read Content Plan",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        320,
-        592
-      ],
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "ednQsic0oBlvB9dg",
-          "name": "Google Sheets account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "jsCode": "// Find chapters that have NO rows yet in content_plan.\n// A chapter is identified by drive_file_id + chapter_number.\nconst manifest = $items('Read Manifest').map(i => i.json);\nconst plan = $items('Read Content Plan').map(i => i.json);\n\n// Set of already-planned chapter keys\nconst plannedKeys = new Set(\n  plan\n    .filter(r => r.drive_file_id && (r.chapter_number !== undefined && r.chapter_number !== ''))\n    .map(r => `${r.drive_file_id}::${r.chapter_number}`)\n);\n\nconst toPlan = [];\nfor (const book of manifest) {\n  if (book.status !== 'active') continue;\n  let chapters = [];\n  try { chapters = JSON.parse(book.chapter_boundaries_json || '[]'); } catch (e) { continue; }\n  for (const ch of chapters) {\n    const key = `${book.drive_file_id}::${ch.chapter_number}`;\n    if (plannedKeys.has(key)) continue;\n    toPlan.push({\n      drive_file_id: book.drive_file_id,\n      book_title: book.title,\n      book_author: book.author,\n      chapter_number: ch.chapter_number,\n      chapter_title: ch.chapter_title,\n      start_page: ch.start_page,\n      end_page: ch.end_page\n    });\n  }\n}\n\nif (toPlan.length === 0) {\n  return [{ json: { _empty: true, message: 'All chapters already planned.' } }];\n}\nreturn toPlan.map(c => ({ json: c }));"
       },
       "id": "d117b057-4e80-4de5-b561-b510a0fb53d2",
@@ -355,31 +297,6 @@
     },
     {
       "parameters": {
-        "operation": "download",
-        "fileId": {
-          "__rl": true,
-          "value": "={{ $json.drive_file_id }}",
-          "mode": "id"
-        },
-        "options": {}
-      },
-      "id": "d00fd1dd-997b-4caa-a45f-2c2131262f11",
-      "name": "Download PDF",
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        96,
-        784
-      ],
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "0zoFAIoKxbc72Emc",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "operation": "pdf",
         "options": {
           "joinPages": false
@@ -403,7 +320,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        512,
+        480,
         784
       ]
     },
@@ -421,7 +338,7 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        720,
+        672,
         784
       ]
     },
@@ -442,7 +359,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
       "typeVersion": 1.3,
       "position": [
-        720,
+        672,
         976
       ],
       "credentials": {
@@ -461,47 +378,9 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        976,
+        960,
         784
       ]
-    },
-    {
-      "parameters": {
-        "operation": "append",
-        "documentId": {
-          "__rl": true,
-          "value": "={{ $('Globals').first().json.CONTENT_PLAN_SHEET_ID }}",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "mode": "name",
-          "value": "={{ $('Globals').first().json.CONTENT_PLAN_TAB }}"
-        },
-        "columns": {
-          "mappingMode": "autoMapInputData",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "id": "d23167ca-5303-4a1f-80f3-b1660240a1e9",
-      "name": "Append Concept Rows",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        1168,
-        784
-      ],
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "ednQsic0oBlvB9dg",
-          "name": "Google Sheets account"
-        }
-      }
     },
     {
       "parameters": {
@@ -563,6 +442,127 @@
       ],
       "id": "40882dc1-5832-46d7-9b97-9dd9dfc86395",
       "name": "If"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $json.BOOK_MANIFEST_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $json.BOOK_MANIFEST_TAB }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "6dbb6787-13cb-4349-b660-6d6f1f0cf11f",
+      "name": "Read Manifest",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        336,
+        432
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.CONTENT_PLAN_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.CONTENT_PLAN_TAB }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "fe1ff5d3-8007-48c4-ac4b-f119c8347199",
+      "name": "Read Content Plan",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        336,
+        560
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.CONTENT_PLAN_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $('Globals').first().json.CONTENT_PLAN_TAB }}"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "5b94c952-a2e9-4df7-b8f7-8f10d5b6faf5",
+      "name": "Append Concept Rows",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1136,
+        784
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.drive_file_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "70cfc7be-7427-458a-a7a0-8a5f2e43ab55",
+      "name": "Download PDF",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        112,
+        784
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "qNwyljWWXKPmObNF",
+          "name": "Google Drive account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -582,6 +582,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-05-20T17:38:28.816Z",
-  "versionId": "39b9b4fc-b35c-41f3-89ce-db3ab79f95da"
+  "updatedAt": "2026-06-15T14:55:00.882Z",
+  "versionId": "c458a262-73a3-49a4-925c-d17fc915ecc3"
 }
