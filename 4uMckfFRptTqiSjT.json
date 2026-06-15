@@ -228,50 +228,6 @@
         ]
       ]
     },
-    "Fan Out Lines": {
-      "main": [
-        [
-          {
-            "node": "Convert text to speech",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Convert text to speech": {
-      "main": [
-        [
-          {
-            "node": "Prep Audio Path",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Aggregate Lines": {
-      "main": [
-        [
-          {
-            "node": "Build Timing + Captions",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Build Timing + Captions": {
-      "main": [
-        [
-          {
-            "node": "FFmpeg Concat Voice",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "FFmpeg Concat Voice": {
       "main": [
         [
@@ -426,6 +382,46 @@
         ]
       ]
     },
+    "Fan Out Lines": {
+      "main": [
+        [
+          {
+            "node": "Loop Lines",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Lines": {
+      "main": [
+        [
+          {
+            "node": "Measure Lines",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Convert text to speech",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert text to speech": {
+      "main": [
+        [
+          {
+            "node": "Prep Audio Path",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Prep Audio Path": {
       "main": [
         [
@@ -441,29 +437,40 @@
       "main": [
         [
           {
-            "node": "FFprobe Duration",
+            "node": "Loop Lines",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "FFprobe Duration": {
-      "main": [
-        [
-          {
-            "node": "Build Word Timings",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Build Word Timings": {
+    "Measure Lines": {
       "main": [
         [
           {
             "node": "Aggregate Lines",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Lines": {
+      "main": [
+        [
+          {
+            "node": "Build Timing + Captions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Timing + Captions": {
+      "main": [
+        [
+          {
+            "node": "FFmpeg Concat Voice",
             "type": "main",
             "index": 0
           }
@@ -994,98 +1001,6 @@
     },
     {
       "parameters": {
-        "jsCode": "const prev = $json;\nconst lines = prev.idea_lines || [];\nreturn lines.map((l, i) => ({\n  json: {\n    _parent: { ...prev, idea_lines: undefined },\n    line_index: i,\n    speaker: l.speaker,\n    text: l.text,\n    voice_id: l.speaker === 'A' ? $('Globals').first().json.CHARACTER_A_VOICE_ID : $('Globals').first().json.CHARACTER_B_VOICE_ID\n  }\n}));"
-      },
-      "id": "5f9a6a7f-4e08-4954-bff6-cf698ecb8d72",
-      "name": "Fan Out Lines",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2768,
-        4672
-      ]
-    },
-    {
-      "parameters": {
-        "resource": "speech",
-        "voice": {
-          "__rl": true,
-          "value": "={{ $json.voice_id }}",
-          "mode": "id"
-        },
-        "text": "={{ $json.text }}",
-        "additionalOptions": {},
-        "requestOptions": {}
-      },
-      "type": "@elevenlabs/n8n-nodes-elevenlabs.elevenLabs",
-      "typeVersion": 1,
-      "position": [
-        3040,
-        4672
-      ],
-      "id": "697628e8-b886-47d8-a5ed-cd9e951aaf05",
-      "name": "Convert text to speech",
-      "retryOnFail": true,
-      "executeOnce": false,
-      "waitBetweenTries": 5000,
-      "credentials": {
-        "elevenLabsApi": {
-          "id": "TI4ppX7kubPpBihl",
-          "name": "ElevenLabs account 2"
-        }
-      },
-      "onError": "continueErrorOutput"
-    },
-    {
-      "parameters": {
-        "fieldsToAggregate": {
-          "fieldToAggregate": [
-            {
-              "fieldToAggregate": "line_index"
-            },
-            {
-              "fieldToAggregate": "speaker"
-            },
-            {
-              "fieldToAggregate": "text"
-            },
-            {
-              "fieldToAggregate": "duration"
-            },
-            {
-              "fieldToAggregate": "word_timings"
-            },
-            {
-              "fieldToAggregate": "audio_path"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "404a4dc5-d2ee-42b1-9cff-0bce02af1625",
-      "name": "Aggregate Lines",
-      "type": "n8n-nodes-base.aggregate",
-      "typeVersion": 1,
-      "position": [
-        4096,
-        4672
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "const fs = require('fs');\nconst path = require('path');\n\nconst arr = ($json.line_index || []).map((idx, i) => ({\n  idx,\n  speaker: $json.speaker[i],\n  text: $json.text[i],\n  duration: $json.duration[i],\n  words: $json.word_timings[i],\n  audio_path: $json.audio_path[i]\n}));\narr.sort((a, b) => a.idx - b.idx);\n\nconst parent = $items('Build Word Timings')[0].json._parent;\nconst runId = $items('Build Word Timings')[0].json.run_id;\nconst workDir = $('Globals').first().json.WORK_DIR;\nconst font = $('Globals').first().json.CAPTION_FONT || 'Arial';\n\nlet offset = 0;\nconst spriteA = [];\nconst spriteB = [];\nconst globalWords = [];\nfor (const line of arr) {\n  const winStart = offset;\n  const winEnd = offset + line.duration;\n  if (line.speaker === 'A') spriteA.push([winStart, winEnd]);\n  else spriteB.push([winStart, winEnd]);\n  for (const w of (line.words || [])) {\n    if (w.start == null || w.end == null) continue;\n    globalWords.push({ word: w.word, start: offset + w.start, end: offset + w.end });\n  }\n  offset += line.duration;\n}\nconst totalDuration = offset;\n\nfunction assTime(t) {\n  const h = Math.floor(t / 3600);\n  const m = Math.floor((t % 3600) / 60);\n  const s = Math.floor(t % 60);\n  const cs = Math.floor((t - Math.floor(t)) * 100);\n  return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;\n}\nconst assHeader = `[Script Info]\\nScriptType: v4.00+\\nPlayResX: 720\\nPlayResY: 1280\\n\\n[V4+ Styles]\\nFormat: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, Outline, Shadow, Alignment, MarginL, MarginR, MarginV\\nStyle: Cap,${font},64,&H00FFFFFF,&H00000000,&H00000000,1,6,0,2,40,40,260\\n\\n[Events]\\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\\n`;\nconst dialogueLines = globalWords.map(w => {\n  const txt = String(w.word).replace(/[{}]/g, '');\n  return `Dialogue: 0,${assTime(w.start)},${assTime(w.end)},Cap,,0,0,0,,${txt.toUpperCase()}`;\n}).join('\\n');\nconst assPath = path.join(workDir, `${runId}_captions.ass`);\nfs.writeFileSync(assPath, assHeader + dialogueLines + '\\n');\n\nconst listPath = path.join(workDir, `${runId}_concat.txt`);\nfs.writeFileSync(listPath, arr.map(l => `file '${l.audio_path.replace(/'/g, \"'\\\\''\")}'`).join('\\n'));\nconst mergedAudioPath = path.join(workDir, `${runId}_voice.mp3`);\n\nreturn [{\n  json: {\n    ...parent,\n    run_id: runId,\n    total_audio_duration: totalDuration,\n    sprite_a_windows: spriteA,\n    sprite_b_windows: spriteB,\n    ass_path: assPath,\n    concat_list_path: listPath,\n    merged_audio_path: mergedAudioPath\n  }\n}];"
-      },
-      "id": "90d1146b-c146-440e-b8c8-5549ac1a5081",
-      "name": "Build Timing + Captions",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        4320,
-        4672
-      ]
-    },
-    {
-      "parameters": {
         "command": "=ffmpeg -y -f concat -safe 0 -i \"{{ $json.concat_list_path }}\" -c copy \"{{ $json.merged_audio_path }}\""
       },
       "id": "5c6996b2-14d3-4db9-b532-3f5ac64345bc",
@@ -1093,8 +1008,8 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        4544,
-        4672
+        4496,
+        4912
       ]
     },
     {
@@ -1107,7 +1022,7 @@
       "typeVersion": 2,
       "position": [
         2784,
-        4880
+        5136
       ]
     },
     {
@@ -1120,7 +1035,7 @@
       "typeVersion": 2,
       "position": [
         3008,
-        4880
+        5136
       ]
     },
     {
@@ -1133,7 +1048,7 @@
       "typeVersion": 1,
       "position": [
         3216,
-        4880
+        5136
       ]
     },
     {
@@ -1146,7 +1061,7 @@
       "typeVersion": 2,
       "position": [
         3440,
-        4880
+        5136
       ]
     },
     {
@@ -1159,7 +1074,7 @@
       "typeVersion": 2,
       "position": [
         3888,
-        4880
+        5136
       ]
     },
     {
@@ -1172,7 +1087,7 @@
       "typeVersion": 2,
       "position": [
         4560,
-        4880
+        5136
       ]
     },
     {
@@ -1348,7 +1263,7 @@
       "typeVersion": 4.5,
       "position": [
         4096,
-        4880
+        5136
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -1395,7 +1310,7 @@
       "typeVersion": 4.5,
       "position": [
         4320,
-        4880
+        5136
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -1450,7 +1365,7 @@
       "typeVersion": 3,
       "position": [
         3664,
-        4880
+        5136
       ],
       "credentials": {
         "googleDriveOAuth2Api": {
@@ -1461,16 +1376,73 @@
     },
     {
       "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "// Recover line context positionally — the ElevenLabs community node drops\n// pairedItem and overwrites $json with response headers, so .item back-references\n// across it fail. $itemIndex aligns with Fan Out Lines as long as line count/order\n// are preserved (keep ElevenLabs on Stop Workflow for errors during testing).\nconst lineCtx = $('Fan Out Lines').all()[$itemIndex].json;\n\nconst workDir = $('Globals').first().json.WORK_DIR;\nconst runId = ($execution.id || ('r' + Date.now())) + '_s' + (lineCtx._parent?.slot || 0);\nconst audioPath = `${workDir}/${runId}_line_${lineCtx.line_index}.mp3`;\n\n// Pass the binary REFERENCE through untouched — do not read .data here.\n// In filesystem binary mode the bytes aren't loaded into the item; the Write\n// node below resolves the on-disk reference for us.\nreturn {\n  json: {\n    _parent: lineCtx._parent,\n    line_index: lineCtx.line_index,\n    speaker: lineCtx.speaker,\n    text: lineCtx.text,\n    audio_path: audioPath,\n    run_id: runId,\n    ffprobe_cmd: `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 \"${audioPath}\"`\n  },\n  binary: $input.item.binary\n};"
+        "jsCode": "const prev = $json;\nconst g = $('Globals').first().json;\nconst lines = prev.idea_lines || [];\nconst runId = (($execution && $execution.id) || ('r' + Date.now())) + '_s' + (prev.slot || 0);\nreturn lines.map((l, i) => ({\n  json: {\n    _parent: { ...prev, idea_lines: undefined, run_id: runId },\n    run_id: runId,\n    line_index: i,\n    speaker: l.speaker,\n    text: l.text,\n    voice_id: l.speaker === 'A' ? g.CHARACTER_A_VOICE_ID : g.CHARACTER_B_VOICE_ID\n  }\n}));"
       },
-      "id": "9f73a577-539a-4a7f-8bd6-c2c5a20118a9",
+      "id": "b99cbb11-4d56-4cb2-8170-961475554361",
+      "name": "Fan Out Lines",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2816,
+        4752
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "4b455cd8-cb26-4755-bb57-9d7ea5e472da",
+      "name": "Loop Lines",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        3024,
+        4752
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "speech",
+        "voice": {
+          "__rl": true,
+          "value": "={{ $json.voice_id }}",
+          "mode": "id"
+        },
+        "text": "={{ $json.text }}",
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "type": "@elevenlabs/n8n-nodes-elevenlabs.elevenLabs",
+      "typeVersion": 1,
+      "position": [
+        3248,
+        4848
+      ],
+      "id": "96d8fa49-687b-4f31-9c17-26ada3ede20a",
+      "name": "Convert text to speech",
+      "retryOnFail": true,
+      "maxTries": 4,
+      "executeOnce": false,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "elevenLabsApi": {
+          "id": "TI4ppX7kubPpBihl",
+          "name": "ElevenLabs account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// One item per loop iteration; batch size 1 means .all()[0] is the current line.\n// We reference Loop Lines directly because the ElevenLabs node drops pairedItem.\nconst lineCtx = $('Loop Lines').all()[0].json;\nconst workDir = $('Globals').first().json.WORK_DIR;\nconst runId = lineCtx.run_id;\nconst audioPath = `${workDir}/${runId}_line_${lineCtx.line_index}.mp3`;\n\n// Pass the binary REFERENCE through untouched (filesystem binary mode).\nreturn {\n  json: {\n    _parent: lineCtx._parent,\n    run_id: runId,\n    line_index: lineCtx.line_index,\n    speaker: lineCtx.speaker,\n    text: lineCtx.text,\n    audio_path: audioPath\n  },\n  binary: $input.item.binary\n};"
+      },
+      "id": "c4a9d685-dd14-4947-9102-01ee1060e13c",
       "name": "Prep Audio Path",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3232,
-        4672
+        3472,
+        4848
       ]
     },
     {
@@ -1479,40 +1451,74 @@
         "fileName": "={{ $json.audio_path }}",
         "options": {}
       },
-      "id": "86061572-7061-4bcc-bc0a-1d749bb3dbf9",
+      "id": "32b642e0-6aeb-40eb-a945-ec27c4a873fd",
       "name": "Write Audio File",
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        3456,
-        4672
+        3696,
+        4848
       ]
     },
     {
       "parameters": {
-        "command": "={{ $('Prep Audio Path').item.json.ffprobe_cmd }}"
+        "jsCode": "// Runs once after the loop completes. Measures every finished MP3 from disk,\n// so a dropped/failed line surfaces loudly instead of silently shrinking the video.\nconst fs = require('fs');\nconst { execSync } = require('child_process');\nconst g = $('Globals').first().json;\nconst workDir = g.WORK_DIR;\n\nconst lines = $('Fan Out Lines').all().map(i => i.json);\nif (lines.length === 0) throw new Error('Measure Lines: no lines from Fan Out Lines');\nconst runId = lines[0].run_id;\n\nreturn lines.map(l => {\n  const audioPath = `${workDir}/${runId}_line_${l.line_index}.mp3`;\n  if (!fs.existsSync(audioPath)) {\n    throw new Error('Missing audio for line ' + l.line_index + ' (TTS failed): ' + audioPath);\n  }\n  let duration = NaN;\n  try {\n    duration = parseFloat(execSync(\n      `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 \"${audioPath}\"`\n    ).toString().trim());\n  } catch (e) { duration = NaN; }\n  if (!duration || duration <= 0 || Number.isNaN(duration)) {\n    const wc = (l.text || '').trim().split(/\\s+/).filter(Boolean).length;\n    duration = Math.max(1.0, wc / 2.5); // fallback only\n  }\n  const words = (l.text || '').trim().split(/\\s+/).filter(Boolean);\n  const perWord = words.length > 0 ? duration / words.length : 0;\n  const word_timings = words.map((w, i) => ({\n    word: w,\n    start: +(i * perWord).toFixed(3),\n    end: +((i + 1) * perWord).toFixed(3)\n  }));\n  return { json: {\n    _parent: l._parent,\n    run_id: runId,\n    line_index: l.line_index,\n    speaker: l.speaker,\n    text: l.text,\n    duration,\n    word_timings,\n    audio_path: audioPath\n  }};\n});"
       },
-      "id": "6bbeea43-b3ab-49ed-8f30-1b6c1be28151",
-      "name": "FFprobe Duration",
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [
-        3680,
-        4672
-      ]
-    },
-    {
-      "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "// Context from Prep Audio Path (own node — pairedItem intact through the\n// Write + executeCommand chain). Duration from the ffprobe stdout on this item.\nconst lineCtx = $('Prep Audio Path').item.json;\n\nlet duration = parseFloat(String($json.stdout || '').trim());\nif (!duration || duration <= 0 || Number.isNaN(duration)) {\n  const wc = (lineCtx.text || '').trim().split(/\\s+/).filter(Boolean).length;\n  duration = Math.max(1.0, wc / 2.5); // fallback only\n}\n\nconst words = (lineCtx.text || '').trim().split(/\\s+/).filter(Boolean);\nconst perWord = words.length > 0 ? duration / words.length : 0;\nconst word_timings = words.map((w, i) => ({\n  word: w,\n  start: +(i * perWord).toFixed(3),\n  end: +((i + 1) * perWord).toFixed(3)\n}));\n\nreturn {\n  json: {\n    _parent: lineCtx._parent,\n    line_index: lineCtx.line_index,\n    speaker: lineCtx.speaker,\n    text: lineCtx.text,\n    duration,\n    word_timings,\n    audio_path: lineCtx.audio_path,\n    run_id: lineCtx.run_id\n  }\n};"
-      },
-      "id": "b15015e2-701f-4a91-9533-005fa426f0b4",
-      "name": "Build Word Timings",
+      "id": "6494d734-b7fc-4ad8-92fc-95090086062f",
+      "name": "Measure Lines",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3904,
-        4672
+        3248,
+        4640
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "line_index"
+            },
+            {
+              "fieldToAggregate": "speaker"
+            },
+            {
+              "fieldToAggregate": "text"
+            },
+            {
+              "fieldToAggregate": "duration"
+            },
+            {
+              "fieldToAggregate": "word_timings"
+            },
+            {
+              "fieldToAggregate": "audio_path"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "74c95908-a4dd-4d38-96f5-0f4c4efe0431",
+      "name": "Aggregate Lines",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        3504,
+        4640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const fs = require('fs');\nconst path = require('path');\n\nconst arr = ($json.line_index || []).map((idx, i) => ({\n  idx,\n  speaker: $json.speaker[i],\n  text: $json.text[i],\n  duration: $json.duration[i],\n  words: $json.word_timings[i],\n  audio_path: $json.audio_path[i]\n}));\narr.sort((a, b) => a.idx - b.idx);\n\nconst parent = $items('Measure Lines')[0].json._parent;\nconst runId = $items('Measure Lines')[0].json.run_id;\nconst workDir = $('Globals').first().json.WORK_DIR;\nconst font = $('Globals').first().json.CAPTION_FONT || 'Arial';\n\nlet offset = 0;\nconst spriteA = [];\nconst spriteB = [];\nconst globalWords = [];\nfor (const line of arr) {\n  const winStart = offset;\n  const winEnd = offset + line.duration;\n  if (line.speaker === 'A') spriteA.push([winStart, winEnd]);\n  else spriteB.push([winStart, winEnd]);\n  for (const w of (line.words || [])) {\n    if (w.start == null || w.end == null) continue;\n    globalWords.push({ word: w.word, start: offset + w.start, end: offset + w.end });\n  }\n  offset += line.duration;\n}\nconst totalDuration = offset;\n\nfunction assTime(t) {\n  const h = Math.floor(t / 3600);\n  const m = Math.floor((t % 3600) / 60);\n  const s = Math.floor(t % 60);\n  const cs = Math.floor((t - Math.floor(t)) * 100);\n  return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;\n}\nconst assHeader = `[Script Info]\\nScriptType: v4.00+\\nPlayResX: 720\\nPlayResY: 1280\\n\\n[V4+ Styles]\\nFormat: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, Outline, Shadow, Alignment, MarginL, MarginR, MarginV\\nStyle: Cap,${font},64,&H00FFFFFF,&H00000000,&H00000000,1,6,0,2,40,40,260\\n\\n[Events]\\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\\n`;\nconst dialogueLines = globalWords.map(w => {\n  const txt = String(w.word).replace(/[{}]/g, '');\n  return `Dialogue: 0,${assTime(w.start)},${assTime(w.end)},Cap,,0,0,0,,${txt.toUpperCase()}`;\n}).join('\\n');\nconst assPath = path.join(workDir, `${runId}_captions.ass`);\nfs.writeFileSync(assPath, assHeader + dialogueLines + '\\n');\n\nconst listPath = path.join(workDir, `${runId}_concat.txt`);\nfs.writeFileSync(listPath, arr.map(l => `file '${l.audio_path.replace(/'/g, \"'\\\\''\")}'`).join('\\n'));\nconst mergedAudioPath = path.join(workDir, `${runId}_voice.mp3`);\n\nreturn [{\n  json: {\n    ...parent,\n    run_id: runId,\n    total_audio_duration: totalDuration,\n    sprite_a_windows: spriteA,\n    sprite_b_windows: spriteB,\n    ass_path: assPath,\n    concat_list_path: listPath,\n    merged_audio_path: mergedAudioPath\n  }\n}];"
+      },
+      "id": "9c565f8e-4c9b-469a-a9c3-ddb2d96e18be",
+      "name": "Build Timing + Captions",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3744,
+        4640
       ]
     }
   ],
@@ -1533,6 +1539,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-06-15T18:57:23.328Z",
-  "versionId": "f5410998-77d2-4f88-b6b6-e7827ace9d1c"
+  "updatedAt": "2026-06-15T19:03:11.384Z",
+  "versionId": "c9cabf55-8f90-4131-bbf4-8cd511ab661c"
 }
