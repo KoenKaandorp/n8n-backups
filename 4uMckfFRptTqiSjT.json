@@ -243,18 +243,7 @@
       "main": [
         [
           {
-            "node": "Save Line Audio + Timings",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Save Line Audio + Timings": {
-      "main": [
-        [
-          {
-            "node": "Aggregate Lines",
+            "node": "Prep Audio Path",
             "type": "main",
             "index": 0
           }
@@ -431,6 +420,50 @@
         [
           {
             "node": "Capture Drive Ref",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prep Audio Path": {
+      "main": [
+        [
+          {
+            "node": "Write Audio File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Audio File": {
+      "main": [
+        [
+          {
+            "node": "FFprobe Duration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "FFprobe Duration": {
+      "main": [
+        [
+          {
+            "node": "Build Word Timings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Word Timings": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Lines",
             "type": "main",
             "index": 0
           }
@@ -614,7 +647,7 @@
             {
               "id": "g50",
               "name": "FINISHED_VIDEOS_DRIVE_FOLDER_ID",
-              "value": "1Kfj3dN6a3wprHruvfBFeTTkc7sAyLM0c",
+              "value": "1CFLmq_jb-ErXgkdmnWyOK4Krk_NjNqrg",
               "type": "string"
             },
             {
@@ -968,7 +1001,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2832,
+        2768,
         4672
       ]
     },
@@ -987,7 +1020,7 @@
       "type": "@elevenlabs/n8n-nodes-elevenlabs.elevenLabs",
       "typeVersion": 1,
       "position": [
-        3008,
+        3040,
         4672
       ],
       "id": "697628e8-b886-47d8-a5ed-cd9e951aaf05",
@@ -1002,19 +1035,6 @@
         }
       },
       "onError": "continueErrorOutput"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Persist ElevenLabs audio to disk and measure real duration with ffprobe,\n// matching the file-based assembly path proven in the FFmpeg test workflow.\nconst fs = require('fs');\nconst path = require('path');\nconst { execSync } = require('child_process');\n\nconst lineCtx = $('Fan Out Lines').item.json;\n\n// Auto-detect the binary property the ElevenLabs node returned\nconst binaryProps = Object.keys($binary || {});\nif (binaryProps.length === 0) throw new Error('No binary attached from ElevenLabs node.');\nconst binKey = binaryProps[0];\nconst bin = $binary[binKey];\nif (!bin || !bin.data) throw new Error('Binary key ' + binKey + ' has no data');\n\nconst workDir = $('Globals').first().json.WORK_DIR;\nif (!fs.existsSync(workDir)) fs.mkdirSync(workDir, { recursive: true });\n\n// Stable run id — same across all lines of this concept (slot is constant)\nconst runId = ($execution.id || ('r' + Date.now())) + '_s' + (lineCtx._parent?.slot || 0);\n\n// Write this line's MP3 — this is what FFmpeg Concat Voice references later\nconst audioPath = path.join(workDir, `${runId}_line_${lineCtx.line_index}.mp3`);\nfs.writeFileSync(audioPath, Buffer.from(bin.data, 'base64'));\n\n// Measure true duration (exact, no byte-length guessing)\nlet duration;\ntry {\n  const out = execSync(\n    `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 \"${audioPath}\"`,\n    { encoding: 'utf8' }\n  );\n  duration = parseFloat(String(out).trim());\n} catch (e) {\n  duration = NaN;\n}\nif (!duration || duration <= 0 || Number.isNaN(duration)) {\n  const wc = (lineCtx.text || '').trim().split(/\\s+/).filter(Boolean).length;\n  duration = Math.max(1.0, wc / 2.5); // fallback only\n}\n\n// Even word distribution across the measured duration\nconst words = (lineCtx.text || '').trim().split(/\\s+/).filter(Boolean);\nconst perWord = words.length > 0 ? duration / words.length : 0;\nconst word_timings = words.map((w, i) => ({\n  word: w,\n  start: +(i * perWord).toFixed(3),\n  end: +((i + 1) * perWord).toFixed(3)\n}));\n\n// JSON only — audio lives on disk now, so no need to carry binary through aggregation\nreturn [{\n  json: {\n    _parent: lineCtx._parent,\n    line_index: lineCtx.line_index,\n    speaker: lineCtx.speaker,\n    text: lineCtx.text,\n    duration,\n    word_timings,\n    audio_path: audioPath,\n    run_id: runId\n  }\n}];"
-      },
-      "id": "d30d893b-5654-44d4-8251-a3fe5c7ed794",
-      "name": "Save Line Audio + Timings",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        3200,
-        4672
-      ]
     },
     {
       "parameters": {
@@ -1047,20 +1067,20 @@
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        3424,
+        4096,
         4672
       ]
     },
     {
       "parameters": {
-        "jsCode": "const fs = require('fs');\nconst path = require('path');\n\nconst arr = ($json.line_index || []).map((idx, i) => ({\n  idx,\n  speaker: $json.speaker[i],\n  text: $json.text[i],\n  duration: $json.duration[i],\n  words: $json.word_timings[i],\n  audio_path: $json.audio_path[i]\n}));\narr.sort((a, b) => a.idx - b.idx);\n\nconst parent = $items('Save Line Audio + Timings')[0].json._parent;\nconst runId = $items('Save Line Audio + Timings')[0].json.run_id;\nconst workDir = $('Globals').first().json.WORK_DIR;\nconst font = $('Globals').first().json.CAPTION_FONT || 'Arial';\n\nlet offset = 0;\nconst spriteA = [];\nconst spriteB = [];\nconst globalWords = [];\nfor (const line of arr) {\n  const winStart = offset;\n  const winEnd = offset + line.duration;\n  if (line.speaker === 'A') spriteA.push([winStart, winEnd]);\n  else spriteB.push([winStart, winEnd]);\n  for (const w of (line.words || [])) {\n    if (w.start == null || w.end == null) continue;\n    globalWords.push({ word: w.word, start: offset + w.start, end: offset + w.end });\n  }\n  offset += line.duration;\n}\nconst totalDuration = offset;\n\nfunction assTime(t) {\n  const h = Math.floor(t / 3600);\n  const m = Math.floor((t % 3600) / 60);\n  const s = Math.floor(t % 60);\n  const cs = Math.floor((t - Math.floor(t)) * 100);\n  return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;\n}\nconst assHeader = `[Script Info]\\nScriptType: v4.00+\\nPlayResX: 720\\nPlayResY: 1280\\n\\n[V4+ Styles]\\nFormat: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, Outline, Shadow, Alignment, MarginL, MarginR, MarginV\\nStyle: Cap,${font},64,&H00FFFFFF,&H00000000,&H00000000,1,6,0,2,40,40,260\\n\\n[Events]\\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\\n`;\nconst dialogueLines = globalWords.map(w => {\n  const txt = String(w.word).replace(/[{}]/g, '');\n  return `Dialogue: 0,${assTime(w.start)},${assTime(w.end)},Cap,,0,0,0,,${txt.toUpperCase()}`;\n}).join('\\n');\nconst assPath = path.join(workDir, `${runId}_captions.ass`);\nfs.writeFileSync(assPath, assHeader + dialogueLines + '\\n');\n\nconst listPath = path.join(workDir, `${runId}_concat.txt`);\nfs.writeFileSync(listPath, arr.map(l => `file '${l.audio_path.replace(/'/g, \"'\\\\''\")}'`).join('\\n'));\nconst mergedAudioPath = path.join(workDir, `${runId}_voice.mp3`);\n\nreturn [{\n  json: {\n    ...parent,\n    run_id: runId,\n    total_audio_duration: totalDuration,\n    sprite_a_windows: spriteA,\n    sprite_b_windows: spriteB,\n    ass_path: assPath,\n    concat_list_path: listPath,\n    merged_audio_path: mergedAudioPath\n  }\n}];"
+        "jsCode": "const fs = require('fs');\nconst path = require('path');\n\nconst arr = ($json.line_index || []).map((idx, i) => ({\n  idx,\n  speaker: $json.speaker[i],\n  text: $json.text[i],\n  duration: $json.duration[i],\n  words: $json.word_timings[i],\n  audio_path: $json.audio_path[i]\n}));\narr.sort((a, b) => a.idx - b.idx);\n\nconst parent = $items('Build Word Timings')[0].json._parent;\nconst runId = $items('Build Word Timings')[0].json.run_id;\nconst workDir = $('Globals').first().json.WORK_DIR;\nconst font = $('Globals').first().json.CAPTION_FONT || 'Arial';\n\nlet offset = 0;\nconst spriteA = [];\nconst spriteB = [];\nconst globalWords = [];\nfor (const line of arr) {\n  const winStart = offset;\n  const winEnd = offset + line.duration;\n  if (line.speaker === 'A') spriteA.push([winStart, winEnd]);\n  else spriteB.push([winStart, winEnd]);\n  for (const w of (line.words || [])) {\n    if (w.start == null || w.end == null) continue;\n    globalWords.push({ word: w.word, start: offset + w.start, end: offset + w.end });\n  }\n  offset += line.duration;\n}\nconst totalDuration = offset;\n\nfunction assTime(t) {\n  const h = Math.floor(t / 3600);\n  const m = Math.floor((t % 3600) / 60);\n  const s = Math.floor(t % 60);\n  const cs = Math.floor((t - Math.floor(t)) * 100);\n  return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;\n}\nconst assHeader = `[Script Info]\\nScriptType: v4.00+\\nPlayResX: 720\\nPlayResY: 1280\\n\\n[V4+ Styles]\\nFormat: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, Outline, Shadow, Alignment, MarginL, MarginR, MarginV\\nStyle: Cap,${font},64,&H00FFFFFF,&H00000000,&H00000000,1,6,0,2,40,40,260\\n\\n[Events]\\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\\n`;\nconst dialogueLines = globalWords.map(w => {\n  const txt = String(w.word).replace(/[{}]/g, '');\n  return `Dialogue: 0,${assTime(w.start)},${assTime(w.end)},Cap,,0,0,0,,${txt.toUpperCase()}`;\n}).join('\\n');\nconst assPath = path.join(workDir, `${runId}_captions.ass`);\nfs.writeFileSync(assPath, assHeader + dialogueLines + '\\n');\n\nconst listPath = path.join(workDir, `${runId}_concat.txt`);\nfs.writeFileSync(listPath, arr.map(l => `file '${l.audio_path.replace(/'/g, \"'\\\\''\")}'`).join('\\n'));\nconst mergedAudioPath = path.join(workDir, `${runId}_voice.mp3`);\n\nreturn [{\n  json: {\n    ...parent,\n    run_id: runId,\n    total_audio_duration: totalDuration,\n    sprite_a_windows: spriteA,\n    sprite_b_windows: spriteB,\n    ass_path: assPath,\n    concat_list_path: listPath,\n    merged_audio_path: mergedAudioPath\n  }\n}];"
       },
       "id": "90d1146b-c146-440e-b8c8-5549ac1a5081",
       "name": "Build Timing + Captions",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3648,
+        4320,
         4672
       ]
     },
@@ -1073,7 +1093,7 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        3872,
+        4544,
         4672
       ]
     },
@@ -1086,8 +1106,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4096,
-        4672
+        2784,
+        4880
       ]
     },
     {
@@ -1099,8 +1119,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4320,
-        4672
+        3008,
+        4880
       ]
     },
     {
@@ -1112,21 +1132,21 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        2752,
-        4896
+        3216,
+        4880
       ]
     },
     {
       "parameters": {
-        "jsCode": "const fs = require('fs');\nconst prev = $('Build FFmpeg Command').item.json;\nif (!fs.existsSync(prev.final_video_path)) {\n  throw new Error('FFmpeg produced no output file: ' + prev.final_video_path);\n}\nconst stat = fs.statSync(prev.final_video_path);\nif (stat.size < 100000) {\n  throw new Error('FFmpeg output suspiciously small (' + stat.size + ' bytes): ' + prev.final_video_path);\n}\nconst data = fs.readFileSync(prev.final_video_path);\nreturn [{\n  json: { ...prev, final_video_size: stat.size },\n  binary: {\n    video: {\n      data: data.toString('base64'),\n      mimeType: 'video/mp4',\n      fileName: `${prev.run_id}.mp4`\n    }\n  }\n}];"
+        "jsCode": "const fs = require('fs');\nconst prev = $('Build FFmpeg Command').item.json;\nif (!fs.existsSync(prev.final_video_path)) {\n  throw new Error('FFmpeg produced no output file: ' + prev.final_video_path);\n}\nconst stat = fs.statSync(prev.final_video_path);\nif (stat.size < 100000) {\n  throw new Error('FFmpeg output suspiciously small (' + stat.size + ' bytes): ' + prev.final_video_path);\n}\nconst data = fs.readFileSync(prev.final_video_path);\nreturn [{\n  json: { ...prev, final_video_size: stat.size },\n  binary: {\n    data: {\n      data: data.toString('base64'),\n      mimeType: 'video/mp4',\n      fileName: `${prev.run_id}.mp4`\n    }\n  }\n}];"
       },
       "id": "13ec272d-9083-4109-a46a-42a07d3d096b",
       "name": "Load Final Video",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2976,
-        4896
+        3440,
+        4880
       ]
     },
     {
@@ -1138,8 +1158,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3424,
-        4896
+        3888,
+        4880
       ]
     },
     {
@@ -1151,13 +1171,13 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4096,
-        4896
+        4560,
+        4880
       ]
     },
     {
       "parameters": {
-        "content": "## Workflow B1 — ElevenLabs community node\n\n### What's different from the HTTP version\n- Audio is generated by the **ElevenLabs community node** (`Convert text to speech`), one call per dialogue line, with the voice ID switched per speaker.\n- The ElevenLabs node returns binary audio only (no word timings). **Per-word caption timings are synthesized** by measuring the MP3 with `ffprobe` and spacing the line's words evenly across that measured duration. Sprite-swap windows remain exact (they're line-level), captions drift by a few hundred ms at most.\n\n### If your ElevenLabs node version differs\nThe `Save Line Audio + Timings` code auto-detects the binary property name returned by the node (it grabs the first key on `$binary`). If you have multiple binaries floating around for some reason, force a specific key name in the node's output settings.\n\n### Fixed bugs from the previous version\n- `Skip Concept?` true-branch was forking to both Log Skipped *and* the loop, double-advancing it. Now linear: Skip → Log Skipped → Loop.\n- Orphan `TTS Per Line` node removed.\n- ElevenLabs node was hardcoded to Character A's voice. Now reads `$json.voice_id` per line.\n- `.item` → `.first()` on the one straggling Globals reference inside the ElevenLabs node.\n\n### Same Docker requirement\nffmpeg AND ffprobe in the container — both come from the same `apk add --no-cache ffmpeg` package, so the same Dockerfile works:\n```\nFROM n8nio/n8n:latest\nUSER root\nRUN apk add --no-cache ffmpeg\nUSER node\n```",
+        "content": "## Workflow B1 — ElevenLabs community node\n\n### What's different from the HTTP version\n- Audio is generated by the **ElevenLabs community node** (`Convert text to speech`), one call per dialogue line, with the voice ID switched per speaker.\n- The ElevenLabs node returns binary audio only (no word timings). **Per-word caption timings are synthesized** by measuring the MP3 with `ffprobe` and spacing the line's words evenly across that measured duration. Sprite-swap windows remain exact (they're line-level), captions drift by a few hundred ms at most.\n",
         "height": 540,
         "width": 952,
         "color": 5
@@ -1327,8 +1347,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        3632,
-        4896
+        4096,
+        4880
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -1374,8 +1394,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        3856,
-        4896
+        4320,
+        4880
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -1429,8 +1449,8 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        3216,
-        4896
+        3664,
+        4880
       ],
       "credentials": {
         "googleDriveOAuth2Api": {
@@ -1438,6 +1458,62 @@
           "name": "Google Drive account"
         }
       }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Recover line context positionally — the ElevenLabs community node drops\n// pairedItem and overwrites $json with response headers, so .item back-references\n// across it fail. $itemIndex aligns with Fan Out Lines as long as line count/order\n// are preserved (keep ElevenLabs on Stop Workflow for errors during testing).\nconst lineCtx = $('Fan Out Lines').all()[$itemIndex].json;\n\nconst workDir = $('Globals').first().json.WORK_DIR;\nconst runId = ($execution.id || ('r' + Date.now())) + '_s' + (lineCtx._parent?.slot || 0);\nconst audioPath = `${workDir}/${runId}_line_${lineCtx.line_index}.mp3`;\n\n// Pass the binary REFERENCE through untouched — do not read .data here.\n// In filesystem binary mode the bytes aren't loaded into the item; the Write\n// node below resolves the on-disk reference for us.\nreturn {\n  json: {\n    _parent: lineCtx._parent,\n    line_index: lineCtx.line_index,\n    speaker: lineCtx.speaker,\n    text: lineCtx.text,\n    audio_path: audioPath,\n    run_id: runId,\n    ffprobe_cmd: `ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 \"${audioPath}\"`\n  },\n  binary: $input.item.binary\n};"
+      },
+      "id": "9f73a577-539a-4a7f-8bd6-c2c5a20118a9",
+      "name": "Prep Audio Path",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3232,
+        4672
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $json.audio_path }}",
+        "options": {}
+      },
+      "id": "86061572-7061-4bcc-bc0a-1d749bb3dbf9",
+      "name": "Write Audio File",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        3456,
+        4672
+      ]
+    },
+    {
+      "parameters": {
+        "command": "={{ $('Prep Audio Path').item.json.ffprobe_cmd }}"
+      },
+      "id": "6bbeea43-b3ab-49ed-8f30-1b6c1be28151",
+      "name": "FFprobe Duration",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        3680,
+        4672
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Context from Prep Audio Path (own node — pairedItem intact through the\n// Write + executeCommand chain). Duration from the ffprobe stdout on this item.\nconst lineCtx = $('Prep Audio Path').item.json;\n\nlet duration = parseFloat(String($json.stdout || '').trim());\nif (!duration || duration <= 0 || Number.isNaN(duration)) {\n  const wc = (lineCtx.text || '').trim().split(/\\s+/).filter(Boolean).length;\n  duration = Math.max(1.0, wc / 2.5); // fallback only\n}\n\nconst words = (lineCtx.text || '').trim().split(/\\s+/).filter(Boolean);\nconst perWord = words.length > 0 ? duration / words.length : 0;\nconst word_timings = words.map((w, i) => ({\n  word: w,\n  start: +(i * perWord).toFixed(3),\n  end: +((i + 1) * perWord).toFixed(3)\n}));\n\nreturn {\n  json: {\n    _parent: lineCtx._parent,\n    line_index: lineCtx.line_index,\n    speaker: lineCtx.speaker,\n    text: lineCtx.text,\n    duration,\n    word_timings,\n    audio_path: lineCtx.audio_path,\n    run_id: lineCtx.run_id\n  }\n};"
+      },
+      "id": "b15015e2-701f-4a91-9533-005fa426f0b4",
+      "name": "Build Word Timings",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3904,
+        4672
+      ]
     }
   ],
   "pinData": {},
@@ -1457,6 +1533,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-06-15T15:08:53.574Z",
-  "versionId": "b010fc23-6de6-481c-976a-d9372b968df5"
+  "updatedAt": "2026-06-15T18:57:23.328Z",
+  "versionId": "f5410998-77d2-4f88-b6b6-e7827ace9d1c"
 }
