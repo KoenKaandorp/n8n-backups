@@ -3,7 +3,7 @@
   "activeVersion": null,
   "activeVersionId": null,
   "connections": {
-    "Manual Trigger": {
+    "When clicking Test": {
       "main": [
         [
           {
@@ -14,55 +14,121 @@
         ]
       ]
     },
-    "Fetch Webpage": {
+    "Globals": {
       "main": [
         [
           {
-            "node": "Extract PDF Links",
+            "node": "Read Download Log",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Extract PDF Links": {
+    "Read Download Log": {
       "main": [
         [
           {
-            "node": "Normalize PDF List",
+            "node": "Downloaded Set",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Normalize PDF List": {
+    "Downloaded Set": {
       "main": [
         [
           {
-            "node": "Read Tracking Sheet",
+            "node": "Read Research Sheet",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Read Tracking Sheet": {
+    "Read Research Sheet": {
       "main": [
         [
           {
-            "node": "Filter Out Already Downloaded",
+            "node": "Extract DOI + Build URL",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Filter Out Already Downloaded": {
+    "Extract DOI + Build URL": {
+      "main": [
+        [
+          {
+            "node": "Has DOI?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has DOI?": {
+      "main": [
+        [
+          {
+            "node": "Loop Over DOIs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log: no DOI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over DOIs": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Find PDF (multi-source)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find PDF (multi-source)": {
+      "main": [
+        [
+          {
+            "node": "Has PDF?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log: fetch failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has PDF?": {
       "main": [
         [
           {
             "node": "Download PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log: no pdf",
             "type": "main",
             "index": 0
           }
@@ -73,29 +139,87 @@
       "main": [
         [
           {
-            "node": "Upload to Google Drive",
+            "node": "Is real PDF?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log: fetch failed",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Upload to Google Drive": {
+    "Is real PDF?": {
       "main": [
         [
           {
-            "node": "Log to Sheet",
+            "node": "Upload to Drive",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log: not pdf",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Globals": {
+    "Upload to Drive": {
       "main": [
         [
           {
-            "node": "Fetch Webpage",
+            "node": "Log: downloaded",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: downloaded": {
+      "main": [
+        [
+          {
+            "node": "Loop Over DOIs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: not pdf": {
+      "main": [
+        [
+          {
+            "node": "Loop Over DOIs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: fetch failed": {
+      "main": [
+        [
+          {
+            "node": "Loop Over DOIs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: no pdf": {
+      "main": [
+        [
+          {
+            "node": "Loop Over DOIs",
             "type": "main",
             "index": 0
           }
@@ -113,210 +237,14 @@
   "nodes": [
     {
       "parameters": {},
-      "id": "551b57d9-6e8e-4b5b-ae1f-981162d33e95",
-      "name": "Manual Trigger",
+      "id": "a3255375-be9b-4cda-93aa-038d4c043459",
+      "name": "When clicking Test",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -128,
-        0
+        -3424,
+        2160
       ]
-    },
-    {
-      "parameters": {
-        "url": "={{ $json.PURE_LINK }}",
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "text"
-            }
-          }
-        }
-      },
-      "id": "655a7207-d08e-494b-bd98-6fd085354a71",
-      "name": "Fetch Webpage",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        256,
-        0
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "extractHtmlContent",
-        "extractionValues": {
-          "values": [
-            {
-              "key": "pdfLinks",
-              "cssSelector": "a[href$=\".pdf\"], a[href*=\".pdf?\"]",
-              "returnValue": "attribute",
-              "attribute": "href",
-              "returnArray": true
-            },
-            {
-              "key": "pdfTitles",
-              "cssSelector": "a[href$=\".pdf\"], a[href*=\".pdf?\"]",
-              "returnArray": true
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "d5a7de87-de43-44ec-a1ab-d78e554e5efe",
-      "name": "Extract PDF Links",
-      "type": "n8n-nodes-base.html",
-      "typeVersion": 1,
-      "position": [
-        448,
-        0
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "// === CONFIGURE THIS ===\nconst BASE_URL = 'https://REPLACE_WITH_TARGET_URL.com';\n\nconst input = $input.first().json;\nconst links = input.pdfLinks || [];\nconst titles = input.pdfTitles || [];\n\nconst items = links.map((link, i) => {\n  let fullUrl = link;\n  if (link.startsWith('//')) {\n    fullUrl = 'https:' + link;\n  } else if (link.startsWith('/')) {\n    fullUrl = BASE_URL.replace(/\\/$/, '') + link;\n  } else if (!link.startsWith('http')) {\n    fullUrl = BASE_URL.replace(/\\/$/, '') + '/' + link;\n  }\n\n  const urlParts = fullUrl.split('?')[0].split('/');\n  const filename = decodeURIComponent(urlParts[urlParts.length - 1]);\n  const title = (titles[i] || filename).trim().replace(/\\s+/g, ' ');\n\n  return {\n    json: {\n      url: fullUrl,\n      filename: filename,\n      title: title\n    }\n  };\n});\n\n// Deduplicate by URL within this run\nconst seen = new Set();\nreturn items.filter(item => {\n  if (seen.has(item.json.url)) return false;\n  seen.add(item.json.url);\n  return true;\n});\n"
-      },
-      "id": "c58559df-7608-4541-8702-47cb3fc8652f",
-      "name": "Normalize PDF List",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        672,
-        0
-      ]
-    },
-    {
-      "parameters": {
-        "documentId": {
-          "__rl": true,
-          "value": "={{ $('Globals').item.json.PAPERS_SHEET_ID }}",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "={{ $('Globals').item.json.PAPERS_TAB }}",
-          "mode": "name"
-        },
-        "options": {}
-      },
-      "id": "174075bb-91cb-4ea9-985f-54e4329eeb33",
-      "name": "Read Tracking Sheet",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        880,
-        0
-      ],
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "YIqis4WruUS7mI8Q",
-          "name": "Google Sheets account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "// Get existing URLs from the tracking sheet\nconst existingRows = $('Read Tracking Sheet').all();\nconst existingUrls = new Set(\n  existingRows\n    .map(r => (r.json.url || '').trim())\n    .filter(u => u.length > 0)\n);\n\n// Get freshly scraped PDF list\nconst scraped = $('Normalize PDF List').all();\n\n// Keep only ones not already in the sheet\nconst newOnes = scraped.filter(item => !existingUrls.has(item.json.url));\n\nreturn newOnes;\n"
-      },
-      "id": "76f6685d-dc1c-46c6-987c-4e17cfb22209",
-      "name": "Filter Out Already Downloaded",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1104,
-        0
-      ]
-    },
-    {
-      "parameters": {
-        "url": "={{ $json.url }}",
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "file"
-            }
-          }
-        }
-      },
-      "id": "1f158e7f-97d2-46c4-b045-ddc38a111c1a",
-      "name": "Download PDF",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1328,
-        0
-      ]
-    },
-    {
-      "parameters": {
-        "name": "={{ $json.filename }}",
-        "driveId": {
-          "__rl": true,
-          "mode": "list",
-          "value": "My Drive"
-        },
-        "folderId": {
-          "__rl": true,
-          "value": "={{ $('Globals').item.json.PAPERS_DRIVE_FOLDER_ID }}",
-          "mode": "id"
-        },
-        "options": {}
-      },
-      "id": "136399eb-3966-4172-b69c-f13391687443",
-      "name": "Upload to Google Drive",
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        1552,
-        0
-      ],
-      "credentials": {
-        "googleDriveOAuth2Api": {
-          "id": "qNwyljWWXKPmObNF",
-          "name": "Google Drive account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "append",
-        "documentId": {
-          "__rl": true,
-          "value": "={{ $('Globals').item.json.PAPERS_SHEET_ID }}",
-          "mode": "id"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "={{ $('Globals').item.json.PAPERS_TAB }}",
-          "mode": "name"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "url": "={{ $('Download PDF').item.json.url }}",
-            "filename": "={{ $('Download PDF').item.json.filename }}",
-            "title": "={{ $('Download PDF').item.json.title }}",
-            "downloaded_at": "={{ $now.toISO() }}",
-            "drive_file_id": "={{ $json.id }}",
-            "drive_link": "={{ $json.webViewLink }}"
-          }
-        },
-        "options": {}
-      },
-      "id": "2db2f67e-ca94-4f39-8b6c-28741e338b44",
-      "name": "Log to Sheet",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        1760,
-        0
-      ],
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "YIqis4WruUS7mI8Q",
-          "name": "Google Sheets account"
-        }
-      }
     },
     {
       "parameters": {
@@ -353,23 +281,876 @@
               "type": "string"
             },
             {
-              "id": "6ed07794-bba6-430a-9e3e-dd8ca13303c4",
-              "name": "PURE_LINK",
-              "value": "PLACEHOLDER",
+              "id": "1b80c072-cd7e-4550-9303-e7799e6f96a0",
+              "name": "PURE_TAB",
+              "value": "pure_output",
+              "type": "string"
+            },
+            {
+              "id": "fef378a4-ba7c-4435-8628-07985e2e2500",
+              "name": "LOG_TAB",
+              "value": "doi_log",
+              "type": "string"
+            },
+            {
+              "id": "c85e9854-3420-4be7-a62c-453e5df04057",
+              "name": "email",
+              "value": "peterexplainseverything@gmail.com",
               "type": "string"
             }
           ]
         },
         "options": {}
       },
-      "id": "b63f13c1-dc37-4294-9d65-5240cd1f4b95",
+      "id": "dbc80465-87a2-43f6-b539-07a5388c6be1",
       "name": "Globals",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        64,
-        0
+        -3200,
+        2160
       ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.LOG_TAB }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "844d85a2-4c6e-4c46-b76c-d93839054054",
+      "name": "Read Download Log",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -2976,
+        2160
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Collapse the download log into one lookup item. Only 'downloaded' rows count as done.\nconst dois = new Set(), titles = new Set();\nconst norm = s => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();\nfor (const r of $input.all()) {\n  const j = r.json || {};\n  if (String(j.status).toLowerCase().trim() === 'downloaded') {\n    if (j.doi)   dois.add(String(j.doi).toLowerCase());\n    if (j.title) titles.add(norm(j.title));\n  }\n}\nreturn [{ json: { downloadedDois: [...dois], downloadedTitles: [...titles] }, pairedItem: { item: 0 } }];\n"
+      },
+      "id": "6f006c92-0a0f-4a98-a51a-86b964aa2af1",
+      "name": "Downloaded Set",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2752,
+        2160
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.PURE_TAB }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "d3afcf05-904c-4de4-b42d-e138680087b7",
+      "name": "Read Research Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -2528,
+        2160
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const EMAIL = $('Globals').first().json.email;\nconst done  = $('Downloaded Set').first().json;\nconst doneDois   = new Set((done.downloadedDois   || []).map(d => String(d).toLowerCase()));\nconst doneTitles = new Set(done.downloadedTitles || []);\nconst norm = s => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();\n\nconst out = [];\nfor (const item of $input.all()) {\n  const row = item.json;\n  const apa = String(row['APA format'] ?? '');\n  const title = String(row['Title'] ?? 'untitled');\n  const year  = String(row['Year'] ?? '');\n  let doi = null;\n  const m = apa.match(/https?:\\/\\/(?:dx\\.)?doi\\.org\\/(10\\.\\d{4,9}\\/[^\\s\"'<>)]+)/i)\n         || apa.match(/\\b(10\\.\\d{4,9}\\/[^\\s\"'<>)]+)/);\n  if (m) doi = m[1].replace(/[.,;]+$/, '');\n\n  if ((doi && doneDois.has(doi.toLowerCase())) || doneTitles.has(norm(title))) continue;\n\n  const safe = title.replace(/[^a-z0-9]+/gi,'_').replace(/^_+|_+$/g,'').slice(0,80) || 'untitled';\n  out.push({ json: {\n    title, year, doi, hasDoi: Boolean(doi),\n    filename: (`${safe}_${year}`.replace(/_+$/,'')) + '.pdf',\n  }});\n}\nreturn out;\n"
+      },
+      "id": "72c5cc5b-9cd5-4a7e-991d-ed5dfcf9ab56",
+      "name": "Extract DOI + Build URL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2304,
+        2160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e5fe492a-9c50-4a65-8c1f-ff67434f5c4c",
+              "leftValue": "={{ $json.hasDoi }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4688e456-6aaf-4ec5-af36-74698a72ca67",
+      "name": "Has DOI?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2080,
+        2160
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.LOG_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "title": "={{ $json.title }}",
+            "doi": "={{ $json.doi }}",
+            "status": "no_doi",
+            "source": "",
+            "version": "",
+            "filename": "={{ $json.filename }}",
+            "ts": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "doi",
+              "displayName": "doi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "version",
+              "displayName": "version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "filename",
+              "displayName": "filename",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ts",
+              "displayName": "ts",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "0dcbee37-3870-4ec1-97ae-cff0e4cfe49a",
+      "name": "Log: no DOI",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1856,
+        2256
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "1ed548e0-fd4e-44ef-a5bc-c99e1355bc55",
+      "name": "Loop Over DOIs",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1856,
+        2064
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const EMAIL = $('Globals').first().json.email;\nconst { doi, title, year, filename } = $json;\nconst UA = 'Mozilla/5.0 (compatible; n8n-paper-fetcher)';\nconst http = this.helpers.httpRequest;\nconst getJson = (url) => http({ url, method:'GET', json:true, headers:{'User-Agent':UA}, timeout:20000 });\n\nconst cands = [];\nconst push = (url, host, src) => { if (url) cands.push({ url, host: host || '', src }); };\n\n// 1) Unpaywall\ntry {\n  const d = await getJson(`https://api.unpaywall.org/v2/${doi}?email=${encodeURIComponent(EMAIL)}`);\n  const locs = [];\n  if (d.best_oa_location) locs.push(d.best_oa_location);\n  if (Array.isArray(d.oa_locations)) locs.push(...d.oa_locations);\n  for (const l of locs) push(l && l.url_for_pdf, l && l.host_type, 'unpaywall');\n} catch (e) {}\n\n// 2) OpenAlex\ntry {\n  const r = await getJson(`https://api.openalex.org/works?filter=doi:${encodeURIComponent(doi)}&mailto=${encodeURIComponent(EMAIL)}`);\n  const w = r && r.results && r.results[0];\n  if (w) {\n    const locs = [];\n    if (w.best_oa_location) locs.push(w.best_oa_location);\n    if (Array.isArray(w.locations)) locs.push(...w.locations);\n    for (const l of locs) {\n      const host = (l && l.source && l.source.type === 'repository') ? 'repository' : '';\n      push(l && l.pdf_url, host, 'openalex');\n    }\n  }\n} catch (e) {}\n\n// 3) Semantic Scholar\ntry {\n  const d = await getJson(`https://api.semanticscholar.org/graph/v1/paper/DOI:${doi}?fields=openAccessPdf`);\n  push(d && d.openAccessPdf && d.openAccessPdf.url, '', 'semanticscholar');\n} catch (e) {}\n\n// 4) Europe PMC (strong for biomedical)\ntry {\n  const s = await getJson(`https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI:${encodeURIComponent(doi)}&format=json&resultType=core`);\n  const hit = s && s.resultList && s.resultList.result && s.resultList.result[0];\n  if (hit && hit.pmcid) push(`https://www.ebi.ac.uk/europepmc/webservices/rest/${hit.pmcid}/fullTextPDF`, 'repository', 'europepmc');\n} catch (e) {}\n\n// 5) Crossref (occasional TDM / publisher fulltext PDF links)\ntry {\n  const d = await getJson(`https://api.crossref.org/works/${doi}?mailto=${encodeURIComponent(EMAIL)}`);\n  const links = (d.message && d.message.link) || [];\n  for (const l of links) {\n    if (String(l['content-type']).toLowerCase().includes('pdf')) push(l.URL, '', 'crossref');\n  }\n} catch (e) {}\n\n// 6) DOAJ (fully open-access journals)\ntry {\n  const q = encodeURIComponent(`doi:\"${doi}\"`);\n  const d = await getJson(`https://doaj.org/api/search/articles/${q}`);\n  const arts = (d && d.results) || [];\n  for (const a of arts) {\n    const links = (a.bibjson && a.bibjson.link) || [];\n    for (const l of links) {\n      if (String(l.type).toLowerCase() === 'fulltext') {\n        const isPdfType = String(l.content_type || '').toLowerCase().includes('pdf');\n        push(l.url, isPdfType ? 'repository' : '', 'doaj');\n      }\n    }\n  }\n} catch (e) {}\n\n// dedupe + rank (repositories / PMC first, publisher last)\nconst seen = new Set();\nconst rank = c => (c.host === 'repository' || c.src === 'europepmc') ? 0\n                : c.src === 'semanticscholar' ? 1\n                : c.host === 'publisher' ? 3 : 2;\nconst ordered = cands.filter(c => c.url && !seen.has(c.url) && seen.add(c.url)).sort((a,b) => rank(a) - rank(b));\n\n// verify: first candidate that actually serves a PDF (cheap ranged GET, skips HTML/Cloudflare)\nconst isPdf = async (url) => {\n  try {\n    const res = await http({ url, method:'GET', returnFullResponse:true, encoding:'arraybuffer',\n      headers:{'User-Agent':UA,'Accept':'application/pdf,*/*','Range':'bytes=0-4095'}, timeout:25000 });\n    const ct = String((res.headers && (res.headers['content-type'] || res.headers['Content-Type'])) || '').toLowerCase();\n    if (ct.includes('pdf')) return true;\n    if (ct.includes('html') || ct.includes('json')) return false;\n    const buf = Buffer.isBuffer(res.body) ? res.body : Buffer.from(res.body || '');\n    return buf.slice(0,5).toString('latin1') === '%PDF-';\n  } catch (e) { return false; }\n};\n\nlet pdfUrl = null, source = '', resolvedBy = '';\nfor (const c of ordered.slice(0, 8)) {\n  if (await isPdf(c.url)) { pdfUrl = c.url; source = c.host || c.src; resolvedBy = c.src; break; }\n}\n\nreturn { json: {\n  title, year, doi, filename,\n  candidateCount: ordered.length,\n  candidates: ordered.map(c => c.url),\n  pdfUrl, source, resolvedBy,\n  status: pdfUrl ? 'to_download' : 'no_pdf_any_source',\n}};"
+      },
+      "id": "703cc07f-3a90-499e-b881-2c056e31ea3a",
+      "name": "Find PDF (multi-source)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1632,
+        1584
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fdceacbe-04ad-47db-9906-0ffe08931861",
+              "leftValue": "={{ $json.pdfUrl }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "18453697-26dc-4dc0-aea1-90055ba6ffef",
+      "name": "Has PDF?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1408,
+        1504
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.pdfUrl }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "Mozilla/5.0 (compatible; n8n-paper-fetcher)"
+            },
+            {
+              "name": "Accept",
+              "value": "application/pdf,*/*"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          },
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          },
+          "timeout": 60000
+        }
+      },
+      "id": "50d8c317-0bdc-4980-8c76-ac81fa9047f8",
+      "name": "Download PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1184,
+        1504
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "87e2d4ce-c2bc-47ec-8e8e-8ffa468cc1cd",
+              "leftValue": "={{ $binary.data.mimeType }}",
+              "rightValue": "pdf",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6d91f5fe-55a7-49d4-8716-a45eaa28bd02",
+      "name": "Is real PDF?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -960,
+        1456
+      ]
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Find PDF (multi-source)').first().json.filename }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.PAPERS_DRIVE_FOLDER_ID }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "78eb3e7e-e75e-425d-aad8-814446fe55bd",
+      "name": "Upload to Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -736,
+        1360
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "qNwyljWWXKPmObNF",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.LOG_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "title": "={{ $('Find PDF (multi-source)').first().json.title }}",
+            "doi": "={{ $('Find PDF (multi-source)').first().json.doi }}",
+            "status": "downloaded",
+            "source": "={{ $('Find PDF (multi-source)').first().json.source }}",
+            "filename": "={{ $('Find PDF (multi-source)').first().json.filename }}",
+            "ts": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [
+            "doi"
+          ],
+          "schema": [
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "doi",
+              "displayName": "doi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "version",
+              "displayName": "version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "filename",
+              "displayName": "filename",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ts",
+              "displayName": "ts",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "36d162ea-4b28-4aef-8e02-f6d6d852711a",
+      "name": "Log: downloaded",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -512,
+        1648
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.LOG_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "title": "={{ $('Find PDF (multi-source)').first().json.title }}",
+            "doi": "={{ $('Find PDF (multi-source)').first().json.doi }}",
+            "status": "not_pdf",
+            "source": "={{ $('Find PDF (multi-source)').first().json.source }}",
+            "filename": "={{ $('Find PDF (multi-source)').first().json.filename }}",
+            "ts": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [
+            "doi"
+          ],
+          "schema": [
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "doi",
+              "displayName": "doi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "version",
+              "displayName": "version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "filename",
+              "displayName": "filename",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ts",
+              "displayName": "ts",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "d997a605-07ee-4661-a37a-5d66c4d44019",
+      "name": "Log: not pdf",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -736,
+        1600
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.LOG_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "title": "={{ $('Find PDF (multi-source)').first().json.title }}",
+            "doi": "={{ $('Find PDF (multi-source)').first().json.doi }}",
+            "status": "fetch_failed",
+            "source": "={{ $('Find PDF (multi-source)').first().json.source }}",
+            "filename": "={{ $('Find PDF (multi-source)').first().json.filename }}",
+            "ts": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [
+            "doi"
+          ],
+          "schema": [
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "doi",
+              "displayName": "doi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "version",
+              "displayName": "version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "filename",
+              "displayName": "filename",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ts",
+              "displayName": "ts",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "f46bfd2a-c828-41f4-aac7-5619f9cac68a",
+      "name": "Log: fetch failed",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -960,
+        1872
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.LOG_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "title": "={{ $('Find PDF (multi-source)').first().json.title }}",
+            "doi": "={{ $('Find PDF (multi-source)').first().json.doi }}",
+            "status": "no_pdf_any_source",
+            "source": "={{ $('Find PDF (multi-source)').first().json.source }}",
+            "filename": "={{ $('Find PDF (multi-source)').first().json.filename }}",
+            "ts": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [
+            "doi"
+          ],
+          "schema": [
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "doi",
+              "displayName": "doi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "version",
+              "displayName": "version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "filename",
+              "displayName": "filename",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ts",
+              "displayName": "ts",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "99146ece-ab9d-428e-8a58-b35ba722a0f8",
+      "name": "Log: no pdf",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -1184,
+        1696
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -389,6 +1170,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-06-08T17:40:03.429Z",
-  "versionId": "70e493b5-f9e2-4870-b570-ef7d62c22ab5"
+  "updatedAt": "2026-07-13T11:22:31.134Z",
+  "versionId": "5e8463c5-8bba-48aa-8e59-b786395b4e64"
 }
