@@ -1008,7 +1008,7 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        4496,
+        4048,
         4912
       ]
     },
@@ -1539,6 +1539,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-06-15T19:03:11.384Z",
-  "versionId": "c9cabf55-8f90-4131-bbf4-8cd511ab661c"
+  "updatedAt": "2026-06-16T09:44:00.383Z",
+  "versionId": "4ac751cd-88f3-4ebd-968d-d05ce1e43a88"
 }
