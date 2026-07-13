@@ -3,161 +3,6 @@
   "activeVersion": null,
   "activeVersionId": null,
   "connections": {
-    "Assemble Sheet Row": {
-      "main": [
-        [
-          {
-            "node": "Update Paper Row",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Aggregate Slides": {
-      "main": [
-        [
-          {
-            "node": "Assemble Sheet Row",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Capture Slide Ref": {
-      "main": [
-        [
-          {
-            "node": "Aggregate Slides",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Download Slide Image": {
-      "main": [
-        [
-          {
-            "node": "Upload Slide to Drive",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Parse Bannerbear Response": {
-      "main": [
-        [
-          {
-            "node": "Download Slide Image",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Fan Out Slides": {
-      "main": [
-        [
-          {
-            "node": "Create an image",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Parse Concept": {
-      "main": [
-        [
-          {
-            "node": "Fan Out Slides",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Generate Carousel Concept (Claude)": {
-      "main": [
-        [
-          {
-            "node": "Parse Concept",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Concept Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Generate Carousel Concept (Claude)",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Build Paper Text": {
-      "main": [
-        [
-          {
-            "node": "Generate Carousel Concept (Claude)",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract PDF Per Page": {
-      "main": [
-        [
-          {
-            "node": "Build Paper Text",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Loop Over Papers": {
-      "main": [
-        [],
-        [
-          {
-            "node": "Download PDF",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If Has Pending": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Papers",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Filter Pending": {
-      "main": [
-        [
-          {
-            "node": "If Has Pending",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Manual Trigger": {
       "main": [
         [
@@ -191,11 +36,133 @@
         ]
       ]
     },
+    "Filter Pending": {
+      "main": [
+        [
+          {
+            "node": "If Has Pending",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Has Pending": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Papers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Papers": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Download PDF": {
       "main": [
         [
           {
             "node": "Extract PDF Per Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract PDF Per Page": {
+      "main": [
+        [
+          {
+            "node": "Build Paper Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Paper Text": {
+      "main": [
+        [
+          {
+            "node": "Generate Carousel Concept (Claude)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Concept Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Carousel Concept (Claude)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Carousel Concept (Claude)": {
+      "main": [
+        [
+          {
+            "node": "Parse Concept",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Concept": {
+      "main": [
+        [
+          {
+            "node": "Build Carousel HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Carousel HTML": {
+      "main": [
+        [
+          {
+            "node": "Render Carousel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Render Carousel": {
+      "main": [
+        [
+          {
+            "node": "Split Render Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Render Output": {
+      "main": [
+        [
+          {
+            "node": "Upload Slide to Drive",
             "type": "main",
             "index": 0
           }
@@ -213,22 +180,44 @@
         ]
       ]
     },
-    "Update Paper Row": {
+    "Capture Slide Ref": {
       "main": [
         [
           {
-            "node": "Loop Over Papers",
+            "node": "Aggregate Slides",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Create an image": {
+    "Aggregate Slides": {
       "main": [
         [
           {
-            "node": "Parse Bannerbear Response",
+            "node": "Assemble Sheet Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assemble Sheet Row": {
+      "main": [
+        [
+          {
+            "node": "Update Paper Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Paper Row": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Papers",
             "type": "main",
             "index": 0
           }
@@ -261,267 +250,14 @@
       ]
     },
     {
-      "parameters": {
-        "jsCode": "const arr = ($json.slide_number || []).map((n, i) => ({\n  slide_number: n,\n  slide_type: $json.slide_type[i],\n  bannerbear_image_url: $json.bannerbear_image_url[i],\n  drive_file_id: $json.drive_file_id[i],\n  drive_view_link: $json.drive_view_link[i]\n}));\narr.sort((a, b) => a.slide_number - b.slide_number);\n\nconst parent = $items('Capture Slide Ref')[0].json._parent;\n\nreturn [{\n  json: {\n    drive_file_id: parent.drive_file_id,\n    title: parent.title,\n    content_hook: parent.content_hook,\n    content_brief: parent.content_brief,\n    slide_urls: arr.map(s => s.bannerbear_image_url).join('\\n'),\n    drive_backup_links: arr.map(s => s.drive_view_link).join('\\n'),\n    caption: parent.caption,\n    hashtags: (parent.hashtags || []).join(' '),\n    generated_at: new Date().toISOString(),\n    status: 'generated'\n  }\n}];"
-      },
-      "id": "52b675f8-142a-4dc7-9d02-99e51e92c572",
-      "name": "Assemble Sheet Row",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1936,
-        496
-      ]
-    },
-    {
-      "parameters": {
-        "fieldsToAggregate": {
-          "fieldToAggregate": [
-            {
-              "fieldToAggregate": "slide_number"
-            },
-            {
-              "fieldToAggregate": "slide_type"
-            },
-            {
-              "fieldToAggregate": "bannerbear_image_url"
-            },
-            {
-              "fieldToAggregate": "drive_file_id"
-            },
-            {
-              "fieldToAggregate": "drive_view_link"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "bb88d4ca-c470-4701-a8dc-9284eef925d5",
-      "name": "Aggregate Slides",
-      "type": "n8n-nodes-base.aggregate",
-      "typeVersion": 1,
-      "position": [
-        1712,
-        496
-      ]
-    },
-    {
-      "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "const prev = $('Parse Bannerbear Response').item.json;\nconst driveResp = $json;\nreturn {\n  json: {\n    _parent: prev._parent,\n    slide_number: prev.slide_number,\n    slide_type: prev.slide_type,\n    bannerbear_image_url: prev.bannerbear_image_url,\n    drive_file_id: driveResp.id,\n    drive_view_link: `https://drive.google.com/file/d/${driveResp.id}/view`\n  }\n};"
-      },
-      "id": "6146a968-5c87-4d12-ab53-ef4109899b2a",
-      "name": "Capture Slide Ref",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1504,
-        496
-      ]
-    },
-    {
-      "parameters": {
-        "url": "={{ $json.bannerbear_image_url }}",
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "file"
-            }
-          }
-        }
-      },
-      "id": "f8cf306c-0c33-4a00-b205-78dd82b464f6",
-      "name": "Download Slide Image",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1088,
-        496
-      ]
-    },
-    {
-      "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "const prev = $('Fan Out Slides').item.json;\nconst resp = $json;\nconst imageUrl = resp.image_url || resp.image_url_png;\nif (!imageUrl) {\n  throw new Error('Bannerbear returned no image_url. Response: ' + JSON.stringify(resp).slice(0, 400));\n}\nreturn {\n  json: {\n    ...prev,\n    bannerbear_status: resp.status || 'completed',\n    bannerbear_image_url: imageUrl\n  }\n};"
-      },
-      "id": "8341bacc-1af0-4088-8bdb-56baa84a6d6e",
-      "name": "Parse Bannerbear Response",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        880,
-        496
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "const parent = $json;\nconst g = $('Globals').first().json;\nconst total = parent.total_slides;\n\nfunction pickTemplate(slideType) {\n  if (slideType === 'hook') return g.BANNERBEAR_TEMPLATE_HOOK;\n  if (slideType === 'cta') return g.BANNERBEAR_TEMPLATE_CTA;\n  return g.BANNERBEAR_TEMPLATE_CONTENT;\n}\n\nreturn parent.slides.map(slide => ({\n  json: {\n    _parent: { ...parent, slides: undefined },\n    slide_number: slide.slide_number,\n    slide_type: slide.slide_type,\n    headline: slide.headline,\n    body: slide.body,\n    footer: `${slide.slide_number}/${total} \\u00b7 ${g.FACULTY_NAME}`,\n    template_id: pickTemplate(slide.slide_type)\n  }\n}));"
-      },
-      "id": "dae6b9c1-2c9f-443d-b687-151d0d15999e",
-      "name": "Fan Out Slides",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        480,
-        496
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "const raw = $json.output || '';\nconst cleaned = raw.replace(/^```json\\s*/i, '').replace(/^```\\s*/i, '').replace(/```\\s*$/i, '').trim();\nlet parsed;\ntry { parsed = JSON.parse(cleaned); } catch (e) {\n  throw new Error('Carousel concept invalid JSON: ' + e.message + ' | raw: ' + raw.slice(0, 300));\n}\nconst expected = $('Globals').first().json.TOTAL_SLIDES;\nif (!Array.isArray(parsed.slides) || parsed.slides.length !== expected) {\n  throw new Error(`Expected ${expected} slides, got ${(parsed.slides || []).length}`);\n}\nconst ctx = $('Build Paper Text').item.json;\nreturn [{\n  json: {\n    drive_file_id: ctx.drive_file_id,\n    drive_file_name: ctx.drive_file_name,\n    title: ctx.title,\n    authors: ctx.authors,\n    field: ctx.field,\n    content_hook: parsed.content_hook || '',\n    content_brief: parsed.content_brief || '',\n    slides: parsed.slides,\n    caption: parsed.caption || '',\n    hashtags: parsed.hashtags || [],\n    total_slides: expected\n  }\n}];"
-      },
-      "id": "90047602-7620-46da-a3b1-118a3fa632bd",
-      "name": "Parse Concept",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1632,
-        128
-      ]
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "value": "={{ $('Globals').item.json.ANTHROPIC_MODEL }}",
-          "mode": "id"
-        },
-        "options": {
-          "maxTokensToSample": 2500,
-          "temperature": 0.6
-        }
-      },
-      "id": "e4b424ec-82bf-4218-925d-58b87a6bb76a",
-      "name": "Concept Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
-      "typeVersion": 1.3,
-      "position": [
-        1296,
-        352
-      ],
-      "credentials": {
-        "anthropicApi": {
-          "id": "sUkzGV6H3EB4ekZS",
-          "name": "Anthropic account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "=You are creating an Instagram carousel from a psychology research paper. The goal is to invite students to participate in similar studies at our faculty — so the carousel needs to be intellectually honest, specific, and intriguing without being clickbait.\n\n=== PAPER ===\nTitle: {{ $json.title }}\nAuthors: {{ $json.authors }}\nField: {{ $json.field }}\nStudy type: {{ $json.study_type }}\n\n=== FULL PAPER TEXT ===\n{{ $json.paper_text }}\n\n=== AUDIENCE ===\nUniversity students 18-25 scrolling Instagram. They are smart, skeptical of academic jargon, and drawn to findings that connect to their own minds and behaviour. They will scroll past anything that feels textbooky or salesy.\n\n=== CAROUSEL STRUCTURE ===\nMake exactly {{ $('Globals').first().json.TOTAL_SLIDES }} slides in this structure:\n- Slide 1: HOOK — one specific, surprising, or assumption-flipping idea from the paper. Pulls the thumb-stop.\n- Slides 2 to {{ $('Globals').first().json.TOTAL_SLIDES - 1 }}: CONTENT — set up the question, give the actual finding, give the implication. One idea per slide.\n- Slide {{ $('Globals').first().json.TOTAL_SLIDES }}: CTA — invite the viewer to take part in studies like this at the faculty.\n\n=== RULES ===\n- Stay grounded in the paper. No invented findings. No exaggeration.\n- Headline: max 8 words, bold, declarative. Body: 1-2 short sentences, max ~25 words.\n- Do not start with \"Did you know\", \"Imagine if\", \"Scientists discovered\", \"A new study\".\n- Banned words: mind-blowing, fascinating, incredible, game-changer, shocking.\n- The Instagram caption: ~120-160 words, conversational, paraphrases the finding (no abstract quotes), ends with a soft CTA inviting participation. Mention the faculty by name.\n- Hashtags: 4-7, mix of broad (#psychology) and specific (#cognitivebias, #memoryresearch). Lowercase, no spaces.\n\n=== OUTPUT (strict JSON, no markdown fences) ===\n{\n  \"content_hook\": \"one-line internal summary of what makes this paper post-worthy (for the sheet, not shown to viewers)\",\n  \"content_brief\": \"2-3 sentence rationale for the angle chosen and why it will land with students\",\n  \"slides\": [\n    {\n      \"slide_number\": 1,\n      \"slide_type\": \"hook\",\n      \"headline\": \"<= 8 words\",\n      \"body\": \"1 short sentence, 10-15 words\"\n    },\n    {\n      \"slide_number\": 2,\n      \"slide_type\": \"content\",\n      \"headline\": \"<= 8 words\",\n      \"body\": \"1-2 short sentences\"\n    },\n    {\n      \"slide_number\": {{ $('Globals').first().json.TOTAL_SLIDES }},\n      \"slide_type\": \"cta\",\n      \"headline\": \"Want to take part?\",\n      \"body\": \"Sign up for studies at {{ $('Globals').first().json.FACULTY_NAME }} — {{ $('Globals').first().json.ENROLL_URL_HINT }}.\"\n    }\n  ],\n  \"caption\": \"Instagram caption, 120-160 words, no hashtags inside (those go in their own field)\",\n  \"hashtags\": [\"#psychology\", \"#research\"]\n}",
-        "options": {
-          "systemMessage": "You translate academic psychology papers into short, honest Instagram carousels that recruit students into research. You are specific, not salesy. Output strict JSON only, no preamble or markdown fences.",
-          "maxIterations": 4
-        }
-      },
-      "id": "cfdb188b-2d52-4588-8167-a843df866343",
-      "name": "Generate Carousel Concept (Claude)",
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 3.1,
-      "position": [
-        1296,
-        128
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "const raw = $json.text || $json.data || '';\nlet pages = [];\nif (Array.isArray(raw)) pages = raw;\nelse if (typeof raw === 'string') {\n  pages = raw.split('\\f');\n  if (pages.length < 3) pages = raw.split(/\\n\\s*\\n\\s*\\n/);\n}\n// Cap to 30k chars to stay friendly with the model context\nconst paperText = pages.join('\\n\\n').slice(0, 30000);\nconst ctx = $('Loop Over Papers').item.json;\nreturn [{ json: { ...ctx, paper_text: paperText, paper_total_pages: pages.length } }];"
-      },
-      "id": "6e56d85a-da62-4e35-9906-c1ca3f9059f6",
-      "name": "Build Paper Text",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1088,
-        128
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "pdf",
-        "options": {
-          "joinPages": false
-        }
-      },
-      "id": "7402e063-7457-46ec-98b5-fdf35bf83acd",
-      "name": "Extract PDF Per Page",
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1.1,
-      "position": [
-        880,
-        128
-      ]
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "id": "75569df7-f5fb-431a-b827-413aaa0da669",
-      "name": "Loop Over Papers",
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        416,
-        128
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 3
-          },
-          "conditions": [
-            {
-              "id": "w2-cond-has-pending",
-              "leftValue": "={{ $json._empty }}",
-              "rightValue": "",
-              "operator": {
-                "type": "boolean",
-                "operation": "false",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "id": "f3742272-635c-463e-9c59-5777f2296bc5",
-      "name": "If Has Pending",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.3,
-      "position": [
-        1248,
-        -128
-      ]
-    },
-    {
-      "parameters": {
-        "jsCode": "const all = $input.all().map(i => i.json);\nconst batchSize = $('Globals').first().json.BATCH_SIZE || 1;\nconst pending = all.filter(r => r.status === 'pending');\nif (pending.length === 0) {\n  return [{ json: { _empty: true } }];\n}\nconst batch = pending.slice(0, batchSize);\nreturn batch.map(r => ({ json: r }));"
-      },
-      "id": "c0d29399-0e99-4852-894d-e24ec12ae9ac",
-      "name": "Filter Pending",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1056,
-        -128
-      ]
-    },
-    {
       "parameters": {},
-      "id": "07697ba2-1b72-43a1-87f0-a67c422e1aba",
+      "id": "77a509d4-7815-48b0-a7b9-9e12adbba325",
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        416,
-        -128
+        480,
+        -288
       ]
     },
     {
@@ -529,9 +265,15 @@
         "assignments": {
           "assignments": [
             {
+              "id": "f58bc7a8-d01e-4513-847a-35648270b1cb",
+              "name": "ANTHROPIC_MODEL_EXPENSIVE",
+              "value": "claude-opus-4-8",
+              "type": "string"
+            },
+            {
               "id": "g1",
               "name": "ANTHROPIC_MODEL",
-              "value": "claude-sonnet-4-5",
+              "value": "claude-sonnet-4-6",
               "type": "string"
             },
             {
@@ -572,27 +314,27 @@
             },
             {
               "id": "g8",
-              "name": "BANNERBEAR_TEMPLATE_HOOK",
-              "value": "RnxGpW5l00KY5EXrJ1",
+              "name": "RENDER_SERVICE_URL",
+              "value": "http://carousel-renderer:3000/render",
               "type": "string"
             },
             {
               "id": "g9",
-              "name": "BANNERBEAR_TEMPLATE_CONTENT",
-              "value": "RnxGpW5l00KY5EXrJ1",
-              "type": "string"
+              "name": "SLIDE_WIDTH",
+              "value": 1080,
+              "type": "number"
             },
             {
               "id": "g10",
-              "name": "BANNERBEAR_TEMPLATE_CTA",
-              "value": "RnxGpW5l00KY5EXrJ1",
-              "type": "string"
+              "name": "SLIDE_HEIGHT",
+              "value": 1350,
+              "type": "number"
             },
             {
               "id": "g11",
-              "name": "BANNERBEAR_SYNC_URL",
-              "value": "https://sync.api.bannerbear.com/v2/images",
-              "type": "string"
+              "name": "DEVICE_SCALE",
+              "value": 2,
+              "type": "number"
             },
             {
               "id": "g12",
@@ -609,7 +351,7 @@
             {
               "id": "g14",
               "name": "TOTAL_SLIDES",
-              "value": 5,
+              "value": 8,
               "type": "number"
             },
             {
@@ -617,18 +359,30 @@
               "name": "BATCH_SIZE",
               "value": 1,
               "type": "number"
+            },
+            {
+              "id": "2b49f663-27d5-4ffc-9d51-22221ffce888",
+              "name": "LOGO_URL",
+              "value": "http://localhost:3000/assets/tue-logo.svg",
+              "type": "string"
+            },
+            {
+              "id": "32aa6423-272b-4095-8353-2caf3a98648c",
+              "name": "LOGO_URL_NEGATIVE",
+              "value": "http://localhost:3000/assets/tue-logo-negative.svg",
+              "type": "string"
             }
           ]
         },
         "options": {}
       },
-      "id": "9444daa2-06a4-4cef-bd00-b79713e1efb8",
+      "id": "f37a2ae4-e505-4dfd-8952-16472e2d447e",
       "name": "Globals",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        640,
-        -128
+        704,
+        -288
       ]
     },
     {
@@ -644,13 +398,13 @@
         },
         "options": {}
       },
-      "id": "594ff084-957e-40ec-9cd3-dce689655c45",
+      "id": "ce7006ab-40aa-43ef-9aa4-3b9dfd26be85",
       "name": "Read Papers Sheet",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        848,
-        -128
+        912,
+        -288
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -661,6 +415,66 @@
     },
     {
       "parameters": {
+        "jsCode": "const all = $input.all().map(i => i.json);\nconst batchSize = $('Globals').first().json.BATCH_SIZE || 1;\nconst pending = all.filter(r => r.status === 'pending');\nif (pending.length === 0) {\n  return [{ json: { _empty: true } }];\n}\nconst batch = pending.slice(0, batchSize);\nreturn batch.map(r => ({ json: r }));"
+      },
+      "id": "86a039e3-0776-4d45-a395-cb9aeebcb9c8",
+      "name": "Filter Pending",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "w2-cond-has-pending",
+              "leftValue": "={{ $json._empty }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "47bfd5ad-29bd-4a4f-843f-e5b1bc1ced96",
+      "name": "If Has Pending",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1312,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "334baf34-aaea-4fdb-8fc3-32ef86dd39f2",
+      "name": "Loop Over Papers",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        480,
+        -32
+      ]
+    },
+    {
+      "parameters": {
         "operation": "download",
         "fileId": {
           "value": "={{ $json.drive_file_id }}",
@@ -668,13 +482,13 @@
         },
         "options": {}
       },
-      "id": "b3454295-eed4-42a6-99c7-538f7c3cfe5d",
+      "id": "5397001c-c122-477c-b6d0-663fb05d5a3a",
       "name": "Download PDF",
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        672,
-        128
+        736,
+        -32
       ],
       "credentials": {
         "googleDriveOAuth2Api": {
@@ -682,6 +496,143 @@
           "name": "Google Drive account"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {
+          "joinPages": false
+        }
+      },
+      "id": "a64b2c0e-aca3-478c-a31f-5a7913edf99a",
+      "name": "Extract PDF Per Page",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        944,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.text || $json.data || '';\nlet pages = [];\nif (Array.isArray(raw)) pages = raw;\nelse if (typeof raw === 'string') {\n  pages = raw.split('\\f');\n  if (pages.length < 3) pages = raw.split(/\\n\\s*\\n\\s*\\n/);\n}\n// Cap to 30k chars to stay friendly with the model context\nconst paperText = pages.join('\\n\\n').slice(0, 30000);\nconst ctx = $('Loop Over Papers').item.json;\nreturn [{ json: { ...ctx, paper_text: paperText, paper_total_pages: pages.length } }];"
+      },
+      "id": "27ac3760-61eb-4021-b7f9-e6a7fe3a6c0c",
+      "name": "Build Paper Text",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1152,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are turning a research paper into an Instagram carousel that gets young people excited about the research done at our faculty and invites them to study at the TUE. It must be intellectually honest, specific, and intriguing, never clickbait.\n\n=== PAPER ===\nTitle: {{ $json.title }}\nAuthors: {{ $json.authors }}\nField: {{ $json.field }}\nStudy type: {{ $json.study_type }}\n\n=== FULL PAPER TEXT ===\n{{ $json.paper_text }}\n\n=== AUDIENCE ===\nHigh school student aged 17-21 scrolling Instagram. Smart, curious, and genuinely into research. They like real detail, methods and numbers, and they scroll past anything vague, textbooky or salesy.\n\n=== VOICE ===\nWrite as the faculty/researchers speaking: use \"we\" and \"our\" naturally (e.g. \"We asked 200 people…\", \"Here's what we found\"). Don't force \"we\" into every line, use it where it makes the work feel like ours.\n\n=== HOW INSTAGRAM CAROUSELS WORK (write for this) ===\n- Slide 1 has to stop the scroll. Slide 2 is shown on its own when Instagram re-serves the post, so it must hook WITHOUT relying on slide 1. Getting people to swipe to slide 3 is the goal.\n- People SAVE and SEND posts that feel genuinely useful or surprising. Write for the save, not the like.\n\n=== STRUCTURE — choose the right number of slides for THIS paper (between 5 and 10) ===\nUse only these slide types, in this order. Include every \"always\" slide; add the optional ones only if the paper genuinely needs them.\n- hook       (always)    — one specific, assumption-flipping idea or number from the paper.\n- stakes     (always)    — why this is surprising or why it matters; must stand alone without slide 1.\n- setup      (optional)  — the real question we were asking, framed in the student's world.\n- concept    (0 to 4)    — one idea needed to understand the finding. ONE idea per concept slide. Add only as many as the finding actually requires; a simple finding may need none.\n- payoff     (always)    — the actual finding, stated plainly and honestly, with the real number(s) where possible.\n- relevance  (always)    — connect it to the viewer: this is the kind of research we do here, and they could be part of it.\n- cta        (always)    — invite them to study at {{ $('Globals').first().json.FACULTY_NAME }} ({{ $('Globals').first().json.ENROLL_URL_HINT }}).\n\nNumber the slides 1..N in order, with cta last. A short, self-explanatory finding might be 5-6 slides; one that needs building up might be 9-10. Let the paper decide.\n\n=== RULES ===\n- Write in the we voice\n- Stay grounded in the paper. No invented findings or numbers, no exaggeration. Only use numbers that actually appear in the paper.\n- Headline: max 8 words, bold, declarative.\n- Body: this is where the research detail belongs. Use the available space to include concrete methods, sample sizes, manipulations, measures, and numbers whenever they help explain the finding. Prefer specifics (\"we tracked 1,200 choices\", \"participants completed 40 trials\") over summaries (\"we ran an experiment\"), but do not overdo it, it should still be a lowkey readable Instagram carousel. Up to ~25 words / 2 short sentences. If choosing between a methodological detail and a generic explanation, choose the methodological detail.\n- \"accent\": pick the single most striking word or number on that slide to highlight. It MUST appear verbatim inside that slide's headline or body. Use \"\" if nothing stands out.\n- Do not open with \"Did you know\", \"Imagine if\", \"Scientists discovered\", \"A new study\".\n- Banned words: mind-blowing, fascinating, incredible, game-changer, shocking.\n\n=== PUNCTUATION RULE ===\nThe characters \"—\" and \"–\" are forbidden anywhere in the output JSON.\nIf either character would appear, rewrite the sentence instead.\nPrefer periods and colons.\n\n=== CAPTION ===\n- 140-220 words, conversational, in our voice (\"we\").\n- Actually explain how we did it: what participants did, how many took part, what we measured or manipulated, and the key result with real numbers. Plain language, no jargon dumps.\n- Paraphrase everything — no sentences copied from the abstract.\n- Name the faculty, and end with a soft invitation to study here.\n\n=== HASHTAGS ===\n- 4-7, mix of broad (#psychology) and specific (#cognitivebias), lowercase, no spaces.\n\n=== OUTPUT (strict JSON, no markdown fences) ===\n{\n  \"content_hook\": \"one-line internal note on what makes this paper post-worthy (for the sheet, not shown to viewers)\",\n  \"content_brief\": \"2-3 sentences on the angle chosen, the slide count you picked, and why it fits this paper\",\n  \"slides\": [\n    { \"slide_number\": 1, \"slide_type\": \"hook\",      \"headline\": \"<= 8 words\", \"body\": \"1 short sentence\", \"accent\": \"key word or number\" },\n    { \"slide_number\": 2, \"slide_type\": \"stakes\",    \"headline\": \"<= 8 words\", \"body\": \"1-2 short sentences\", \"accent\": \"\" },\n    { \"slide_number\": 3, \"slide_type\": \"setup\",     \"headline\": \"<= 8 words\", \"body\": \"1-2 short sentences\", \"accent\": \"\" },\n    { \"slide_number\": 4, \"slide_type\": \"concept\",   \"headline\": \"<= 8 words\", \"body\": \"up to ~35 words if it helps\", \"accent\": \"\" },\n    { \"slide_number\": 5, \"slide_type\": \"payoff\",    \"headline\": \"<= 8 words\", \"body\": \"up to ~35 words, include the real number(s)\", \"accent\": \"\" },\n    { \"slide_number\": 6, \"slide_type\": \"relevance\", \"headline\": \"<= 8 words\", \"body\": \"1-2 short sentences\", \"accent\": \"\" },\n    { \"slide_number\": 7, \"slide_type\": \"cta\",       \"headline\": \"Want to take part?\", \"body\": \"Come take part in studies at {{ $('Globals').first().json.FACULTY_NAME }} — {{ $('Globals').first().json.ENROLL_URL_HINT }}.\", \"accent\": \"\" }\n  ],\n  \"caption\": \"140-220 word caption in our voice, with method + real numbers, no hashtags inside\",\n  \"hashtags\": [\"#psychology\", \"#research\"]\n}\n\n(The slides array above is only an EXAMPLE shape. Your real output must include the right number of \"concept\" slides for THIS paper, numbered sequentially 1..N, with cta as the final slide.)",
+        "options": {
+          "systemMessage": "You translate research papers into short, honest Instagram carousels written in the first person plural (we/our) without dashes that get students excited about research and invite them to study at our university. You vary the number of slides to fit the paper. Output strict JSON only.",
+          "maxIterations": 4
+        }
+      },
+      "id": "d846b597-2c68-481a-a969-fcf9df5dc60a",
+      "name": "Generate Carousel Concept (Claude)",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1360,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "={{ $('Globals').item.json.ANTHROPIC_MODEL }}",
+          "mode": "id"
+        },
+        "options": {
+          "maxTokensToSample": 4000
+        }
+      },
+      "id": "40f80ec9-b234-48be-90eb-07f9bdce11ea",
+      "name": "Concept Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        1360,
+        192
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "sUkzGV6H3EB4ekZS",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================================\n//  Parse Concept  —  paste into the \"Parse Concept\" Code node.\n//  Now accepts a VARIABLE number of slides (5-10) instead of a fixed count,\n//  and renumbers them so the \"n/total\" counter is always correct.\n// ============================================================================\n\nconst raw = $json.output || '';\nconst cleaned = raw\n  .replace(/^```json\\s*/i, '')\n  .replace(/^```\\s*/i, '')\n  .replace(/```\\s*$/i, '')\n  .trim();\n\nlet parsed;\ntry {\n  parsed = JSON.parse(cleaned);\n} catch (e) {\n  throw new Error('Carousel concept invalid JSON: ' + e.message + ' | raw: ' + raw.slice(0, 300));\n}\n\n// Allowed slide-count range — change these two numbers to widen/narrow it.\nconst MIN_SLIDES = 5;\nconst MAX_SLIDES = 10;\n\nconst slides = Array.isArray(parsed.slides) ? parsed.slides : [];\nif (slides.length < MIN_SLIDES || slides.length > MAX_SLIDES) {\n  throw new Error(`Expected ${MIN_SLIDES}-${MAX_SLIDES} slides, got ${slides.length}`);\n}\nif (slides[0]?.slide_type !== 'hook' || slides[slides.length - 1]?.slide_type !== 'cta') {\n  throw new Error('First slide must be \"hook\" and last must be \"cta\"');\n}\n\n// Renumber sequentially so the n/total counter never drifts from the model output.\nconst normalized = slides.map((s, i) => ({\n  slide_number: i + 1,\n  slide_type: s.slide_type,\n  headline: s.headline,\n  body: s.body,\n  accent: s.accent || '',\n}));\n\nconst ctx = $('Build Paper Text').item.json;\nreturn [{\n  json: {\n    drive_file_id: ctx.drive_file_id,\n    drive_file_name: ctx.drive_file_name,\n    title: ctx.title,\n    authors: ctx.authors,\n    field: ctx.field,\n    content_hook: parsed.content_hook || '',\n    content_brief: parsed.content_brief || '',\n    slides: normalized,\n    caption: parsed.caption || '',\n    hashtags: parsed.hashtags || [],\n    total_slides: normalized.length,\n  },\n}];"
+      },
+      "id": "d3537fe5-3eb7-4a92-a5e3-59b4037990e1",
+      "name": "Parse Concept",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1696,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const parent = $json;\nconst g = $('Globals').first().json;\nconst total = parent.total_slides;\n\nconst ASSET = g.ASSET_BASE_URL || 'http://localhost:3000/assets';\nconst LOGO_LIGHT = g.LOGO_URL || '';            // dark logo  -> used on light slides\nconst LOGO_NEG = g.LOGO_URL_NEGATIVE || '';      // white logo -> used on dark/red slides\n\n// Slide types that sit on a dark or red background (need the white/negative logo).\nconst DARK_TYPES = ['hook', 'cta', 'payoff'];\n\n// Small \"eyebrow\" label per slide type. Set to '' to hide. Edit freely.\nconst KICKER = {\n  hook: '',\n  stakes: 'The catch',\n  setup: 'The question',\n  concept: 'How it works',\n  payoff: 'The finding',\n  relevance: 'Why it matters',\n  cta: 'Your turn',\n};\n\n// Slide types that show a \"Swipe →\" nudge (the ones that must earn the next swipe).\nconst SWIPE_HINT = ['hook', 'stakes'];\n\nconst esc = (s) => String(s == null ? '' : s)\n  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\n\nfunction withAccent(text, accent) {\n  const e = esc(text);\n  if (!accent) return e;\n  const a = esc(accent);\n  const idx = e.toLowerCase().indexOf(a.toLowerCase());\n  if (idx === -1) return e;\n  return e.slice(0, idx) + '<span class=\"accent\">' + e.slice(idx, idx + a.length) + '</span>' + e.slice(idx + a.length);\n}\n\nfunction logoMarkup(slideType) {\n  const isDark = DARK_TYPES.includes(slideType);\n  const src = isDark ? LOGO_NEG : LOGO_LIGHT;\n  if (src) return `<img class=\"logo-img\" src=\"${esc(src)}\" alt=\"TU/e\">`;\n  return `<span class=\"logo-ph\">TU/e logo</span>`;\n}\n\nconst slidesHtml = parent.slides.map((s) => {\n  const kicker = KICKER[s.slide_type] || '';\n  const showSwipe = SWIPE_HINT.includes(s.slide_type);\n  return `\n  <div class=\"slide slide--${esc(s.slide_type)}\">\n    <div class=\"top\">\n      <span class=\"progress\">${s.slide_number}/${total}</span>\n      ${kicker ? `<span class=\"kicker\">${esc(kicker)}</span>` : ''}\n    </div>\n    <div class=\"content\">\n      <h1 class=\"headline\">${withAccent(s.headline, s.accent)}</h1>\n      <p class=\"body\">${esc(s.body)}</p>\n    </div>\n    <div class=\"footer\">\n      <span class=\"handle\">${esc(g.FACULTY_NAME)}</span>\n      <div class=\"footer-right\">\n        ${showSwipe ? `<span class=\"swipe\">Swipe &rarr;</span>` : ''}\n        <div class=\"logo\">${logoMarkup(s.slide_type)}</div>\n      </div>\n    </div>\n  </div>`;\n}).join('\\n');\n\nconst html = `<!doctype html>\n<html><head><meta charset=\"utf-8\"><style>\n  /* ---- custom fonts: files live in carousel-renderer/assets/fonts/ ---- */\n  @font-face { font-family:'Gilroy'; src:url('${ASSET}/fonts/Gilroy-Bold.woff2') format('woff2'); font-weight:700; font-display:swap; }\n  @font-face { font-family:'Gilroy'; src:url('${ASSET}/fonts/Gilroy-ExtraBold.woff2') format('woff2'); font-weight:800; font-display:swap; }\n  @font-face { font-family:'Lato'; src:url('${ASSET}/fonts/Lato-Regular.woff2') format('woff2'); font-weight:400; font-display:swap; }\n  @font-face { font-family:'Lato'; src:url('${ASSET}/fonts/Lato-Bold.woff2') format('woff2'); font-weight:700; font-display:swap; }\n\n  /* ---- shared TU/e tokens: the one style every slide belongs to ---- */\n  :root {\n    --bg: #ffffff;\n    --fg: #000000;\n    --muted: #666666;\n    --accent: #c72125;\n    --font-display: 'Gilroy', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;\n    --font-body: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;\n  }\n  * { margin: 0; padding: 0; box-sizing: border-box; }\n  .slide {\n    width: ${g.SLIDE_WIDTH}px;\n    height: ${g.SLIDE_HEIGHT}px;\n    background: var(--bg);\n    color: var(--fg);\n    padding: 96px 84px;\n    display: flex;\n    flex-direction: column;\n    justify-content: space-between;\n    position: relative;\n    overflow: hidden;\n    font-family: var(--font-body);\n  }\n  .top { display: flex; justify-content: space-between; align-items: baseline; }\n  .progress { font-size: 28px; font-weight: 700; color: var(--muted); }\n  .kicker { font-family: var(--font-display); font-size: 28px; font-weight: 700; letter-spacing: 0.02em; color: var(--accent); }\n  .content { flex: 1; display: flex; flex-direction: column; justify-content: center; }\n  .headline { font-family: var(--font-display); font-size: 84px; line-height: 1.04; font-weight: 800; letter-spacing: -0.01em; }\n  .headline::before { content: ''; display: block; width: 76px; height: 12px; background: var(--accent); margin-bottom: 30px; }\n  .body { font-size: 34px; line-height: 1.35; margin-top: 30px; color: var(--muted); }\n  .footer { display: flex; justify-content: space-between; align-items: center; }\n  .handle { font-size: 26px; color: var(--muted); }\n  .footer-right { display: flex; align-items: center; gap: 28px; }\n  .swipe { font-family: var(--font-display); font-weight: 700; font-size: 26px; color: var(--accent); }\n  .logo { height: 60px; display: flex; align-items: center; }\n  .logo-img { height: 100%; width: auto; display: block; }\n  .logo-ph { display: inline-flex; align-items: center; height: 60px; padding: 0 22px; border: 2px dashed currentColor; color: var(--muted); opacity: 0.65; font-size: 24px; }\n  .accent { color: var(--accent); }\n\n  /* ---- per-type variants: same system, just a few tokens remapped ---- */\n  .slide--hook, .slide--cta { --bg: #000000; --fg: #ffffff; --muted: #898b8c; }\n  .slide--hook .headline { font-size: 102px; }\n  .slide--stakes .headline { font-size: 92px; }\n  .slide--payoff { --bg: #c72125; --fg: #ffffff; --muted: #f4cccd; --accent: #ffffff; }\n  .slide--payoff .accent { text-decoration: underline; text-decoration-thickness: 7px; text-underline-offset: 10px; }\n  .slide--relevance { --bg: #eaeaea; --muted: #555555; }\n</style></head><body>\n${slidesHtml}\n</body></html>`;\n\nreturn [{\n  json: {\n    _parent: { ...parent, slides: undefined },\n    slides: parent.slides.map((s) => ({ slide_number: s.slide_number, slide_type: s.slide_type })),\n    total_slides: total,\n    html,\n  },\n}];"
+      },
+      "id": "40c4b826-5eef-4cc9-818b-72e238c2a1b0",
+      "name": "Build Carousel HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        544,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Globals').first().json.RENDER_SERVICE_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"html\": {{ JSON.stringify($json.html) }},\n  \"width\": {{ $('Globals').first().json.SLIDE_WIDTH }},\n  \"height\": {{ $('Globals').first().json.SLIDE_HEIGHT }},\n  \"deviceScale\": {{ $('Globals').first().json.DEVICE_SCALE }},\n  \"selector\": \".slide\"\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "id": "197f86de-73ef-4595-83c8-25fe48c18bef",
+      "name": "Render Carousel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        800,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const resp = $json;\nconst build = $('Build Carousel HTML').first().json;\nconst parent = build._parent;\nconst meta = build.slides || [];\nconst images = resp.images || [];\n\nif (images.length !== meta.length) {\n  throw new Error(`Renderer returned ${images.length} images but expected ${meta.length}`);\n}\n\nconst out = [];\nfor (let i = 0; i < meta.length; i++) {\n  const m = meta[i];\n  const img = images[i];\n  const b64 = typeof img === 'string' ? img : (img.image_base64 || img.base64 || img.data);\n  if (!b64) throw new Error('No image data for slide ' + m.slide_number);\n  const buffer = Buffer.from(b64, 'base64');\n  const binaryData = await this.helpers.prepareBinaryData(buffer, `slide_${m.slide_number}.png`, 'image/png');\n  out.push({\n    json: { _parent: parent, slide_number: m.slide_number, slide_type: m.slide_type },\n    binary: { data: binaryData }\n  });\n}\nreturn out;"
+      },
+      "id": "07f94336-25b3-455f-8d2d-6a22f241ed24",
+      "name": "Split Render Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1072,
+        336
+      ]
     },
     {
       "parameters": {
@@ -697,13 +648,13 @@
         },
         "options": {}
       },
-      "id": "148971d1-cd89-4d1d-bc83-c6cd977d52f8",
+      "id": "0acd22dc-f6d5-4530-aeb6-b560d62ad764",
       "name": "Upload Slide to Drive",
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        1296,
-        496
+        1360,
+        336
       ],
       "credentials": {
         "googleDriveOAuth2Api": {
@@ -711,6 +662,61 @@
           "name": "Google Drive account"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "const prev = $('Split Render Output').item.json;\nconst driveResp = $json;\nreturn {\n  json: {\n    _parent: prev._parent,\n    slide_number: prev.slide_number,\n    slide_type: prev.slide_type,\n    drive_file_id: driveResp.id,\n    drive_view_link: `https://drive.google.com/file/d/${driveResp.id}/view`\n  }\n};"
+      },
+      "id": "b4214615-e947-47dc-a562-db6eb061c67f",
+      "name": "Capture Slide Ref",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "slide_number"
+            },
+            {
+              "fieldToAggregate": "slide_type"
+            },
+            {
+              "fieldToAggregate": "drive_file_id"
+            },
+            {
+              "fieldToAggregate": "drive_view_link"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9486477c-cd4a-4f9a-a10f-f0e890a0e119",
+      "name": "Aggregate Slides",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1776,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const arr = ($json.slide_number || []).map((n, i) => ({\n  slide_number: n,\n  slide_type: $json.slide_type[i],\n  drive_file_id: $json.drive_file_id[i],\n  drive_view_link: $json.drive_view_link[i]\n}));\narr.sort((a, b) => a.slide_number - b.slide_number);\n\nconst parent = $items('Capture Slide Ref')[0].json._parent;\n\nreturn [{\n  json: {\n    drive_file_id: parent.drive_file_id,\n    title: parent.title,\n    content_hook: parent.content_hook,\n    content_brief: parent.content_brief,\n    slide_urls: arr.map(s => s.drive_view_link).join('\\n'),\n    drive_backup_links: arr.map(s => s.drive_view_link).join('\\n'),\n    caption: parent.caption,\n    hashtags: (parent.hashtags || []).join(' '),\n    generated_at: new Date().toISOString(),\n    status: 'generated'\n  }\n}];"
+      },
+      "id": "95f3e0d0-cced-4887-babc-20928ed8cd68",
+      "name": "Assemble Sheet Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        336
+      ]
     },
     {
       "parameters": {
@@ -938,56 +944,18 @@
         },
         "options": {}
       },
-      "id": "093ac5a7-ca21-40cb-b52d-34beda223f74",
+      "id": "29cd3c93-2c5e-4a5a-9c65-28e528b45b18",
       "name": "Update Paper Row",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        2112,
-        496
+        2176,
+        336
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "YIqis4WruUS7mI8Q",
           "name": "Google Sheets account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "templateId": "={{ $json.template_id }}",
-        "additionalFields": {
-          "waitForImage": true
-        },
-        "modificationsUi": {
-          "modificationsValues": [
-            {
-              "name": "headline",
-              "text": "={{ $json.headline }}"
-            },
-            {
-              "name": "body",
-              "text": "={{ $json.body }}"
-            },
-            {
-              "name": "footer",
-              "text": "={{ $json.footer }}"
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.bannerbear",
-      "typeVersion": 1,
-      "position": [
-        672,
-        496
-      ],
-      "id": "38078fca-b884-4442-b20b-4247b8b5b54e",
-      "name": "Create an image",
-      "credentials": {
-        "bannerbearApi": {
-          "id": "DTui8YnSYwdIIsUj",
-          "name": "Bannerbear account"
         }
       }
     }
@@ -1009,6 +977,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-06-15T14:44:12.096Z",
-  "versionId": "8b73083a-3b0b-4902-b04d-9a7f82d05e85"
+  "updatedAt": "2026-06-17T09:57:33.977Z",
+  "versionId": "ec06a07c-d643-4c10-b845-a82aea1e1fb0"
 }
