@@ -166,6 +166,7 @@
     "templateCredsSetupCompleted": true
   },
   "name": "A1 - Book Indexer",
+  "nodeGroups": [],
   "nodes": [
     {
       "parameters": {},
