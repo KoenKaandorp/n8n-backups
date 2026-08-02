@@ -485,6 +485,7 @@
     "templateCredsSetupCompleted": true
   },
   "name": "B1 - Shorts Generator",
+  "nodeGroups": [],
   "nodes": [
     {
       "parameters": {},
