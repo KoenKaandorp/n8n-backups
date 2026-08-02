@@ -628,6 +628,7 @@
     "templateCredsSetupCompleted": true
   },
   "name": "Shorts Generator",
+  "nodeGroups": [],
   "nodes": [
     {
       "parameters": {
