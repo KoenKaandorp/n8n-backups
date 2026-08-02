@@ -234,6 +234,7 @@
     "templateCredsSetupCompleted": true
   },
   "name": "A. Scraper",
+  "nodeGroups": [],
   "nodes": [
     {
       "parameters": {},
