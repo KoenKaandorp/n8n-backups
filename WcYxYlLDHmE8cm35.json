@@ -159,6 +159,7 @@
   "isArchived": false,
   "meta": null,
   "name": "FFMPEG Test",
+  "nodeGroups": [],
   "nodes": [
     {
       "parameters": {},
