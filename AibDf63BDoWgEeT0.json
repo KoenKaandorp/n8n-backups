@@ -251,6 +251,7 @@
     "templateCredsSetupCompleted": true
   },
   "name": "ResearchPaperToVideo",
+  "nodeGroups": [],
   "nodes": [
     {
       "parameters": {},
