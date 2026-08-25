@@ -3,17 +3,6 @@
   "activeVersion": null,
   "activeVersionId": null,
   "connections": {
-    "Schedule Trigger": {
-      "main": [
-        [
-          {
-            "node": "Globals",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Globals": {
       "main": [
         [
@@ -62,18 +51,7 @@
       "main": [
         [
           {
-            "node": "Create Item Container",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Create Item Container": {
-      "main": [
-        [
-          {
-            "node": "Capture Container ID",
+            "node": "Item Container",
             "type": "main",
             "index": 0
           }
@@ -106,18 +84,7 @@
       "main": [
         [
           {
-            "node": "Create Carousel Container",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Create Carousel Container": {
-      "main": [
-        [
-          {
-            "node": "Capture Carousel ID",
+            "node": "Carousel container",
             "type": "main",
             "index": 0
           }
@@ -139,18 +106,7 @@
       "main": [
         [
           {
-            "node": "Publish Carousel",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Publish Carousel": {
-      "main": [
-        [
-          {
-            "node": "Build Sheet Update",
+            "node": "Publish Carousel1",
             "type": "main",
             "index": 0
           }
@@ -167,34 +123,61 @@
           }
         ]
       ]
+    },
+    "Item Container": {
+      "main": [
+        [
+          {
+            "node": "Capture Container ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Carousel container": {
+      "main": [
+        [
+          {
+            "node": "Capture Carousel ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish Carousel1": {
+      "main": [
+        [
+          {
+            "node": "Build Sheet Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Globals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "createdAt": "2026-06-06T11:53:02.999Z",
   "id": "CCdRLxGg99pJnnye",
   "isArchived": false,
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "name": "D. Instagram Poster",
   "nodeGroups": [],
   "nodes": [
-    {
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "triggerAtHour": 12
-            }
-          ]
-        }
-      },
-      "id": "db04da67-41b4-40c0-954a-3c90c1e9919c",
-      "name": "Schedule Trigger",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
-      "position": [
-        480,
-        96
-      ]
-    },
     {
       "parameters": {
         "assignments": {
@@ -214,7 +197,7 @@
             {
               "id": "g3",
               "name": "IG_USER_ID",
-              "value": "17841433717814867",
+              "value": "17841439853463249",
               "type": "string"
             },
             {
@@ -333,43 +316,7 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "=https://graph.facebook.com/{{ $('Globals').first().json.IG_GRAPH_API_VERSION }}/{{ $('Globals').first().json.IG_USER_ID }}/media",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpQueryAuth",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "image_url",
-              "value": "={{ $json.image_url }}"
-            },
-            {
-              "name": "is_carousel_item",
-              "value": "true"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "261e02fa-cfcf-4185-99aa-2560c70f9cab",
-      "name": "Create Item Container",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        736,
-        352
-      ],
-      "credentials": {
-        "httpQueryAuth": {
-          "id": "L9NesMTCnQA3zA0q",
-          "name": "Query Auth account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const prev = $('Fan Out Slides').item.json;\nconst resp = $json;\nif (!resp.id) {\n  throw new Error('IG /media returned no id. Response: ' + JSON.stringify(resp).slice(0, 400));\n}\nreturn [{\n  json: {\n    _parent: prev._parent,\n    slide_index: prev.slide_index,\n    container_id: resp.id\n  }\n}];"
+        "jsCode": "// Pairs each /media response back to its slide by position.\n// Run Once for All Items mode — returns one item per slide.\n\nconst prevAll = $('Fan Out Slides').all();\nconst items = $input.all();\n\nif (items.length !== prevAll.length) {\n  throw new Error(\n    `Got ${items.length} container responses but Fan Out Slides had ${prevAll.length}`\n  );\n}\n\nreturn items.map((item, i) => {\n  const prev = prevAll[i].json;\n  const resp = item.json;\n  if (!resp.id) {\n    throw new Error(\n      'IG /media returned no id for slide ' + (prev.slide_index + 1) +\n      '. Response: ' + JSON.stringify(resp).slice(0, 400)\n    );\n  }\n  return {\n    json: {\n      _parent: prev._parent,\n      slide_index: prev.slide_index,\n      container_id: resp.id,\n    },\n  };\n});"
       },
       "id": "b431ca71-faff-46a6-96bc-94553480e060",
       "name": "Capture Container ID",
@@ -418,46 +365,6 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "=https://graph.facebook.com/{{ $('Globals').first().json.IG_GRAPH_API_VERSION }}/{{ $('Globals').first().json.IG_USER_ID }}/media",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpQueryAuth",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "media_type",
-              "value": "CAROUSEL"
-            },
-            {
-              "name": "children",
-              "value": "={{ $json.children_csv }}"
-            },
-            {
-              "name": "caption",
-              "value": "={{ $json.full_caption }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "535c5dae-7c46-412c-8619-0660e094835e",
-      "name": "Create Carousel Container",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1568,
-        352
-      ],
-      "credentials": {
-        "httpQueryAuth": {
-          "id": "L9NesMTCnQA3zA0q",
-          "name": "Query Auth account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "jsCode": "const prev = $('Build Carousel Payload').item.json;\nconst resp = $json;\nif (!resp.id) {\n  throw new Error('IG carousel container creation returned no id. Response: ' + JSON.stringify(resp).slice(0, 400));\n}\nreturn [{ json: { ...prev, carousel_container_id: resp.id } }];"
       },
       "id": "568c4d18-87b4-4b7f-b735-a8ba5f3b565b",
@@ -482,38 +389,6 @@
         352
       ],
       "webhookId": "w3-wait-webhook"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "=https://graph.facebook.com/{{ $('Globals').first().json.IG_GRAPH_API_VERSION }}/{{ $('Globals').first().json.IG_USER_ID }}/media_publish",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpQueryAuth",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "creation_id",
-              "value": "={{ $('Capture Carousel ID').item.json.carousel_container_id }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "7a0996f7-5ae4-4b5e-ac0f-2e58a5584da5",
-      "name": "Publish Carousel",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        2192,
-        352
-      ],
-      "credentials": {
-        "httpQueryAuth": {
-          "id": "L9NesMTCnQA3zA0q",
-          "name": "Query Auth account"
-        }
-      }
     },
     {
       "parameters": {
@@ -547,7 +422,218 @@
           "matchingColumns": [
             "drive_file_id"
           ],
-          "schema": [],
+          "schema": [
+            {
+              "id": "drive_file_id",
+              "displayName": "drive_file_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "drive_file_name",
+              "displayName": "drive_file_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "authors",
+              "displayName": "authors",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "field",
+              "displayName": "field",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "abstract_snippet",
+              "displayName": "abstract_snippet",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "indexed_at",
+              "displayName": "indexed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content_hook",
+              "displayName": "content_hook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "content_brief",
+              "displayName": "content_brief",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "slide_urls",
+              "displayName": "slide_urls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "caption",
+              "displayName": "caption",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "hashtags",
+              "displayName": "hashtags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "generated_at",
+              "displayName": "generated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "scheduled_for",
+              "displayName": "scheduled_for",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "posted_at",
+              "displayName": "posted_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "instagram_post_id",
+              "displayName": "instagram_post_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "study_type",
+              "displayName": "study_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "drive_backup_links",
+              "displayName": "drive_backup_links",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
           "attemptToConvertTypes": false,
           "convertFieldsToString": false
         },
@@ -583,6 +669,133 @@
         -192,
         96
       ]
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v25.0",
+        "node": "={{ $('Globals').first().json.IG_USER_ID }}",
+        "edge": "media",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "image_url",
+                "value": "={{ $json.image_url }}"
+              },
+              {
+                "name": "is_carousel_item",
+                "value": "true"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        704,
+        352
+      ],
+      "id": "07b93e60-826e-4782-af3a-f37f490988bd",
+      "name": "Item Container",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "rV64VxRtLMUJeDFc",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v25.0",
+        "node": "={{ $('Globals').first().json.IG_USER_ID }}",
+        "edge": "media",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "media_type",
+                "value": "CAROUSEL"
+              },
+              {
+                "name": "children",
+                "value": "={{ $json.children_csv }}"
+              },
+              {
+                "name": "caption",
+                "value": "={{ $json.full_caption }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1568,
+        352
+      ],
+      "id": "0f12e52d-d1be-46d8-a806-543b16eeb4d1",
+      "name": "Carousel container",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "rV64VxRtLMUJeDFc",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v25.0",
+        "node": "={{ $('Globals').first().json.IG_USER_ID }}",
+        "edge": "media_publish",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "creation_id",
+                "value": "={{ $('Capture Carousel ID').first().json.carousel_container_id }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        2176,
+        352
+      ],
+      "id": "716ad2db-ea32-403b-8d6e-f8c7693c61b1",
+      "name": "Publish Carousel1",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "rV64VxRtLMUJeDFc",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 12
+            }
+          ]
+        }
+      },
+      "id": "db04da67-41b4-40c0-954a-3c90c1e9919c",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        96
+      ]
     }
   ],
   "pinData": {},
@@ -602,6 +815,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-08-25T09:54:44.024Z",
-  "versionId": "a81f9848-4c26-45cb-86a1-fd02c1a7e7e9"
+  "updatedAt": "2026-08-25T10:52:42.591Z",
+  "versionId": "bc996374-9087-4e39-bc82-3a641507f1f6"
 }
