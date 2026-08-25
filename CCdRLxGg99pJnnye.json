@@ -214,13 +214,13 @@
             {
               "id": "g3",
               "name": "IG_USER_ID",
-              "value": "1l-XuaEKcY9cC0aLHNGh-q2ZConnzFD-7VZV3UQSelDQ",
+              "value": "17841433717814867",
               "type": "string"
             },
             {
               "id": "g4",
               "name": "IG_GRAPH_API_VERSION",
-              "value": "v21.0",
+              "value": "v25.0",
               "type": "string"
             },
             {
@@ -266,14 +266,14 @@
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "nIRGvN8ZksGyHldu",
-          "name": "Google Sheets account def"
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
         }
       }
     },
     {
       "parameters": {
-        "jsCode": "// Pick the oldest 'approved' row whose scheduled_for is empty or <= today\nconst today = new Date(); today.setHours(23, 59, 59, 999);\nconst todayISO = today.toISOString().slice(0, 10);\nconst rows = $input.all().map(i => i.json);\nconst eligible = rows.filter(r => {\n  if (r.status !== 'approved') return false;\n  if (!r.scheduled_for || String(r.scheduled_for).trim() === '') return true;\n  return String(r.scheduled_for).slice(0, 10) <= todayISO;\n});\nif (eligible.length === 0) {\n  return [{ json: { _empty: true, message: 'No approved rows due today.' } }];\n}\n// Oldest first: prefer scheduled_for ascending, then generated_at ascending\neligible.sort((a, b) => {\n  const aKey = (a.scheduled_for || a.generated_at || '');\n  const bKey = (b.scheduled_for || b.generated_at || '');\n  return String(aKey).localeCompare(String(bKey));\n});\nconst pick = eligible[0];\nconst slideUrls = String(pick.slide_urls || '').split(/\\r?\\n/).map(s => s.trim()).filter(Boolean);\nif (slideUrls.length < 2) {\n  return [{ json: { _empty: true, message: 'Picked row has <2 slide URLs, skipping. row=' + pick.drive_file_id } }];\n}\nreturn [{\n  json: {\n    drive_file_id: pick.drive_file_id,\n    title: pick.title,\n    caption: pick.caption || '',\n    hashtags: pick.hashtags || '',\n    slide_urls: slideUrls\n  }\n}];"
+        "jsCode": "// Pick the oldest 'approved' row whose scheduled_for is empty or <= today\nconst today = new Date(); today.setHours(23, 59, 59, 999);\nconst todayISO = today.toISOString().slice(0, 10);\nconst rows = $input.all().map(i => i.json);\nconst eligible = rows.filter(r => {\n  if (r.status !== 'approved') return false;\n  if (!r.scheduled_for || String(r.scheduled_for).trim() === '') return true;\n  return String(r.scheduled_for).slice(0, 10) <= todayISO;\n});\nif (eligible.length === 0) {\n  return [{ json: { _empty: true, message: 'No approved rows due today.' } }];\n}\n// Oldest first: prefer scheduled_for ascending, then generated_at ascending\neligible.sort((a, b) => {\n  const aKey = (a.scheduled_for || a.generated_at || '');\n  const bKey = (b.scheduled_for || b.generated_at || '');\n  return String(aKey).localeCompare(String(bKey));\n});\nconst pick = eligible[0];\nconst slideUrls = String(pick.slide_urls || '').split(/\\r?\\n/).map(s => s.trim()).filter(Boolean);\nif (slideUrls.length < 2) {\n  return [{ json: { _empty: true, message: 'Picked row has <2 slide URLs, skipping. row=' + pick.drive_file_id } }];\n}\nif (slideUrls.length > 10) {\n  return [{ json: { _empty: true, message: 'Row has ' + slideUrls.length + ' slides, max 10. row=' + pick.drive_file_id } }];\n}\nreturn [{\n  json: {\n    drive_file_id: pick.drive_file_id,\n    title: pick.title,\n    caption: pick.caption || '',\n    hashtags: pick.hashtags || '',\n    slide_urls: slideUrls\n  }\n}];"
       },
       "id": "ce1ea40c-ce56-4ba8-84d9-58167f9daad2",
       "name": "Pick Row To Post",
@@ -299,8 +299,8 @@
               "leftValue": "={{ $json._empty }}",
               "rightValue": "",
               "operator": {
-                "type": "string",
-                "operation": "notExists",
+                "type": "boolean",
+                "operation": "false",
                 "singleValue": true
               }
             }
@@ -359,7 +359,13 @@
       "position": [
         736,
         352
-      ]
+      ],
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "L9NesMTCnQA3zA0q",
+          "name": "Query Auth account"
+        }
+      }
     },
     {
       "parameters": {
@@ -399,7 +405,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const arr = ($json.slide_index || []).map((idx, i) => ({\n  slide_index: idx,\n  container_id: $json.container_id[i]\n}));\narr.sort((a, b) => a.slide_index - b.slide_index);\n\nconst parent = $items('Capture Container ID')[0].json._parent;\nconst caption = [parent.caption, parent.hashtags].filter(Boolean).join('\\n\\n');\n\nreturn [{\n  json: {\n    ...parent,\n    children_csv: arr.map(c => c.container_id).join(','),\n    full_caption: caption\n  }\n}];"
+        "jsCode": "const arr = ($json.slide_index || []).map((idx, i) => ({\n  slide_index: idx,\n  container_id: $json.container_id[i]\n}));\narr.sort((a, b) => a.slide_index - b.slide_index);\n\nconst parent = $('Capture Container ID').first().json._parent\nconst caption = [parent.caption, parent.hashtags].filter(Boolean).join('\\n\\n');\n\nreturn [{\n  json: {\n    ...parent,\n    children_csv: arr.map(c => c.container_id).join(','),\n    full_caption: caption\n  }\n}];"
       },
       "id": "c7749de7-05b9-4672-a762-355d3d8dd507",
       "name": "Build Carousel Payload",
@@ -442,7 +448,13 @@
       "position": [
         1568,
         352
-      ]
+      ],
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "L9NesMTCnQA3zA0q",
+          "name": "Query Auth account"
+        }
+      }
     },
     {
       "parameters": {
@@ -495,11 +507,17 @@
       "position": [
         2192,
         352
-      ]
+      ],
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "L9NesMTCnQA3zA0q",
+          "name": "Query Auth account"
+        }
+      }
     },
     {
       "parameters": {
-        "jsCode": "const prev = $('Capture Carousel ID').item.json;\nconst resp = $json;\nif (!resp.id) {\n  throw new Error('IG /media_publish returned no id. Response: ' + JSON.stringify(resp).slice(0, 400));\n}\nreturn [{\n  json: {\n    drive_file_id: prev.drive_file_id,\n    status: 'posted',\n    posted_at: new Date().toISOString(),\n    instagram_post_id: resp.id\n  }\n}];"
+        "jsCode": "const prev = $('Capture Carousel ID').first().json;\nconst resp = $json;\nif (!resp.id) {\n  throw new Error('IG /media_publish returned no id. Response: ' + JSON.stringify(resp).slice(0, 400));\n}\nreturn [{\n  json: {\n    drive_file_id: prev.drive_file_id,\n    status: 'posted',\n    posted_at: new Date().toISOString(),\n    instagram_post_id: resp.id\n  }\n}];"
       },
       "id": "5d56790b-7a9d-44bb-8543-198723704869",
       "name": "Build Sheet Update",
@@ -524,13 +542,8 @@
           "mode": "name"
         },
         "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "drive_file_id": "={{ $json.drive_file_id }}",
-            "status": "={{ $json.status }}",
-            "posted_at": "={{ $json.posted_at }}",
-            "instagram_post_id": "={{ $json.instagram_post_id }}"
-          },
+          "mappingMode": "autoMapInputData",
+          "value": {},
           "matchingColumns": [
             "drive_file_id"
           ],
@@ -550,8 +563,8 @@
       ],
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "nIRGvN8ZksGyHldu",
-          "name": "Google Sheets account def"
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
         }
       }
     },
@@ -589,6 +602,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-06-07T09:29:13.402Z",
-  "versionId": "98ee7a7a-93de-4651-aecd-270295f16178"
+  "updatedAt": "2026-08-25T09:54:44.024Z",
+  "versionId": "a81f9848-4c26-45cb-86a1-fd02c1a7e7e9"
 }
