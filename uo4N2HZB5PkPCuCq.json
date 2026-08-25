@@ -334,7 +334,7 @@
             {
               "id": "g11",
               "name": "DEVICE_SCALE",
-              "value": 2,
+              "value": 1,
               "type": "number"
             },
             {
@@ -372,6 +372,18 @@
               "name": "LOGO_URL_NEGATIVE",
               "value": "http://localhost:3000/assets/tue-logo-negative.svg",
               "type": "string"
+            },
+            {
+              "id": "8592f99e-e157-4c74-8153-80fde409d2e4",
+              "name": "SLIDE_FORMAT",
+              "value": "jpeg",
+              "type": "string"
+            },
+            {
+              "id": "8a17b537-64b6-4d45-959a-322da1866b99",
+              "name": "SLIDE_QUALITY",
+              "value": 92,
+              "type": "number"
             }
           ]
         },
@@ -603,7 +615,7 @@
         "url": "={{ $('Globals').first().json.RENDER_SERVICE_URL }}",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"html\": {{ JSON.stringify($json.html) }},\n  \"width\": {{ $('Globals').first().json.SLIDE_WIDTH }},\n  \"height\": {{ $('Globals').first().json.SLIDE_HEIGHT }},\n  \"deviceScale\": {{ $('Globals').first().json.DEVICE_SCALE }},\n  \"selector\": \".slide\"\n}",
+        "jsonBody": "={\n  \"html\": {{ JSON.stringify($json.html) }},\n  \"width\": {{ $('Globals').first().json.SLIDE_WIDTH }},\n  \"height\": {{ $('Globals').first().json.SLIDE_HEIGHT }},\n  \"deviceScale\": {{ $('Globals').first().json.DEVICE_SCALE }},\n  \"selector\": \".slide\",\n  \"format\": \"{{ $('Globals').first().json.SLIDE_FORMAT }}\",\n  \"quality\": {{ $('Globals').first().json.SLIDE_QUALITY }}\n}",
         "options": {
           "response": {
             "response": {
@@ -624,7 +636,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// ============================================================================\n//  Split Render Output  —  paste the WHOLE file into the \"Split Render Output\"\n//  Code node. Small patch: carry the renderer's `fits` array through so the\n//  approval gate can see which slides had to shrink.\n//\n//  Backward compatible. If the render service has not been updated yet there is\n//  no `fits` key in the response and everything behaves exactly as before.\n// ============================================================================\n\nconst resp = $json;\nconst build = $('Build Carousel HTML').first().json;\nconst meta = build.slides || [];\nconst images = resp.images || [];\nconst fits = Array.isArray(resp.fits) ? resp.fits : [];\n\nif (images.length !== meta.length) {\n  throw new Error(`Renderer returned ${images.length} images but expected ${meta.length}`);\n}\n\n// Attach the fit factors to the parent so they survive the Drive upload and the\n// aggregate, and land in Assemble Sheet Row.\nconst parent = { ...build._parent, _fits: fits };\n\nconst out = [];\nfor (let i = 0; i < meta.length; i++) {\n  const m = meta[i];\n  const img = images[i];\n  const b64 = typeof img === 'string' ? img : (img.image_base64 || img.base64 || img.data);\n  if (!b64) throw new Error('No image data for slide ' + m.slide_number);\n  const buffer = Buffer.from(b64, 'base64');\n  const binaryData = await this.helpers.prepareBinaryData(buffer, `slide_${m.slide_number}.png`, 'image/png');\n  out.push({\n    json: {\n      _parent: parent,\n      slide_number: m.slide_number,\n      slide_type: m.slide_type,\n      density: m.density,\n      fit: fits[i] ?? 1,\n    },\n    binary: { data: binaryData },\n  });\n}\nreturn out;"
+        "jsCode": "// Carries the renderer's `fits` array and the new `urls` array through so the\n// approval gate sees which slides shrank, and the sheet gets public image URLs.\n\nconst resp = $json;\nconst build = $('Build Carousel HTML').first().json;\nconst meta = build.slides || [];\nconst images = resp.images || [];\nconst fits = Array.isArray(resp.fits) ? resp.fits : [];\nconst urls = Array.isArray(resp.urls) ? resp.urls : [];\n\nif (images.length !== meta.length) {\n  throw new Error(`Renderer returned ${images.length} images but expected ${meta.length}`);\n}\nif (urls.length !== meta.length) {\n  throw new Error(\n    `Renderer returned ${urls.length} urls but expected ${meta.length}. ` +\n    `Is PUBLIC_BASE_URL set on the carousel-renderer container?`\n  );\n}\n\nconst parent = { ...build._parent, _fits: fits };\n\nconst out = [];\nfor (let i = 0; i < meta.length; i++) {\n  const m = meta[i];\n  const img = images[i];\n  const b64 = typeof img === 'string' ? img : (img.image_base64 || img.base64 || img.data);\n  if (!b64) throw new Error('No image data for slide ' + m.slide_number);\n  const buffer = Buffer.from(b64, 'base64');\n  const binaryData = await this.helpers.prepareBinaryData(\n    buffer, `slide_${m.slide_number}.jpg`, 'image/jpeg'\n  );\n  out.push({\n    json: {\n      _parent: parent,\n      slide_number: m.slide_number,\n      slide_type: m.slide_type,\n      density: m.density,\n      fit: fits[i] ?? 1,\n      public_url: urls[i],\n    },\n    binary: { data: binaryData },\n  });\n}\nreturn out;"
       },
       "id": "07f94336-25b3-455f-8d2d-6a22f241ed24",
       "name": "Split Render Output",
@@ -637,7 +649,7 @@
     },
     {
       "parameters": {
-        "name": "={{ ($json._parent.title || $json._parent.drive_file_name).replace(/[^a-zA-Z0-9_-]/g,'_').slice(0,40) }}_slide_{{ $json.slide_number }}.png",
+        "name": "={{ ($json._parent.title || $json._parent.drive_file_name).replace(/[^a-zA-Z0-9_-]/g,'_').slice(0,40) }}_slide_{{ $json.slide_number }}.jpg",
         "driveId": {
           "__rl": true,
           "mode": "list",
@@ -666,7 +678,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const prev = $('Split Render Output').item.json;\nconst driveResp = $json;\nreturn {\n  json: {\n    _parent: prev._parent,\n    slide_number: prev.slide_number,\n    slide_type: prev.slide_type,\n    drive_file_id: driveResp.id,\n    drive_view_link: `https://drive.google.com/file/d/${driveResp.id}/view`\n  }\n};"
+        "jsCode": "// Pairs each Drive upload response back to its slide by position.\n// Runs in \"Run Once for All Items\" mode (the default) — returns one item per slide.\n\nconst prevAll = $('Split Render Output').all();\nconst items = $input.all();\n\nif (items.length !== prevAll.length) {\n  throw new Error(\n    `Drive returned ${items.length} items but Split Render Output had ${prevAll.length}`\n  );\n}\n\nreturn items.map((item, i) => {\n  const prev = prevAll[i].json;\n  const driveResp = item.json;\n  if (!driveResp.id) {\n    throw new Error('Drive upload returned no file id for slide ' + prev.slide_number);\n  }\n  return {\n    json: {\n      _parent: prev._parent,\n      slide_number: prev.slide_number,\n      slide_type: prev.slide_type,\n      drive_file_id: driveResp.id,\n      drive_view_link: `https://drive.google.com/file/d/${driveResp.id}/view`,\n      public_url: prev.public_url,\n    },\n  };\n});"
       },
       "id": "b4214615-e947-47dc-a562-db6eb061c67f",
       "name": "Capture Slide Ref",
@@ -692,6 +704,9 @@
             },
             {
               "fieldToAggregate": "drive_view_link"
+            },
+            {
+              "fieldToAggregate": "public_url"
             }
           ]
         },
@@ -708,7 +723,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// ============================================================================\n//  Assemble Sheet Row  —  paste the WHOLE file into the \"Assemble Sheet Row\"\n//  Code node. This is a small patch, not a rewrite.\n//\n//  Two changes from your current version:\n//   1. \"notes\" is now actually populated. Your old node wrote\n//      \"drive_backup_links\", which is not a column in the papers sheet, so it\n//      was silently discarded on every run.\n//   2. The Parse Concept warnings and the block layout summary ride along into\n//      \"notes\", so the approval gate tells you at a glance which slides were\n//      auto-repaired and what each slide is built out of.\n// ============================================================================\n\nconst arr = ($json.slide_number || []).map((n, i) => ({\n  slide_number: n,\n  slide_type: $json.slide_type[i],\n  drive_file_id: $json.drive_file_id[i],\n  drive_view_link: $json.drive_view_link[i],\n}));\narr.sort((a, b) => a.slide_number - b.slide_number);\n\nconst parent = $items('Capture Slide Ref')[0].json._parent;\n\nconst warnings = parent._warnings || [];\nconst fits = Array.isArray(parent._fits) ? parent._fits : [];\nconst shrunk = fits\n  .map((f, i) => (f && f < 1 ? `${i + 1} (${Math.round(f * 100)}%)` : null))\n  .filter(Boolean);\n\nconst notes = [\n  `Layout: ${parent._block_summary || 'n/a'}`,\n  shrunk.length\n    ? `Auto-fit shrank ${shrunk.length} slide(s): ${shrunk.join(', ')}`\n    : (fits.length ? 'Auto-fit: all slides fitted at full size' : 'Auto-fit: not reported'),\n  warnings.length ? `Auto-repaired (${warnings.length}): ${warnings.join('; ')}` : 'Auto-repaired: none',\n  '',\n  'Drive backups:',\n  ...arr.map((s) => `${s.slide_number}. ${s.drive_view_link}`),\n].join('\\n');\n\nreturn [{\n  json: {\n    drive_file_id: parent.drive_file_id,\n    title: parent.title,\n    content_hook: parent.content_hook,\n    content_brief: parent.content_brief,\n    slide_urls: arr.map((s) => s.drive_view_link).join('\\n'),\n    caption: parent.caption,\n    hashtags: (parent.hashtags || []).join(' '),\n    generated_at: new Date().toISOString(),\n    status: 'generated',\n    notes,\n  },\n}];"
+        "jsCode": "// slide_urls now holds the publicly-fetchable renderer URLs (what Instagram\n// needs). The Drive backup links stay in notes for the human review pass.\n\nconst arr = ($json.slide_number || []).map((n, i) => ({\n  slide_number: n,\n  slide_type: $json.slide_type[i],\n  drive_file_id: $json.drive_file_id[i],\n  drive_view_link: $json.drive_view_link[i],\n  public_url: $json.public_url[i],\n}));\narr.sort((a, b) => a.slide_number - b.slide_number);\n\nconst parent = $('Capture Slide Ref').first().json._parent;\n\nconst warnings = parent._warnings || [];\nconst fits = Array.isArray(parent._fits) ? parent._fits : [];\nconst shrunk = fits\n  .map((f, i) => (f && f < 1 ? `${i + 1} (${Math.round(f * 100)}%)` : null))\n  .filter(Boolean);\n\nconst notes = [\n  `Layout: ${parent._block_summary || 'n/a'}`,\n  shrunk.length\n    ? `Auto-fit shrank ${shrunk.length} slide(s): ${shrunk.join(', ')}`\n    : (fits.length ? 'Auto-fit: all slides fitted at full size' : 'Auto-fit: not reported'),\n  warnings.length ? `Auto-repaired (${warnings.length}): ${warnings.join('; ')}` : 'Auto-repaired: none',\n  '',\n  'Drive backups:',\n  ...arr.map((s) => `${s.slide_number}. ${s.drive_view_link}`),\n].join('\\n');\n\nreturn [{\n  json: {\n    drive_file_id: parent.drive_file_id,\n    title: parent.title,\n    content_hook: parent.content_hook,\n    content_brief: parent.content_brief,\n    slide_urls: arr.map((s) => s.public_url).join('\\n'),\n    caption: parent.caption,\n    hashtags: (parent.hashtags || []).join(' '),\n    generated_at: new Date().toISOString(),\n    status: 'generated',\n    notes,\n  },\n}];"
       },
       "id": "95f3e0d0-cced-4887-babc-20928ed8cd68",
       "name": "Assemble Sheet Row",
@@ -978,6 +993,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-08-02T16:19:40.554Z",
-  "versionId": "42b1159c-48cb-4e59-a41a-f5b2c143aad6"
+  "updatedAt": "2026-08-25T10:02:27.987Z",
+  "versionId": "e90614ff-504e-4e1b-abba-bb1ad4ee7729"
 }
