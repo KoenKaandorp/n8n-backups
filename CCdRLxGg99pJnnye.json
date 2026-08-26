@@ -256,7 +256,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Pick the oldest 'approved' row whose scheduled_for is empty or <= today\nconst today = new Date(); today.setHours(23, 59, 59, 999);\nconst todayISO = today.toISOString().slice(0, 10);\nconst rows = $input.all().map(i => i.json);\nconst eligible = rows.filter(r => {\n  if (r.status !== 'approved') return false;\n  if (!r.scheduled_for || String(r.scheduled_for).trim() === '') return true;\n  return String(r.scheduled_for).slice(0, 10) <= todayISO;\n});\nif (eligible.length === 0) {\n  return [{ json: { _empty: true, message: 'No approved rows due today.' } }];\n}\n// Oldest first: prefer scheduled_for ascending, then generated_at ascending\neligible.sort((a, b) => {\n  const aKey = (a.scheduled_for || a.generated_at || '');\n  const bKey = (b.scheduled_for || b.generated_at || '');\n  return String(aKey).localeCompare(String(bKey));\n});\nconst pick = eligible[0];\nconst slideUrls = String(pick.slide_urls || '').split(/\\r?\\n/).map(s => s.trim()).filter(Boolean);\nif (slideUrls.length < 2) {\n  return [{ json: { _empty: true, message: 'Picked row has <2 slide URLs, skipping. row=' + pick.drive_file_id } }];\n}\nif (slideUrls.length > 10) {\n  return [{ json: { _empty: true, message: 'Row has ' + slideUrls.length + ' slides, max 10. row=' + pick.drive_file_id } }];\n}\nreturn [{\n  json: {\n    drive_file_id: pick.drive_file_id,\n    title: pick.title,\n    caption: pick.caption || '',\n    hashtags: pick.hashtags || '',\n    slide_urls: slideUrls\n  }\n}];"
+        "jsCode": "// Pick the oldest 'approved' row whose scheduled_for is empty or <= today\nconst today = new Date(); today.setHours(23, 59, 59, 999);\nconst todayISO = today.toISOString().slice(0, 10);\nconst rows = $input.all().map(i => i.json);\nconst eligible = rows.filter(r => {\n  if (r.status !== 'approved') return false;\n  if (!r.scheduled_for || String(r.scheduled_for).trim() === '') return true;\n  return String(r.scheduled_for).slice(0, 10) <= todayISO;\n});\nif (eligible.length === 0) {\n  return [{ json: { _empty: true, message: 'No approved rows due today.' } }];\n}\n// Oldest first: prefer scheduled_for ascending, then generated_at ascending\neligible.sort((a, b) => {\n  const aKey = (a.scheduled_for || a.generated_at || '');\n  const bKey = (b.scheduled_for || b.generated_at || '');\n  return String(aKey).localeCompare(String(bKey));\n});\nconst pick = eligible[0];\nconst slideUrls = String(pick.slide_urls || '').split(/\\r?\\n/).map(s => s.trim()).filter(Boolean);\nif (slideUrls.length < 2) {\n  return [{ json: { _empty: true, message: 'Picked row has <2 slide URLs, skipping. row=' + pick.drive_file_id } }];\n}\nif (slideUrls.length > 10) {\n  return [{ json: { _empty: true, message: 'Row has ' + slideUrls.length + ' slides, max 10. row=' + pick.drive_file_id } }];\n}\nreturn [{\n  json: {\n    row_key: pick.row_key,\n    drive_file_id: pick.drive_file_id,\n    title: pick.title,\n    caption: pick.caption || '',\n    hashtags: pick.hashtags || '',\n    slide_urls: slideUrls,\n    post_index: pick.post_index\n  }\n}];"
       },
       "id": "ce1ea40c-ce56-4ba8-84d9-58167f9daad2",
       "name": "Pick Row To Post",
@@ -392,7 +392,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const prev = $('Capture Carousel ID').first().json;\nconst resp = $json;\nif (!resp.id) {\n  throw new Error('IG /media_publish returned no id. Response: ' + JSON.stringify(resp).slice(0, 400));\n}\nreturn [{\n  json: {\n    drive_file_id: prev.drive_file_id,\n    status: 'posted',\n    posted_at: new Date().toISOString(),\n    instagram_post_id: resp.id\n  }\n}];"
+        "jsCode": "const prev = $('Capture Carousel ID').first().json;\nconst resp = $json;\nif (!resp.id) {\n  throw new Error('IG /media_publish returned no id. Response: ' + JSON.stringify(resp).slice(0, 400));\n}\nreturn [{\n  json: {\n    row_key: prev.row_key,\n    drive_file_id: prev.drive_file_id,\n    status: 'posted',\n    posted_at: new Date().toISOString(),\n    instagram_post_id: resp.id,\n    post_index: prev.post_index\n  }\n}];"
       },
       "id": "5d56790b-7a9d-44bb-8543-198723704869",
       "name": "Build Sheet Update",
@@ -420,9 +420,19 @@
           "mappingMode": "autoMapInputData",
           "value": {},
           "matchingColumns": [
-            "drive_file_id"
+            "row_key"
           ],
           "schema": [
+            {
+              "id": "row_key",
+              "displayName": "row_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
             {
               "id": "drive_file_id",
               "displayName": "drive_file_id",
@@ -486,6 +496,16 @@
             {
               "id": "indexed_at",
               "displayName": "indexed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "study_type",
+              "displayName": "study_type",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -614,8 +634,8 @@
               "removed": false
             },
             {
-              "id": "study_type",
-              "displayName": "study_type",
+              "id": "angle_label",
+              "displayName": "angle_label",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -624,8 +644,8 @@
               "removed": false
             },
             {
-              "id": "drive_backup_links",
-              "displayName": "drive_backup_links",
+              "id": "post_index",
+              "displayName": "post_index",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -815,6 +835,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-08-25T10:52:42.591Z",
-  "versionId": "bc996374-9087-4e39-bc82-3a641507f1f6"
+  "updatedAt": "2026-08-26T13:36:29.091Z",
+  "versionId": "322e79f3-c5b9-4ebe-9620-18150b8bc621"
 }
