@@ -351,7 +351,7 @@
     {
       "parameters": {
         "content": "\n## Workflow 1 — Paper Indexer\n\nRun manually after dropping PDFs into the papers Drive folder. Scans the folder, dedupes against the papers sheet, extracts paper metadata (title, authors, field, abstract) with Claude Haiku, and appends one row per new paper with `status=pending`.\n\n**Status values:** `pending` (ready for Generator) → `generated` (carousel made, awaiting approval) → `approved` (human flipped it manually) → `posted` (live on Instagram). Plus `failed` / `skipped` for problem rows.\n",
-        "height": 228,
+        "height": 308,
         "width": 560,
         "color": 4
       },
@@ -733,6 +733,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2026-08-02T15:42:52.179Z",
-  "versionId": "b5d9644a-8427-44c8-b4b3-3792959c5b6e"
+  "updatedAt": "2026-08-25T11:01:24.147Z",
+  "versionId": "2ea95fc3-ee23-4df3-af9c-e0ecc18314ca"
 }
