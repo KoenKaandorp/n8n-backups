@@ -1,0 +1,1436 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Globals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Globals": {
+      "main": [
+        [
+          {
+            "node": "Read Papers Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Papers Sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter Pending",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Pending": {
+      "main": [
+        [
+          {
+            "node": "Variants",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Has Pending": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Papers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Papers": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download PDF": {
+      "main": [
+        [
+          {
+            "node": "Extract PDF Per Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract PDF Per Page": {
+      "main": [
+        [
+          {
+            "node": "Build Paper Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Paper Text": {
+      "main": [
+        [
+          {
+            "node": "prompt variant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Concept Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Carousel Concept (Claude)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Carousel Concept (Claude)": {
+      "main": [
+        [
+          {
+            "node": "Parse Concept",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Concept": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Carousel HTML": {
+      "main": [
+        [
+          {
+            "node": "Render Carousel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Render Carousel": {
+      "main": [
+        [
+          {
+            "node": "Split Render Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Render Output": {
+      "main": [
+        [
+          {
+            "node": "Compute Local Path",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capture Slide Ref": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Slides": {
+      "main": [
+        [
+          {
+            "node": "Assemble Sheet Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assemble Sheet Row": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Posts": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build Carousel HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Variants": {
+      "main": [
+        [
+          {
+            "node": "If Has Pending",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prompt variant": {
+      "main": [
+        [
+          {
+            "node": "Generate Carousel Concept (Claude)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Capture Slide Ref",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compute Local Path": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Papers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-09-15T07:42:41.012Z",
+  "id": "IomJ5Yxsisnq8tbx",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Test Batch Generatin",
+  "nodeGroups": [],
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Workflow 2 — Carousel Generator\n\nRuns manually. For each paper with `status=pending`, Claude Sonnet reads the full PDF text and outputs a carousel concept (hook + content slides + CTA + IG caption + hashtags). Each slide is then rendered by **Bannerbear sync API**, downloaded, backed up to Drive, and the slide URLs are written back to the paper's row with `status=generated`.\n\n### What gets written to the sheet\n- `status` flips `pending` → `generated`\n- `slide_urls` holds the **Bannerbear-hosted URLs**, one per line, in slide order — these are what the poster workflow feeds to Instagram\n- `notes` holds the Drive backup links (for you to eyeball before approving)\n- `caption`, `hashtags`, `content_hook`, `content_brief`, `generated_at` filled in\n\n### Approval gate\nAfter this runs, open the sheet, review the row, and **manually change `status` from `generated` → `approved`** to release it to the poster. Anything left at `generated` will not post.\n",
+        "height": 404,
+        "width": 600,
+        "color": 4
+      },
+      "id": "8fcf5f66-efd6-4988-b6fe-09ecb3d56706",
+      "name": "Sticky Note W2",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        0
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "dffd2164-df05-474f-b715-cca229e7fe48",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f58bc7a8-d01e-4513-847a-35648270b1cb",
+              "name": "ANTHROPIC_MODEL_EXPENSIVE",
+              "value": "claude-opus-4-6",
+              "type": "string"
+            },
+            {
+              "id": "g1",
+              "name": "ANTHROPIC_MODEL",
+              "value": "claude-sonnet-5",
+              "type": "string"
+            },
+            {
+              "id": "g2",
+              "name": "ANTHROPIC_MODEL_CHEAP",
+              "value": "claude-haiku-4-5-20251001",
+              "type": "string"
+            },
+            {
+              "id": "g3",
+              "name": "PAPERS_SHEET_ID",
+              "value": "1l-XuaEKcY9cC0aLHNGh-q2ZConnzFD-7VZV3UQSelDQ",
+              "type": "string"
+            },
+            {
+              "id": "g4",
+              "name": "PAPERS_TAB",
+              "value": "papers_batch1",
+              "type": "string"
+            },
+            {
+              "id": "g5",
+              "name": "ERRORS_LOG_SHEET_ID",
+              "value": "1l-XuaEKcY9cC0aLHNGh-q2ZConnzFD-7VZV3UQSelDQ",
+              "type": "string"
+            },
+            {
+              "id": "g6",
+              "name": "ERRORS_LOG_TAB",
+              "value": "errors_log",
+              "type": "string"
+            },
+            {
+              "id": "g7",
+              "name": "IMAGES_BACKUP_DRIVE_FOLDER_ID",
+              "value": "1KRa1989VXArqGUIqcDvKiJGmg721t_5E",
+              "type": "string"
+            },
+            {
+              "id": "g8",
+              "name": "RENDER_SERVICE_URL",
+              "value": "http://carousel-renderer:3000/render",
+              "type": "string"
+            },
+            {
+              "id": "g9",
+              "name": "SLIDE_WIDTH",
+              "value": 1080,
+              "type": "number"
+            },
+            {
+              "id": "g10",
+              "name": "SLIDE_HEIGHT",
+              "value": 1350,
+              "type": "number"
+            },
+            {
+              "id": "g11",
+              "name": "DEVICE_SCALE",
+              "value": 1,
+              "type": "number"
+            },
+            {
+              "id": "g12",
+              "name": "FACULTY_NAME",
+              "value": "Faculty of Innovation Sciences",
+              "type": "string"
+            },
+            {
+              "id": "g13",
+              "name": "ENROLL_URL_HINT",
+              "value": "link in bio",
+              "type": "string"
+            },
+            {
+              "id": "g14",
+              "name": "TOTAL_SLIDES",
+              "value": 8,
+              "type": "number"
+            },
+            {
+              "id": "g15",
+              "name": "BATCH_SIZE",
+              "value": 20,
+              "type": "number"
+            },
+            {
+              "id": "2b49f663-27d5-4ffc-9d51-22221ffce888",
+              "name": "LOGO_URL",
+              "value": "http://localhost:3000/assets/tue-logo.svg",
+              "type": "string"
+            },
+            {
+              "id": "32aa6423-272b-4095-8353-2caf3a98648c",
+              "name": "LOGO_URL_NEGATIVE",
+              "value": "http://localhost:3000/assets/tue-logo-negative.svg",
+              "type": "string"
+            },
+            {
+              "id": "8592f99e-e157-4c74-8153-80fde409d2e4",
+              "name": "SLIDE_FORMAT",
+              "value": "jpeg",
+              "type": "string"
+            },
+            {
+              "id": "8a17b537-64b6-4d45-959a-322da1866b99",
+              "name": "SLIDE_QUALITY",
+              "value": 92,
+              "type": "number"
+            },
+            {
+              "id": "3d3137de-66fd-41b4-8e79-14be3b911bbf",
+              "name": "LOCAL_OUTPUT_ROOT",
+              "value": "/files/slides/test_batch1",
+              "type": "string"
+            },
+            {
+              "id": "6967510a-6831-4421-9ac7-efb4caada06d",
+              "name": "RESULTS_TAB",
+              "value": "papers_batch1_results",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b5074a26-ff32-4865-b98a-3ec696410efd",
+      "name": "Globals",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        704,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $json.PAPERS_TAB }}"
+        },
+        "options": {}
+      },
+      "id": "7cab1c45-2959-4ce4-be6e-a5fb4d50d41a",
+      "name": "Read Papers Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        912,
+        -288
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const all = $input.all().map(i => i.json);\nconst batchSize = $('Globals').first().json.BATCH_SIZE || 1;\nconst pending = all.filter(r => r.status === 'pending');\nif (pending.length === 0) {\n  return [{ json: { _empty: true } }];\n}\nconst batch = pending.slice(0, batchSize);\nreturn batch.map(r => ({ json: r }));"
+      },
+      "id": "0121bb10-68ff-4988-b761-584ff2ab5f54",
+      "name": "Filter Pending",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "w2-cond-has-pending",
+              "leftValue": "={{ $json._empty }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0fe55abe-be9e-4fd1-b242-ddce128a87ff",
+      "name": "If Has Pending",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1552,
+        -288
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "3feffe56-ae8d-4059-9f14-0082845c9831",
+      "name": "Loop Over Papers",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        480,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "value": "={{ $json.drive_file_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "7f104e8f-f612-4b59-ae37-14cfb9c0bedb",
+      "name": "Download PDF",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        704,
+        -32
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "qNwyljWWXKPmObNF",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {
+          "joinPages": false
+        }
+      },
+      "id": "ee3a893e-b922-4426-9879-99ed8e324fe6",
+      "name": "Extract PDF Per Page",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        912,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.text || $json.data || '';\nlet pages = [];\nif (Array.isArray(raw)) pages = raw;\nelse if (typeof raw === 'string') {\n  pages = raw.split('\\f');\n  if (pages.length < 3) pages = raw.split(/\\n\\s*\\n\\s*\\n/);\n}\n// Cap to 30k chars to stay friendly with the model context\nconst paperText = pages.join('\\n\\n').slice(0, 30000);\nconst ctx = $('Loop Over Papers').item.json;\nreturn [{ json: { ...ctx, paper_text: paperText, paper_total_pages: pages.length } }];"
+      },
+      "id": "5bcb6860-2cc8-49c3-a916-12357817c213",
+      "name": "Build Paper Text",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=={{ $json.assembled_prompt }}",
+        "options": {
+          "systemMessage": "You turn research papers into Instagram carousels for a university faculty account. You write in the first person plural (we/our), you stay strictly inside what the paper actually reports, and you never use dashes.\n\nYou do not write layout, markup or styling. You choose CONTENT BLOCKS from a fixed library and fill them. The renderer owns all visual design. Your job is to pick the block whose shape matches the shape of the idea.\n\nOutput strict JSON only. No prose, no markdown fences, no commentary.",
+          "maxIterations": 4
+        }
+      },
+      "id": "315f4929-9aed-4d32-996e-8b45b4f26150",
+      "name": "Generate Carousel Concept (Claude)",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1568,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.ANTHROPIC_MODEL }}",
+          "mode": "id"
+        },
+        "options": {
+          "maxTokensToSample": 16000
+        }
+      },
+      "id": "5ba58429-5144-48ac-9c7a-13c29fd4ee36",
+      "name": "Concept Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        1568,
+        192
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "sUkzGV6H3EB4ekZS",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================================\n//  Parse Concept  —  MULTI-POST version.\n//  Emits ONE ITEM PER POST. A paper may yield 1-3 posts.\n//  Accepts both the new {posts:[...]} shape and the legacy {slides:[...]}\n//  shape, so an older concept payload still works.\n//\n//  FIX (2026-09-15): \"Bad control character in string literal in JSON\" on\n//  JSON.parse(cleaned). Claude's raw output occasionally leaves a literal\n//  newline byte (instead of the \\n escape) inside a long free-text field —\n//  almost always \"caption\", the one multi-paragraph field in the schema.\n//  The rest of the payload is valid JSON, so the old code (which only\n//  strips the ```json fence) hit strict JSON.parse and threw. Added\n//  sanitizeJsonControlChars(), which escapes stray control characters but\n//  ONLY when they're inside a quoted string — it tracks quote/escape state\n//  char by char, so the structural whitespace used for pretty-printing the\n//  rest of the JSON is left untouched. Applied once to `cleaned` before\n//  either JSON.parse attempt.\n// ============================================================================\n\nconst MIN_SLIDES = 5;\nconst MAX_SLIDES = 10;\nconst MAX_POSTS  = 3;\n\nconst SLIDE_TYPES = ['hook', 'stakes', 'setup', 'concept', 'payoff', 'relevance', 'cta'];\nconst BUDGET = { hook: 4, stakes: 6, cta: 5, setup: 8, concept: 8, payoff: 8, relevance: 8 };\nconst BUDGET_DEFAULT = 8;\n\nconst ICONS = [\n  'alert','info','question','check','check-circle','x','x-circle','lightbulb','brain',\n  'users','user','clock','calendar','chart-bar','trending-up','trending-down','percent',\n  'target','search','flask','book','file-text','clipboard','message','quote','eye',\n  'eye-off','heart','zap','scale','lock','shield','layers','refresh','globe',\n  'arrow-right','home',\n];\nconst ICON_FALLBACK = 'info';\n\nconst LIMITS = {\n  kicker: 26, headline: 95, accent: 24,\n  paragraph: 230,\n  stat_value: 12, stat_label: 52, stat_sub: 95,\n  card_title: 30, card_body: 95,\n  rule_title: 34, rule_body: 135,\n  num_title: 34, num_sub: 62,\n  step_title: 30, step_sub: 58,\n  tl_label: 16, tl_body: 135,\n  cmp_title: 30, cmp_body: 125,\n  quote_text: 190, quote_attr: 62,\n  angle_label: 60,\n};\n\nconst ITEM_RANGE = {\n  cards: [2, 3], rule_blocks: [2, 3], numbered_list: [3, 4],\n  steps: [3, 4], timeline: [3, 4],\n};\n\nconst BLOCK_TYPES = ['paragraph','stat','cards','rule_blocks','numbered_list','steps','timeline','compare','quote'];\n\n// ---------------------------------------------------------------------------\n//  HELPERS  —  `warnings` is reassigned per post, so warn() always writes to\n//  the post currently being normalised.\n// ---------------------------------------------------------------------------\nlet warnings = [];\nconst warn = (m) => { if (warnings.length < 40) warnings.push(m); };\n\nfunction dedash(s, where) {\n  const str = String(s == null ? '' : s);\n  if (!/[—–]/.test(str)) return str;\n  warn(`dash normalised in ${where}`);\n  return str\n    .replace(/\\s*[—–]\\s*$/g, '')\n    .replace(/\\s*[—–]\\s*/g, ', ')\n    .replace(/,\\s*,/g, ',');\n}\n\nconst DANGLING = new Set(['a','an','the','and','or','but','of','to','in','on','at','by','for',\n  'with','from','as','is','are','was','were','that','this','it','its','our','we','their','than',\n  'then','so','if','into','over','about','after','before','when','while','not','no','one','two',\n  'more','most','very','just','also','only','up','out','can','has','have','how','why','what']);\n\nfunction clamp(s, max, where, ellipsis = true) {\n  const str = String(s == null ? '' : s).trim();\n  if (str.length <= max) return str;\n  warn(`${where} truncated (${str.length} > ${max})`);\n\n  // 1) Prefer ending on a complete sentence if one fits inside the limit —\n  //    no ellipsis needed since the thought is actually finished. Guard\n  //    against matching a decimal point (e.g. \"0.10\") by requiring the\n  //    period to be followed by whitespace + a capital letter/quote, or by\n  //    the very end of the string.\n  const sentenceRe = /[.!?](?=\\s+[A-Z\"'“]|$)/g;\n  let lastGoodEnd = -1;\n  let m;\n  while ((m = sentenceRe.exec(str)) !== null) {\n    const end = m.index + 1; // include the punctuation mark\n    if (end > max) break;\n    lastGoodEnd = end;\n  }\n  // Only take the sentence break if it doesn't throw away most of the field\n  // (otherwise a field that opens with a 10-char fragment before its first\n  // period would truncate to almost nothing).\n  if (lastGoodEnd > max * 0.4) {\n    return str.slice(0, lastGoodEnd).trim();\n  }\n\n  // 2) Fall back to the original word-boundary clamp with an ellipsis.\n  const budget = ellipsis ? max - 1 : max;\n  const landedOnSpace = /\\s/.test(str.charAt(budget));\n  const words = str.slice(0, budget).split(/\\s+/).filter(Boolean);\n  if (!landedOnSpace && words.length > 1) words.pop();\n  while (words.length > 1) {\n    const last = words[words.length - 1].toLowerCase().replace(/[^a-z0-9']/g, '');\n    if (!DANGLING.has(last)) break;\n    words.pop();\n  }\n  let out = words.join(' ').replace(/[,;:.…\\s]+$/, '');\n  if (!out) out = str.slice(0, budget);\n  return ellipsis ? out + '…' : out;\n}\n\nconst txt = (s, max, where, ellipsis = true) => clamp(dedash(s, where), max, where, ellipsis);\nconst isObj = (v) => v && typeof v === 'object' && !Array.isArray(v);\n\nfunction headlineWeight(headline, slideType) {\n  const perLine = slideType === 'hook' ? 18 : (slideType === 'stakes' ? 21 : 24);\n  return Math.max(0, Math.ceil(String(headline || '').length / perLine) - 2);\n}\n\nfunction blockWeight(b) {\n  const n = Array.isArray(b.items) ? b.items.length : 0;\n  switch (b.type) {\n    case 'paragraph':     return String(b.text || '').length > 130 ? 2 : 1;\n    case 'quote':         return b.attribution ? 3 : 2;\n    case 'stat':          return 3;\n    case 'cards':         return 2 * n;\n    case 'rule_blocks':   return 2 * n;\n    case 'numbered_list': return 1 + n;\n    case 'steps':         return 2 + n;\n    case 'timeline':      return 1 + 2 * n;\n    case 'compare':       return 5;\n    case 'figure':        return 4;\n    default:              return 1;\n  }\n}\n\nfunction clampItems(block, where) {\n  const range = ITEM_RANGE[block.type];\n  if (!range) return true;\n  if (!Array.isArray(block.items)) return false;\n  const [min, max] = range;\n  if (block.items.length < min) {\n    warn(`${where}: ${block.type} had ${block.items.length} items (min ${min}), block dropped`);\n    return false;\n  }\n  if (block.items.length > max) {\n    warn(`${where}: ${block.type} trimmed from ${block.items.length} to ${max} items`);\n    block.items = block.items.slice(0, max);\n  }\n  return true;\n}\n\nfunction normIcon(name, where) {\n  if (!name) return undefined;\n  const k = String(name).trim().toLowerCase();\n  if (ICONS.includes(k)) return k;\n  warn(`${where}: unknown icon \"${name}\" replaced with \"${ICON_FALLBACK}\"`);\n  return ICON_FALLBACK;\n}\n\nfunction normBlock(raw, where) {\n  if (!isObj(raw) || !raw.type) { warn(`${where}: malformed block dropped`); return null; }\n  const type = String(raw.type).trim();\n  if (!BLOCK_TYPES.includes(type)) {\n    warn(`${where}: unknown block type \"${type}\" dropped`);\n    return null;\n  }\n  switch (type) {\n    case 'paragraph': {\n      const text = txt(raw.text, LIMITS.paragraph, `${where}/paragraph`);\n      if (!text) { warn(`${where}: empty paragraph dropped`); return null; }\n      return { type, text };\n    }\n    case 'stat': {\n      const value = txt(raw.value, LIMITS.stat_value, `${where}/stat.value`);\n      const label = txt(raw.label, LIMITS.stat_label, `${where}/stat.label`);\n      if (!value || !label) { warn(`${where}: incomplete stat dropped`); return null; }\n      const out = { type, value, label };\n      if (raw.sub) out.sub = txt(raw.sub, LIMITS.stat_sub, `${where}/stat.sub`);\n      return out;\n    }\n    case 'quote': {\n      const text = txt(raw.text, LIMITS.quote_text, `${where}/quote`);\n      if (!text) { warn(`${where}: empty quote dropped`); return null; }\n      const out = { type, text };\n      if (raw.attribution) out.attribution = txt(raw.attribution, LIMITS.quote_attr, `${where}/quote.attr`);\n      return out;\n    }\n    case 'compare': {\n      if (!isObj(raw.bad) || !isObj(raw.good)) { warn(`${where}: incomplete compare dropped`); return null; }\n      return {\n        type,\n        bad:  { title: txt(raw.bad.title,  LIMITS.cmp_title, `${where}/compare.bad.title`),\n                body:  txt(raw.bad.body,   LIMITS.cmp_body,  `${where}/compare.bad.body`) },\n        good: { title: txt(raw.good.title, LIMITS.cmp_title, `${where}/compare.good.title`),\n                body:  txt(raw.good.body,  LIMITS.cmp_body,  `${where}/compare.good.body`) },\n      };\n    }\n    case 'cards': {\n      const b = { type, items: Array.isArray(raw.items) ? raw.items.slice() : [] };\n      if (!clampItems(b, where)) return null;\n      b.items = b.items.filter(isObj).map((it, i) => {\n        const o = {\n          title: txt(it.title, LIMITS.card_title, `${where}/card${i + 1}.title`),\n          body:  txt(it.body,  LIMITS.card_body,  `${where}/card${i + 1}.body`),\n        };\n        const ic = normIcon(it.icon, `${where}/card${i + 1}`);\n        if (ic) o.icon = ic;\n        return o;\n      }).filter((it) => it.title);\n      return b.items.length >= ITEM_RANGE.cards[0] ? b : null;\n    }\n    case 'rule_blocks': {\n      const b = { type, items: Array.isArray(raw.items) ? raw.items.slice() : [] };\n      if (!clampItems(b, where)) return null;\n      b.items = b.items.filter(isObj).map((it, i) => ({\n        title: txt(it.title, LIMITS.rule_title, `${where}/rule${i + 1}.title`),\n        body:  txt(it.body,  LIMITS.rule_body,  `${where}/rule${i + 1}.body`),\n      })).filter((it) => it.title);\n      return b.items.length >= ITEM_RANGE.rule_blocks[0] ? b : null;\n    }\n    case 'numbered_list': {\n      const b = { type, items: Array.isArray(raw.items) ? raw.items.slice() : [] };\n      if (!clampItems(b, where)) return null;\n      b.items = b.items.filter(isObj).map((it, i) => ({\n        title: txt(it.title, LIMITS.num_title, `${where}/item${i + 1}.title`),\n        sub:   txt(it.sub,   LIMITS.num_sub,   `${where}/item${i + 1}.sub`),\n      })).filter((it) => it.title);\n      return b.items.length >= ITEM_RANGE.numbered_list[0] ? b : null;\n    }\n    case 'steps': {\n      const b = { type, items: Array.isArray(raw.items) ? raw.items.slice() : [] };\n      if (!clampItems(b, where)) return null;\n      b.items = b.items.filter(isObj).map((it, i) => ({\n        title: txt(it.title, LIMITS.step_title, `${where}/step${i + 1}.title`),\n        sub:   txt(it.sub,   LIMITS.step_sub,   `${where}/step${i + 1}.sub`),\n      })).filter((it) => it.title);\n      return b.items.length >= ITEM_RANGE.steps[0] ? b : null;\n    }\n    case 'timeline': {\n      const b = { type, items: Array.isArray(raw.items) ? raw.items.slice() : [] };\n      if (!clampItems(b, where)) return null;\n      b.items = b.items.filter(isObj).map((it, i) => ({\n        label: txt(it.label, LIMITS.tl_label, `${where}/tl${i + 1}.label`),\n        body:  txt(it.body,  LIMITS.tl_body,  `${where}/tl${i + 1}.body`),\n      })).filter((it) => it.label);\n      return b.items.length >= ITEM_RANGE.timeline[0] ? b : null;\n    }\n  }\n  return null;\n}\n\n// ---------------------------------------------------------------------------\n//  JSON SANITIZER — escapes stray control characters (e.g. a raw newline\n//  the model left un-escaped inside a long field like \"caption\") so\n//  JSON.parse doesn't throw \"Bad control character in string literal in\n//  JSON\". Walks the text tracking whether we're inside a quoted string\n//  (respecting \\\" escapes) and only touches characters while inside one —\n//  the structural newlines/indentation between JSON tokens are untouched.\n// ---------------------------------------------------------------------------\nfunction sanitizeJsonControlChars(str) {\n  let out = '';\n  let inString = false;\n  let escapeNext = false;\n  for (let i = 0; i < str.length; i++) {\n    const ch = str[i];\n    if (escapeNext) { out += ch; escapeNext = false; continue; }\n    if (ch === '\\\\' && inString) { out += ch; escapeNext = true; continue; }\n    if (ch === '\"') { inString = !inString; out += ch; continue; }\n    if (inString) {\n      if (ch === '\\n') { out += '\\\\n'; continue; }\n      if (ch === '\\r') { out += '\\\\r'; continue; }\n      if (ch === '\\t') { out += '\\\\t'; continue; }\n      const code = ch.charCodeAt(0);\n      if (code < 0x20) { out += '\\\\u' + code.toString(16).padStart(4, '0'); continue; }\n    }\n    out += ch;\n  }\n  return out;\n}\n\n// ---------------------------------------------------------------------------\n//  PARSE\n// ---------------------------------------------------------------------------\nconst raw = $json.output || '';\nconst cleaned = sanitizeJsonControlChars(\n  String(raw)\n    .replace(/^\\s*```(?:json)?\\s*/i, '')\n    .replace(/```\\s*$/i, '')\n    .trim()\n);\n\nlet parsed;\ntry {\n  parsed = JSON.parse(cleaned);\n} catch (e) {\n  const m = cleaned.match(/\\{[\\s\\S]*\\}/);\n  if (!m) throw new Error('Carousel concept invalid JSON: ' + e.message + ' | raw: ' + cleaned.slice(0, 400));\n  try { parsed = JSON.parse(m[0]); }\n  catch (e2) { throw new Error('Carousel concept invalid JSON: ' + e2.message + ' | raw: ' + cleaned.slice(0, 400)); }\n}\n\n// Accept the multi-post shape, or fall back to the legacy single-post shape.\nlet postsIn;\nif (Array.isArray(parsed.posts) && parsed.posts.length) {\n  postsIn = parsed.posts;\n} else if (Array.isArray(parsed.slides) && parsed.slides.length) {\n  postsIn = [parsed];\n} else {\n  throw new Error('Concept has neither a \"posts\" array nor a \"slides\" array.');\n}\n\nconst anglesFound = postsIn.length;\nif (postsIn.length > MAX_POSTS) {\n  postsIn = postsIn.slice(0, MAX_POSTS);\n}\n\n// ---------------------------------------------------------------------------\n//  NORMALISE ONE POST\n// ---------------------------------------------------------------------------\nfunction normalizePost(post, postIndex) {\n  warnings = [];   // fresh warning list per post\n  const P = `post ${postIndex}`;\n\n  const slidesIn = Array.isArray(post.slides) ? post.slides : [];\n  if (slidesIn.length < MIN_SLIDES || slidesIn.length > MAX_SLIDES) {\n    throw new Error(`${P}: expected ${MIN_SLIDES}-${MAX_SLIDES} slides, got ${slidesIn.length}`);\n  }\n  if (slidesIn[0]?.slide_type !== 'hook' || slidesIn[slidesIn.length - 1]?.slide_type !== 'cta') {\n    throw new Error(`${P}: first slide must be \"hook\" and last must be \"cta\" (got \"${slidesIn[0]?.slide_type}\" ... \"${slidesIn[slidesIn.length - 1]?.slide_type}\")`);\n  }\n\n  const normalized = slidesIn.map((s, i) => {\n    const n = i + 1;\n    const where = `${P} slide ${n}`;\n\n    let slide_type = String(s.slide_type || '').trim();\n    if (!SLIDE_TYPES.includes(slide_type)) {\n      warn(`${where}: unknown slide_type \"${slide_type}\" treated as \"concept\"`);\n      slide_type = 'concept';\n    }\n\n    const headline = txt(s.headline, LIMITS.headline, `${where}.headline`, false);\n    if (!headline) throw new Error(`${where} has no headline`);\n\n    const kicker = s.kicker ? txt(s.kicker, LIMITS.kicker, `${where}.kicker`).toUpperCase() : '';\n\n    let accent = s.accent ? dedash(s.accent, `${where}.accent`).trim().slice(0, LIMITS.accent) : '';\n    if (accent && !headline.toLowerCase().includes(accent.toLowerCase())) {\n      warn(`${where}: accent \"${accent}\" not found in headline, dropped`);\n      accent = '';\n    }\n\n    let rawBlocks = Array.isArray(s.blocks) ? s.blocks : [];\n    if (!rawBlocks.length && s.body) {\n      warn(`${where}: legacy \"body\" field converted to a paragraph block`);\n      rawBlocks = [{ type: 'paragraph', text: s.body }];\n    }\n\n    let blocks = rawBlocks.map((b) => normBlock(b, where)).filter(Boolean);\n\n    const budget = BUDGET[slide_type] ?? BUDGET_DEFAULT;\n    const hw = headlineWeight(headline, slide_type);\n    if (hw) warn(`${where}: headline wraps to ${hw + 2} lines, costs ${hw} of the density budget`);\n    let weight = blocks.reduce((sum, b) => sum + blockWeight(b), hw);\n    while (weight > budget && blocks.length > 1) {\n      let idx = -1;\n      for (let k = blocks.length - 1; k >= 0; k--) {\n        if (blocks[k].type === 'paragraph') { idx = k; break; }\n      }\n      if (idx === -1) idx = blocks.length - 1;\n      const [dropped] = blocks.splice(idx, 1);\n      weight -= blockWeight(dropped);\n      warn(`${where}: over density budget (${budget}), dropped \"${dropped.type}\" block`);\n    }\n    if (weight > budget) warn(`${where}: single block still over budget (${weight}/${budget}), check the render`);\n\n    return { slide_number: n, slide_type, kicker, headline, accent, blocks, density: weight };\n  });\n\n  if (!normalized.some((s) => s.blocks.length > 0)) {\n    throw new Error(`${P}: no slide produced a single valid block.`);\n  }\n\n  const caption = dedash(post.caption || '', `${P} caption`).trim();\n  if (caption.split(/\\s+/).filter(Boolean).length < 100) warn(`${P}: caption is shorter than 100 words`);\n\n  const hashtags = (Array.isArray(post.hashtags) ? post.hashtags : [])\n    .map((h) => String(h).trim().toLowerCase())\n    .map((h) => (h.startsWith('#') ? h : '#' + h))\n    .filter((h) => /^#[a-z0-9]+$/.test(h))\n    .slice(0, 7);\n  if (hashtags.length < 4) warn(`${P}: only ${hashtags.length} valid hashtags`);\n\n  return {\n    slides: normalized,\n    caption,\n    hashtags,\n    angle_label: txt(post.angle_label || '', LIMITS.angle_label, `${P}.angle_label`),\n    content_hook: dedash(post.content_hook || '', `${P}.content_hook`),\n    content_brief: dedash(post.content_brief || '', `${P}.content_brief`),\n    warnings: warnings.slice(),\n    block_summary: normalized\n      .map((s) => `${s.slide_number}:${s.slide_type}[${s.blocks.map((b) => b.type).join(',') || 'none'}] d=${s.density}`)\n      .join(' | '),\n  };\n}\n\n// ---------------------------------------------------------------------------\n//  OUTPUT — one item per post\n// ---------------------------------------------------------------------------\nconst ctx = $('Build Paper Text').item.json;\nconst rationale = dedash(parsed.angle_rationale || '', 'angle_rationale');\n\nreturn postsIn.map((post, i) => {\n  const p = normalizePost(post, i + 1);\n  return {\n    json: {\n      drive_file_id: ctx.drive_file_id,\n      drive_file_name: ctx.drive_file_name,\n      title: ctx.title,\n      authors: ctx.authors,\n      field: ctx.field,\n      study_type: ctx.study_type,\n      abstract_snippet: ctx.abstract_snippet,\n      indexed_at: ctx.indexed_at,\n      post_index: i + 1,\n      posts_total: postsIn.length,\n      angles_found: anglesFound,\n      angle_label: p.angle_label,\n      angle_rationale: rationale,\n      content_hook: p.content_hook,\n      content_brief: p.content_brief,\n      slides: p.slides,\n      caption: p.caption,\n      hashtags: p.hashtags,\n      total_slides: p.slides.length,\n      _warnings: p.warnings,\n      _block_summary: p.block_summary,\n      variant: ctx.variant\n    },\n  };\n});"
+      },
+      "id": "fe68ec3f-9db4-4263-af76-229feee00553",
+      "name": "Parse Concept",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1888,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================================\n//  Build Carousel HTML  —  paste the WHOLE file into the \"Build Carousel HTML\"\n//  Code node (mode: Run Once for All Items).\n//\n//  Replaces the old headline+body renderer with a BLOCK RENDERER.\n//  A slide is now: kicker (chip) + headline + an ordered array of blocks.\n//  The model composes blocks; this file owns 100% of the markup and styling,\n//  so the brand can never drift.\n//\n//  Everything above the \"n8n GLUE\" marker is portable plain JS with no n8n\n//  dependencies — tools/make-preview.js reuses it to render a local preview.\n// ============================================================================\n\n// ---------------------------------------------------------------------------\n//  1. ICONS  —  inline SVG, 24x24, stroke = currentColor so every icon\n//     automatically inherits the slide palette. Keep this list in sync with\n//     ICONS in the Parse Concept node and with the prompt's icon menu.\n// ---------------------------------------------------------------------------\nconst ICON_PATHS = {\n  alert:        '<path d=\"M12 3.2 21.6 20H2.4Z\"/><line x1=\"12\" y1=\"9.5\" x2=\"12\" y2=\"14\"/><circle cx=\"12\" cy=\"17.2\" r=\".9\" fill=\"currentColor\" stroke=\"none\"/>',\n  info:         '<circle cx=\"12\" cy=\"12\" r=\"9\"/><line x1=\"12\" y1=\"11\" x2=\"12\" y2=\"17\"/><circle cx=\"12\" cy=\"7.6\" r=\".9\" fill=\"currentColor\" stroke=\"none\"/>',\n  question:     '<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M9.3 9.4a2.8 2.8 0 1 1 3.5 2.7c-.6.2-.8.7-.8 1.3v.5\"/><circle cx=\"12\" cy=\"16.8\" r=\".9\" fill=\"currentColor\" stroke=\"none\"/>',\n  check:        '<polyline points=\"4 12.5 9.5 18 20 6.5\"/>',\n  'check-circle': '<circle cx=\"12\" cy=\"12\" r=\"9\"/><polyline points=\"7.8 12.2 10.8 15.2 16.2 8.8\"/>',\n  x:            '<line x1=\"5.5\" y1=\"5.5\" x2=\"18.5\" y2=\"18.5\"/><line x1=\"18.5\" y1=\"5.5\" x2=\"5.5\" y2=\"18.5\"/>',\n  'x-circle':   '<circle cx=\"12\" cy=\"12\" r=\"9\"/><line x1=\"9\" y1=\"9\" x2=\"15\" y2=\"15\"/><line x1=\"15\" y1=\"9\" x2=\"9\" y2=\"15\"/>',\n  lightbulb:    '<path d=\"M9.2 17.2h5.6\"/><path d=\"M10.2 20.6h3.6\"/><path d=\"M12 3.2a5.9 5.9 0 0 0-3.5 10.7c.5.4.8 1 .9 1.6h5.2c.1-.6.4-1.2.9-1.6A5.9 5.9 0 0 0 12 3.2Z\"/>',\n  brain:        '<path d=\"M12 5.6v13\"/><path d=\"M12 6.6A3.4 3.4 0 0 0 5.7 8.2 3 3 0 0 0 4.3 13a3.4 3.4 0 0 0 2.9 3.3A3 3 0 0 0 12 18\"/><path d=\"M12 6.6a3.4 3.4 0 0 1 6.3 1.6 3 3 0 0 1 1.4 4.8 3.4 3.4 0 0 1-2.9 3.3A3 3 0 0 1 12 18\"/>',\n  users:        '<circle cx=\"9\" cy=\"8\" r=\"3.2\"/><path d=\"M3.2 19.8a5.8 5.8 0 0 1 11.6 0\"/><path d=\"M16.4 5.5a3.2 3.2 0 0 1 0 5\"/><path d=\"M16.9 14.3a5.8 5.8 0 0 1 3.9 5.5\"/>',\n  user:         '<circle cx=\"12\" cy=\"8\" r=\"3.4\"/><path d=\"M5.2 20a6.8 6.8 0 0 1 13.6 0\"/>',\n  clock:        '<circle cx=\"12\" cy=\"12\" r=\"9\"/><polyline points=\"12 6.8 12 12.2 16 14.2\"/>',\n  calendar:     '<rect x=\"3.2\" y=\"5.2\" width=\"17.6\" height=\"15.6\" rx=\"2\"/><line x1=\"3.2\" y1=\"10\" x2=\"20.8\" y2=\"10\"/><line x1=\"8\" y1=\"3.2\" x2=\"8\" y2=\"7\"/><line x1=\"16\" y1=\"3.2\" x2=\"16\" y2=\"7\"/>',\n  'chart-bar':  '<line x1=\"3.2\" y1=\"20.6\" x2=\"20.8\" y2=\"20.6\"/><rect x=\"5\" y=\"11.5\" width=\"3.8\" height=\"9.1\"/><rect x=\"10.1\" y=\"6.5\" width=\"3.8\" height=\"14.1\"/><rect x=\"15.2\" y=\"14.5\" width=\"3.8\" height=\"6.1\"/>',\n  'trending-up':'<polyline points=\"3.2 17 9 11.2 13 15.2 20.8 6.6\"/><polyline points=\"15.2 6.6 20.8 6.6 20.8 12\"/>',\n  'trending-down':'<polyline points=\"3.2 7 9 12.8 13 8.8 20.8 17.4\"/><polyline points=\"15.2 17.4 20.8 17.4 20.8 12\"/>',\n  percent:      '<line x1=\"19\" y1=\"5\" x2=\"5\" y2=\"19\"/><circle cx=\"7.8\" cy=\"7.8\" r=\"2.6\"/><circle cx=\"16.2\" cy=\"16.2\" r=\"2.6\"/>',\n  target:       '<circle cx=\"12\" cy=\"12\" r=\"8.8\"/><circle cx=\"12\" cy=\"12\" r=\"4.8\"/><circle cx=\"12\" cy=\"12\" r=\"1.4\" fill=\"currentColor\" stroke=\"none\"/>',\n  search:       '<circle cx=\"10.8\" cy=\"10.8\" r=\"6.4\"/><line x1=\"15.6\" y1=\"15.6\" x2=\"20.6\" y2=\"20.6\"/>',\n  flask:        '<path d=\"M10 3.4v6L4.7 17.9A2 2 0 0 0 6.4 21h11.2a2 2 0 0 0 1.7-3.1L14 9.4v-6\"/><line x1=\"8.8\" y1=\"3.4\" x2=\"15.2\" y2=\"3.4\"/><line x1=\"7.3\" y1=\"14.8\" x2=\"16.7\" y2=\"14.8\"/>',\n  book:         '<path d=\"M4.2 5.2a2.2 2.2 0 0 1 2.2-2.2h13.4v15.4H6.4a2.2 2.2 0 0 0-2.2 2.2Z\"/><line x1=\"4.2\" y1=\"18.4\" x2=\"19.8\" y2=\"18.4\"/>',\n  'file-text':  '<path d=\"M14 3.2H7.2a2 2 0 0 0-2 2v13.6a2 2 0 0 0 2 2h9.6a2 2 0 0 0 2-2V8.2Z\"/><polyline points=\"13.9 3.2 13.9 8.3 19 8.3\"/><line x1=\"8.6\" y1=\"13\" x2=\"15.4\" y2=\"13\"/><line x1=\"8.6\" y1=\"16.8\" x2=\"13.2\" y2=\"16.8\"/>',\n  clipboard:    '<path d=\"M9 4.4H6.8a1.8 1.8 0 0 0-1.8 1.8v13a1.8 1.8 0 0 0 1.8 1.8h10.4a1.8 1.8 0 0 0 1.8-1.8v-13a1.8 1.8 0 0 0-1.8-1.8H15\"/><rect x=\"9\" y=\"2.4\" width=\"6\" height=\"4\" rx=\"1.2\"/><line x1=\"9\" y1=\"12\" x2=\"15\" y2=\"12\"/><line x1=\"9\" y1=\"16\" x2=\"13\" y2=\"16\"/>',\n  message:      '<path d=\"M20.8 15.2a2 2 0 0 1-2 2H8l-4.8 3.8V5.6a2 2 0 0 1 2-2h13.6a2 2 0 0 1 2 2Z\"/>',\n  quote:        '<path d=\"M9.4 6.4C6.6 6.4 4.4 8.7 4.4 11.5v5.9h5.9v-5.9H7.4c0-1.7 1-3.1 2-3.1Z\"/><path d=\"M19.6 6.4c-2.8 0-5 2.3-5 5.1v5.9h5.9v-5.9h-2.9c0-1.7 1-3.1 2-3.1Z\"/>',\n  eye:          '<path d=\"M2.4 12S6 6.2 12 6.2 21.6 12 21.6 12 18 17.8 12 17.8 2.4 12 2.4 12Z\"/><circle cx=\"12\" cy=\"12\" r=\"2.9\"/>',\n  'eye-off':    '<path d=\"M4.9 7.6C3.2 9.2 2.4 12 2.4 12s3.6 5.8 9.6 5.8c1.7 0 3.2-.5 4.4-1.1\"/><path d=\"M9.7 6.5A9.6 9.6 0 0 1 12 6.2c6 0 9.6 5.8 9.6 5.8a16 16 0 0 1-2.8 3.3\"/><line x1=\"3.4\" y1=\"3.4\" x2=\"20.6\" y2=\"20.6\"/>',\n  heart:        '<path d=\"M12 20.2S4.6 15.6 4.6 10.7A3.9 3.9 0 0 1 12 8.4a3.9 3.9 0 0 1 7.4 2.3c0 4.9-7.4 9.5-7.4 9.5Z\"/>',\n  zap:          '<polygon points=\"13.2 2.6 4.4 14.2 11.2 14.2 10.2 21.4 19.6 9.8 12.8 9.8\"/>',\n  scale:        '<line x1=\"12\" y1=\"4\" x2=\"12\" y2=\"20.8\"/><line x1=\"7\" y1=\"20.8\" x2=\"17\" y2=\"20.8\"/><line x1=\"4\" y1=\"7.2\" x2=\"20\" y2=\"7.2\"/><path d=\"M4 7.2 1.6 12.4a2.4 2.4 0 0 0 4.8 0Z\"/><path d=\"M20 7.2l-2.4 5.2a2.4 2.4 0 0 0 4.8 0Z\"/>',\n  lock:         '<rect x=\"4.6\" y=\"10.2\" width=\"14.8\" height=\"10.6\" rx=\"2\"/><path d=\"M8.2 10.2V7.4a3.8 3.8 0 0 1 7.6 0v2.8\"/>',\n  shield:       '<path d=\"M12 3.2 19.8 6v6c0 4.4-3.2 8.1-7.8 9.2C7.4 20.1 4.2 16.4 4.2 12V6Z\"/>',\n  layers:       '<polygon points=\"12 3.2 21.4 8 12 12.8 2.6 8\"/><polyline points=\"2.6 12.4 12 17.2 21.4 12.4\"/><polyline points=\"2.6 16.6 12 21.4 21.4 16.6\"/>',\n  refresh:      '<path d=\"M20.2 11.2A8.2 8.2 0 0 0 6 6.6L3.2 9.6\"/><polyline points=\"3.2 4.8 3.2 9.8 8.2 9.8\"/><path d=\"M3.8 12.8A8.2 8.2 0 0 0 18 17.4l2.8-3\"/><polyline points=\"20.8 19.2 20.8 14.2 15.8 14.2\"/>',\n  globe:        '<circle cx=\"12\" cy=\"12\" r=\"8.8\"/><line x1=\"3.2\" y1=\"12\" x2=\"20.8\" y2=\"12\"/><path d=\"M12 3.2a13.6 13.6 0 0 1 0 17.6 13.6 13.6 0 0 1 0-17.6Z\"/>',\n  'arrow-right':'<line x1=\"4\" y1=\"12\" x2=\"19.2\" y2=\"12\"/><polyline points=\"13.2 6 19.2 12 13.2 18\"/>',\n  home:         '<path d=\"M3.2 11 12 3.8l8.8 7.2\"/><path d=\"M5.8 9.2v11.2h12.4V9.2\"/>',\n};\nconst ICON_FALLBACK = 'info';\n\nfunction icon(name, cls) {\n  const key = ICON_PATHS[name] ? name : ICON_FALLBACK;\n  return '<svg class=\"' + (cls || 'ico') + '\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" ' +\n         'stroke-width=\"1.85\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\">' +\n         ICON_PATHS[key] + '</svg>';\n}\n\n// ---------------------------------------------------------------------------\n//  2. TEXT HELPERS\n// ---------------------------------------------------------------------------\nconst esc = (s) => String(s == null ? '' : s)\n  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\n\n// Escape first, then apply the tiny inline markdown subset the model is allowed\n// to use: **bold** and *italic*. Nothing else is honoured, so the model can\n// never inject markup.\nfunction inline(s) {\n  return esc(s)\n    .replace(/\\*\\*([^*]+)\\*\\*/g, '<b>$1</b>')\n    .replace(/(^|[^*])\\*([^*]+)\\*/g, '$1<i>$2</i>');\n}\n\n// Headline: inline markdown plus the single \"accent\" highlight, matched\n// case-insensitively on the first occurrence.\nfunction headlineHtml(text, accent) {\n  const html = inline(text);\n  if (!accent) return html;\n  const needle = esc(accent);\n  const idx = html.toLowerCase().indexOf(needle.toLowerCase());\n  if (idx === -1) return html;\n  return html.slice(0, idx) +\n         '<span class=\"accent\">' + html.slice(idx, idx + needle.length) + '</span>' +\n         html.slice(idx + needle.length);\n}\n\n// ---------------------------------------------------------------------------\n//  3. DENSITY MODEL  —  identical weights to the Parse Concept node.\n//     Used here only to decide vertical alignment (dense slides top-align,\n//     airy slides centre), never to reject anything. Parse Concept is the\n//     single place that enforces the budget.\n// ---------------------------------------------------------------------------\nfunction blockWeight(b) {\n  const n = Array.isArray(b.items) ? b.items.length : 0;\n  switch (b.type) {\n    case 'paragraph':     return String(b.text || '').length > 130 ? 2 : 1;\n    case 'quote':         return b.attribution ? 3 : 2;\n    case 'stat':          return 3;\n    case 'cards':         return 2 * n;\n    case 'rule_blocks':   return 2 * n;\n    case 'numbered_list': return 1 + n;\n    case 'steps':         return 2 + n;\n    case 'timeline':      return 1 + 2 * n;\n    case 'compare':       return 5;\n    case 'figure':        return 4;\n    default:              return 1;\n  }\n}\n// Mirror of headlineWeight() in Parse Concept: extra wrapped headline lines are\n// real vertical space and count against the same budget.\nfunction headlineWeight(headline, slideType) {\n  const perLine = slideType === 'hook' ? 18 : (slideType === 'stakes' ? 21 : 24);\n  return Math.max(0, Math.ceil(String(headline || '').length / perLine) - 2);\n}\nconst slideWeight = (blocks, headline, slideType) =>\n  (blocks || []).reduce((sum, b) => sum + blockWeight(b), headlineWeight(headline, slideType));\n\n// ---------------------------------------------------------------------------\n//  4. BLOCK RENDERERS  —  one pure function per block type.\n//     To add a new block: write a function, register it in RENDERERS, add a\n//     weight above, add the CSS, add it to the parser allowlist and the prompt.\n// ---------------------------------------------------------------------------\nconst RENDERERS = {\n\n  paragraph: (b) => `<p class=\"b-para\">${inline(b.text)}</p>`,\n\n  stat: (b) => `\n    <div class=\"b-stat\">\n      <div class=\"stat-value\">${inline(b.value)}</div>\n      <div class=\"stat-label\">${inline(b.label)}</div>\n      ${b.sub ? `<div class=\"stat-sub\">${inline(b.sub)}</div>` : ''}\n    </div>`,\n\n  cards: (b) => `\n    <div class=\"b-cards\">\n      ${b.items.map((it) => `\n      <div class=\"card\">\n        <div class=\"card-head\">\n          ${it.icon ? `<span class=\"card-ico\">${icon(it.icon)}</span>` : ''}\n          <span class=\"card-title\">${inline(it.title)}</span>\n        </div>\n        ${it.body ? `<p class=\"card-body\">${inline(it.body)}</p>` : ''}\n      </div>`).join('')}\n    </div>`,\n\n  rule_blocks: (b) => `\n    <div class=\"b-rules\">\n      ${b.items.map((it) => `\n      <div class=\"rule\">\n        <div class=\"rule-title\">${inline(it.title)}</div>\n        <p class=\"rule-body\">${inline(it.body)}</p>\n      </div>`).join('')}\n    </div>`,\n\n  numbered_list: (b) => `\n    <div class=\"b-numlist\">\n      ${b.items.map((it, i) => `\n      <div class=\"numrow\">\n        <div class=\"numrow-n\">${i + 1}</div>\n        <div class=\"numrow-txt\">\n          <div class=\"numrow-title\">${inline(it.title)}</div>\n          ${it.sub ? `<div class=\"numrow-sub\">${inline(it.sub)}</div>` : ''}\n        </div>\n      </div>`).join('')}\n    </div>`,\n\n  steps: (b) => `\n    <div class=\"b-steps\">\n      ${b.items.map((it, i) => `\n      <div class=\"step\">\n        <div class=\"step-n\">${i + 1}</div>\n        <div class=\"step-txt\">\n          <div class=\"step-title\">${inline(it.title)}</div>\n          ${it.sub ? `<div class=\"step-sub\">${inline(it.sub)}</div>` : ''}\n        </div>\n      </div>`).join('')}\n    </div>`,\n\n  timeline: (b) => `\n    <div class=\"b-timeline\">\n      ${b.items.map((it, i) => `\n      <div class=\"tl${i === b.items.length - 1 ? ' tl--last' : ''}\">\n        <div class=\"tl-n\">${i + 1}</div>\n        <div class=\"tl-txt\">\n          <div class=\"tl-label\">${inline(it.label)}</div>\n          <p class=\"tl-body\">${inline(it.body)}</p>\n        </div>\n      </div>`).join('')}\n    </div>`,\n\n  compare: (b) => `\n    <div class=\"b-compare\">\n      <div class=\"cmp cmp--bad\">\n        <div class=\"cmp-head\">${icon('x-circle', 'ico cmp-ico')}<span>${inline(b.bad.title)}</span></div>\n        <p class=\"cmp-body\">${inline(b.bad.body)}</p>\n      </div>\n      <div class=\"cmp cmp--good\">\n        <div class=\"cmp-head\">${icon('check-circle', 'ico cmp-ico')}<span>${inline(b.good.title)}</span></div>\n        <p class=\"cmp-body\">${inline(b.good.body)}</p>\n      </div>\n    </div>`,\n\n  quote: (b) => `\n    <blockquote class=\"b-quote\">\n      <p class=\"quote-text\">${inline(b.text)}</p>\n      ${b.attribution ? `<div class=\"quote-attr\">${inline(b.attribution)}</div>` : ''}\n    </blockquote>`,\n\n  // Reserved for the PDF-figure / AI-hero work. Not on the model's menu yet,\n  // but rendering already works if a block is injected downstream.\n  figure: (b) => `\n    <figure class=\"b-figure\">\n      <img src=\"${esc(b.src)}\" alt=\"\">\n      ${b.caption ? `<figcaption>${inline(b.caption)}</figcaption>` : ''}\n    </figure>`,\n};\n\nfunction renderBlock(b) {\n  const fn = RENDERERS[b && b.type];\n  return fn ? fn(b) : '';\n}\n\n// ---------------------------------------------------------------------------\n//  5. STYLESHEET\n// ---------------------------------------------------------------------------\nfunction stylesheet(g) {\n  const ASSET = g.ASSET_BASE_URL || 'http://localhost:3000/assets';\n  return `\n  @font-face { font-family:'Gilroy'; src:url('${ASSET}/fonts/Gilroy-Bold.woff2') format('woff2'); font-weight:700; font-display:swap; }\n  @font-face { font-family:'Gilroy'; src:url('${ASSET}/fonts/Gilroy-ExtraBold.woff2') format('woff2'); font-weight:800; font-display:swap; }\n  @font-face { font-family:'Lato';   src:url('${ASSET}/fonts/Lato-Regular.woff2') format('woff2'); font-weight:400; font-display:swap; }\n  @font-face { font-family:'Lato';   src:url('${ASSET}/fonts/Lato-Bold.woff2') format('woff2'); font-weight:700; font-display:swap; }\n\n  /* ---- design tokens: every slide is a remap of these, nothing else ---- */\n  :root {\n    --bg:#ffffff; --fg:#000000; --muted:#5b5b5b;\n    --accent:#c72125;\n    --surface:#f2efee;      /* card / row fill            */\n    --surface-2:#e4e0df;    /* chip + numeral well        */\n    --line:#d8d3d2;         /* hairlines and connectors   */\n    --pos:#2f7d4f; --neg:#c72125;\n    --font-display:'Gilroy',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;\n    --font-body:'Lato',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;\n  }\n  * { margin:0; padding:0; box-sizing:border-box; }\n  img { display:block; max-width:100%; }\n\n  .slide {\n    width:${g.SLIDE_WIDTH}px; height:${g.SLIDE_HEIGHT}px;\n    background:var(--bg); color:var(--fg);\n    padding:88px 84px 80px;\n    display:flex; flex-direction:column; justify-content:space-between;\n    position:relative; overflow:hidden;\n    font-family:var(--font-body);\n    -webkit-font-smoothing:antialiased;\n  }\n\n  /* .content is the fixed measuring frame; .fit is the thing that shrinks.\n     zoom (not transform:scale) because zoom reflows text properly in Chromium,\n     so a shrunk slide rewraps instead of just getting smaller.             */\n  .content { flex:1; min-height:0; display:flex; flex-direction:column;\n             justify-content:center; overflow:hidden; }\n  .slide--dense .content { justify-content:flex-start; padding-top:8px; }\n  .fit { width:100%; display:flex; flex-direction:column; zoom:var(--fit,1); }\n\n  .top { display:flex; justify-content:space-between; align-items:baseline;\n         margin-bottom:34px; }\n  .progress { font-family:var(--font-display); font-size:26px; font-weight:700;\n              letter-spacing:.04em; color:var(--muted); }\n\n  .chip { display:inline-flex; align-self:flex-start; flex:none; background:var(--surface-2);\n          color:var(--muted); font-size:24px; letter-spacing:.11em;\n          text-transform:uppercase; padding:12px 20px; border-radius:4px;\n          margin-bottom:30px; }\n\n  .headline { font-family:var(--font-display); font-weight:800;\n              font-size:78px; line-height:1.05; letter-spacing:-.015em;\n              text-wrap:balance; }\n  /* the red rule is the alternative to a chip, never both */\n  .content--nochip .headline::before {\n    content:''; display:block; width:76px; height:12px;\n    background:var(--accent); margin-bottom:30px;\n  }\n  .accent { color:var(--accent); }\n\n  .blocks { display:flex; flex-direction:column; gap:30px; margin-top:38px; }\n  .blocks:empty { display:none; }\n  b { font-weight:700; color:var(--fg); }\n  i { font-style:italic; }\n  .ico { width:100%; height:100%; }\n\n  /* ---- paragraph ---- */\n  .b-para { font-size:33px; line-height:1.42; color:var(--muted); text-wrap:pretty; }\n\n  /* ---- stat ---- */\n  .b-stat { padding:8px 0; }\n  .stat-value { font-family:var(--font-display); font-weight:800; font-size:196px;\n                line-height:.86; letter-spacing:-.045em; color:var(--accent); }\n  .stat-label { font-family:var(--font-display); font-weight:700; font-size:42px;\n                line-height:1.2; margin-top:26px; color:var(--fg); }\n  .stat-sub   { font-size:29px; line-height:1.4; margin-top:14px; color:var(--muted); }\n\n  /* ---- cards ---- */\n  .b-cards { display:flex; flex-direction:column; gap:18px; }\n  .card { background:var(--surface); border-radius:6px; padding:32px 36px; }\n  .card-head { display:flex; align-items:center; gap:20px; }\n  .card-ico { width:46px; height:46px; flex:none; color:var(--accent); }\n  .card-title { font-family:var(--font-display); font-weight:700; font-size:38px;\n                line-height:1.15; color:var(--fg); }\n  .card-body { font-size:29px; line-height:1.38; color:var(--muted); margin-top:14px; }\n\n  /* ---- rule blocks ---- */\n  .b-rules { display:flex; flex-direction:column; gap:34px; }\n  .rule { border-left:10px solid var(--fg); padding:4px 0 4px 34px; }\n  .rule-title { font-family:var(--font-display); font-weight:700; font-size:40px;\n                line-height:1.15; color:var(--fg); }\n  .rule-body { font-size:30px; line-height:1.4; color:var(--muted); margin-top:14px; }\n\n  /* ---- numbered list ---- */\n  .b-numlist { display:flex; flex-direction:column; gap:16px; }\n  .numrow { display:flex; align-items:stretch; background:var(--surface);\n            border-radius:6px; overflow:hidden; }\n  .numrow-n { width:104px; flex:none; display:flex; align-items:center;\n              justify-content:center; background:var(--surface-2);\n              font-family:var(--font-display); font-weight:800; font-size:44px;\n              color:var(--fg); }\n  .numrow-txt { padding:24px 32px; }\n  .numrow-title { font-family:var(--font-display); font-weight:700; font-size:37px;\n                  line-height:1.15; }\n  .numrow-sub { font-size:28px; line-height:1.35; color:var(--muted); margin-top:8px; }\n\n  /* ---- steps (chevrons) ---- */\n  .b-steps { display:flex; flex-direction:column; gap:14px; }\n  .step { display:flex; align-items:center; gap:30px; }\n  .step-n { width:150px; height:132px; flex:none; background:var(--surface);\n            clip-path:polygon(0 0,100% 0,100% 76%,50% 100%,0 76%);\n            display:flex; align-items:center; justify-content:center;\n            padding-bottom:16px;\n            font-family:var(--font-display); font-weight:800; font-size:46px; }\n  .step-title { font-family:var(--font-display); font-weight:700; font-size:40px;\n                line-height:1.15; }\n  .step-sub { font-size:29px; line-height:1.35; color:var(--muted); margin-top:8px; }\n\n  /* ---- timeline ---- */\n  .b-timeline { display:flex; flex-direction:column; }\n  .tl { display:grid; grid-template-columns:88px 1fr; gap:32px;\n        padding-bottom:38px; position:relative; }\n  .tl:last-child { padding-bottom:0; }\n  .tl::before { content:''; position:absolute; left:43px; top:88px; bottom:0;\n                width:3px; background:var(--line); }\n  .tl--last::before { display:none; }\n  .tl-n { width:88px; height:88px; background:var(--surface); border-radius:6px;\n          display:flex; align-items:center; justify-content:center;\n          font-family:var(--font-display); font-weight:800; font-size:44px; }\n  .tl-txt { padding-top:8px; }\n  .tl-label { font-family:var(--font-display); font-weight:700; font-size:38px;\n              line-height:1.15; }\n  .tl-body { font-size:29px; line-height:1.4; color:var(--muted); margin-top:12px; }\n\n  /* ---- compare ---- */\n  .b-compare { background:var(--surface); border-radius:6px; overflow:hidden; }\n  .cmp { padding:32px 36px; }\n  .cmp + .cmp { border-top:3px solid var(--line); }\n  .cmp-head { display:flex; align-items:center; gap:18px;\n              font-family:var(--font-display); font-weight:700; font-size:40px; }\n  .cmp-ico { width:46px; height:46px; flex:none; }\n  .cmp--bad  .cmp-ico { color:var(--neg); }\n  .cmp--good .cmp-ico { color:var(--pos); }\n  .cmp-body { font-size:29px; line-height:1.4; color:var(--muted); margin-top:14px; }\n\n  /* ---- quote ---- */\n  .b-quote { border-left:10px solid var(--fg); padding:6px 0 6px 36px; }\n  .quote-text { font-size:36px; line-height:1.4; color:var(--fg); }\n  .quote-attr { font-size:26px; color:var(--muted); margin-top:18px; }\n\n  /* ---- figure ---- */\n  .b-figure img { width:100%; border-radius:6px; }\n  .b-figure figcaption { font-size:25px; color:var(--muted); margin-top:14px; }\n\n  /* ---- footer ---- */\n  .footer { display:flex; justify-content:space-between; align-items:center;\n            padding-top:34px; }\n  .handle { font-size:25px; color:var(--muted); }\n  .footer-right { display:flex; align-items:center; gap:28px; }\n  .swipe { font-family:var(--font-display); font-weight:700; font-size:26px;\n           color:var(--accent); }\n  .logo { height:58px; display:flex; align-items:center; }\n  .logo-img { height:100%; width:auto; display:block; }\n  .logo-ph { display:inline-flex; align-items:center; height:58px; padding:0 22px;\n             border:2px dashed currentColor; color:var(--muted); opacity:.65;\n             font-size:23px; }\n\n  /* ---- per-type variants: token remaps only, never new layout ---- */\n  .slide--hook, .slide--cta {\n    --bg:#000000; --fg:#ffffff; --muted:#9a9c9d;\n    --surface:#1b1b1b; --surface-2:#2a2a2a; --line:#3a3a3a;\n  }\n  .slide--hook .headline { font-size:100px; }\n  .slide--hook .b-para, .slide--cta .b-para { font-size:35px; }\n  .slide--stakes .headline { font-size:88px; }\n  .slide--payoff {\n    --bg:#c72125; --fg:#ffffff; --muted:#f6d5d6; --accent:#ffffff;\n    --surface:#b31d21; --surface-2:#a01a1d; --line:#d4585b;\n    --pos:#ffffff; --neg:#ffffff;\n  }\n  .slide--payoff .rule, .slide--payoff .b-quote { border-left-color:#ffffff; }\n  .slide--payoff .accent { text-decoration:underline;\n                           text-decoration-thickness:7px; text-underline-offset:10px; }\n  .slide--payoff .stat-value { color:#ffffff; }\n  .slide--relevance { --bg:#efedec; --surface:#e2dedd; --surface-2:#d3cecd;\n                      --line:#c9c3c2; --muted:#4f4f4f; }\n`;\n}\n\n// ---------------------------------------------------------------------------\n//  6. SLIDE + DOCUMENT ASSEMBLY\n// ---------------------------------------------------------------------------\nconst DARK_TYPES = ['hook', 'cta', 'payoff'];   // use the negative (white) logo\nconst SWIPE_HINT = ['hook', 'stakes'];          // slides that must earn the swipe\nconst DENSE_AT = 5;                             // weight at which we top-align\n\nfunction logoMarkup(slideType, g) {\n  const src = DARK_TYPES.includes(slideType)\n    ? (g.LOGO_URL_NEGATIVE || '')\n    : (g.LOGO_URL || '');\n  return src\n    ? `<img class=\"logo-img\" src=\"${esc(src)}\" alt=\"TU/e\">`\n    : `<span class=\"logo-ph\">TU/e logo</span>`;\n}\n\nfunction renderSlide(s, total, g) {\n  const blocks = Array.isArray(s.blocks) ? s.blocks : [];\n  const weight = slideWeight(blocks, s.headline, s.slide_type);\n  const hasChip = !!s.kicker;\n  const cls = [\n    'slide',\n    'slide--' + esc(s.slide_type),\n    weight >= DENSE_AT ? 'slide--dense' : '',\n  ].filter(Boolean).join(' ');\n\n  return `\n  <div class=\"${cls}\">\n    <div class=\"top\">\n      <span class=\"progress\">${s.slide_number}/${total}</span>\n    </div>\n    <div class=\"content${hasChip ? '' : ' content--nochip'}\">\n      <div class=\"fit\">\n        ${hasChip ? `<span class=\"chip\">${esc(s.kicker)}</span>` : ''}\n        <h1 class=\"headline\">${headlineHtml(s.headline, s.accent)}</h1>\n        <div class=\"blocks\">${blocks.map(renderBlock).join('')}</div>\n      </div>\n    </div>\n    <div class=\"footer\">\n      <span class=\"handle\">${esc(g.FACULTY_NAME)}</span>\n      <div class=\"footer-right\">\n        ${SWIPE_HINT.includes(s.slide_type) ? `<span class=\"swipe\">Swipe &rarr;</span>` : ''}\n        <div class=\"logo\">${logoMarkup(s.slide_type, g)}</div>\n      </div>\n    </div>\n  </div>`;\n}\n\nfunction buildCarouselHtml(parent, g) {\n  const total = parent.total_slides || parent.slides.length;\n  const slidesHtml = parent.slides.map((s) => renderSlide(s, total, g)).join('\\n');\n  return `<!doctype html>\n<html><head><meta charset=\"utf-8\"><style>${stylesheet(g)}</style></head>\n<body>\n${slidesHtml}\n</body></html>`;\n}\n\n// ============================================================================\n//  n8n GLUE  —  everything below this line is n8n-specific.\n// ============================================================================\n\nconst parent = $json;\nconst g = $('Globals').first().json;\nconst html = buildCarouselHtml(parent, g);\n\nreturn [{\n  json: {\n    // slides are stripped from _parent so the payload stays small; the poster\n    // and the sheet only ever need the scalar fields.\n    _parent: { ...parent, slides: undefined },\n    slides: parent.slides.map((s) => ({\n      slide_number: s.slide_number,\n      slide_type: s.slide_type,\n      density: slideWeight(s.blocks, s.headline, s.slide_type),\n    })),\n    total_slides: parent.total_slides || parent.slides.length,\n    html,\n  },\n}];"
+      },
+      "id": "1c016f78-1086-4ccc-93ab-b94355a97581",
+      "name": "Build Carousel HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Globals').first().json.RENDER_SERVICE_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"html\": {{ JSON.stringify($json.html) }},\n  \"width\": {{ $('Globals').first().json.SLIDE_WIDTH }},\n  \"height\": {{ $('Globals').first().json.SLIDE_HEIGHT }},\n  \"deviceScale\": {{ $('Globals').first().json.DEVICE_SCALE }},\n  \"selector\": \".slide\",\n  \"format\": \"{{ $('Globals').first().json.SLIDE_FORMAT }}\",\n  \"quality\": {{ $('Globals').first().json.SLIDE_QUALITY }}\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "id": "ced039ce-3962-425d-a58b-14ce64f73737",
+      "name": "Render Carousel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1008,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Carries the renderer's `fits` array and the new `urls` array through so the\n// approval gate sees which slides shrank, and the sheet gets public image URLs.\n\nconst resp = $json;\nconst build = $('Build Carousel HTML').first().json;\nconst meta = build.slides || [];\nconst images = resp.images || [];\nconst fits = Array.isArray(resp.fits) ? resp.fits : [];\nconst urls = Array.isArray(resp.urls) ? resp.urls : [];\n\nif (images.length !== meta.length) {\n  throw new Error(`Renderer returned ${images.length} images but expected ${meta.length}`);\n}\nif (urls.length !== meta.length) {\n  throw new Error(\n    `Renderer returned ${urls.length} urls but expected ${meta.length}. ` +\n    `Is PUBLIC_BASE_URL set on the carousel-renderer container?`\n  );\n}\n\nconst parent = { ...build._parent, _fits: fits };\n\nconst out = [];\nfor (let i = 0; i < meta.length; i++) {\n  const m = meta[i];\n  const img = images[i];\n  const b64 = typeof img === 'string' ? img : (img.image_base64 || img.base64 || img.data);\n  if (!b64) throw new Error('No image data for slide ' + m.slide_number);\n  const buffer = Buffer.from(b64, 'base64');\n  const binaryData = await this.helpers.prepareBinaryData(\n    buffer, `slide_${m.slide_number}.jpg`, 'image/jpeg'\n  );\n  out.push({\n    json: {\n      _parent: parent,\n      slide_number: m.slide_number,\n      slide_type: m.slide_type,\n      density: m.density,\n      fit: fits[i] ?? 1,\n      public_url: urls[i],\n    },\n    binary: { data: binaryData },\n  });\n}\nreturn out;"
+      },
+      "id": "751b4de7-7ff9-45be-ad3a-b39e0f801a25",
+      "name": "Split Render Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1232,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================================\n//  \"Capture Slide Ref\"  —  REPLACEMENT for the current node's code.\n//\n//  Why: this node still expects the OLD Google Drive upload response\n//  (checks `driveResp.id`) — but that step was replaced by \"Read/Write\n//  Files from Disk\", which doesn't return a Drive id. As pasted, this node\n//  throws \"Drive upload returned no file id\" on every single slide.\n//\n//  Fix: pull the slide's metadata (including the local path) from\n//  \"Code in JavaScript\" (the Compute Local Path node), two steps back —\n//  same defensive pattern as the original, which never trusted the\n//  immediate upstream node to preserve every field, only to add the one\n//  new thing it was responsible for.\n// ============================================================================\n\nconst prevAll = $('Compute Local Path').all();\nconst items = $input.all();\n\nif (items.length !== prevAll.length) {\n  throw new Error(\n    `Write step returned ${items.length} items but Compute Local Path had ${prevAll.length}`\n  );\n}\n\nreturn items.map((item, i) => {\n  const prev = prevAll[i].json;\n  return {\n    json: {\n      _parent: prev._parent,\n      slide_number: prev.slide_number,\n      slide_type: prev.slide_type,\n      local_path: prev.fullPath,\n      folder_name: prev.folderName,\n      public_url: prev.public_url,\n    },\n  };\n});"
+      },
+      "id": "7a9d23ba-e3da-42cd-81e2-32975184aba0",
+      "name": "Capture Slide Ref",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        576
+      ]
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "slide_number"
+            },
+            {
+              "fieldToAggregate": "slide_type"
+            },
+            {
+              "fieldToAggregate": "local_path"
+            },
+            {
+              "fieldToAggregate": "folder_name"
+            },
+            {
+              "fieldToAggregate": "public_url"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f4a35be3-f0b9-4ce6-8c41-2d984e34c0ab",
+      "name": "Aggregate Slides",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1008,
+        576
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================================\n//  \"Assemble Sheet Row\"  —  REPLACEMENT for the current node's code.\n//\n//  Changes from what's currently pasted:\n//   - reads local_path/folder_name from Aggregate Slides instead of the old\n//     drive_file_id/drive_view_link (which no longer exist upstream)\n//   - adds `variant` and `folder_name` as their own columns (the whole\n//     point of the batch log — currently missing)\n//   - fixes row_key: it was `${drive_file_id}_${post_index}`, which\n//     COLLIDES between the applied and research versions of the same paper\n//     (post_index restarts at 1 for each variant) — now includes variant\n//   - notes list the local folder instead of \"Drive backups\"\n//\n//  Also update \"Aggregate Slides\" (the node right before this one): its\n//  \"Fields to Aggregate\" list currently has drive_file_id and\n//  drive_view_link — swap those two entries for local_path and\n//  folder_name (keep slide_number, slide_type, public_url as they are).\n// ============================================================================\n\nconst arr = ($json.slide_number || []).map((n, i) => ({\n  slide_number: n,\n  slide_type: $json.slide_type[i],\n  local_path: $json.local_path[i],\n  folder_name: $json.folder_name[i],\n  public_url: $json.public_url[i],\n}));\narr.sort((a, b) => a.slide_number - b.slide_number);\n\nconst parent = $('Capture Slide Ref').first().json._parent;\n\nconst warnings = parent._warnings || [];\nconst fits = Array.isArray(parent._fits) ? parent._fits : [];\nconst shrunk = fits\n  .map((f, i) => (f && f < 1 ? `${i + 1} (${Math.round(f * 100)}%)` : null))\n  .filter(Boolean);\n\nconst folderName = arr[0]?.folder_name || '';\n\nconst notes = [\n  `Post ${parent.post_index} of ${parent.posts_total}: ${parent.angle_label || '(no label)'}`,\n  parent.posts_total > 1 ? `Why split: ${parent.angle_rationale || 'n/a'}` : null,\n  `Layout: ${parent._block_summary || 'n/a'}`,\n  shrunk.length\n    ? `Auto-fit shrank ${shrunk.length} slide(s): ${shrunk.join(', ')}`\n    : (fits.length ? 'Auto-fit: all slides fitted at full size' : 'Auto-fit: not reported'),\n  warnings.length ? `Auto-repaired (${warnings.length}): ${warnings.join('; ')}` : 'Auto-repaired: none',\n  '',\n  `Local folder: ${folderName}`,\n].filter((l) => l !== null).join('\\n');\n\nreturn [{\n  json: {\n    row_key: `${parent.drive_file_id}_${parent.variant}_${parent.post_index}`,\n    drive_file_id: parent.drive_file_id,\n    drive_file_name: parent.drive_file_name,\n    title: parent.title,\n    authors: parent.authors,\n    field: parent.field,\n    study_type: parent.study_type,\n    abstract_snippet: parent.abstract_snippet,\n    indexed_at: parent.indexed_at,\n    variant: parent.variant,\n    post_index: parent.post_index,\n    angle_label: parent.angle_label,\n    content_hook: parent.content_hook,\n    content_brief: parent.content_brief,\n    folder_name: folderName,\n    slide_urls: arr.map((s) => s.public_url).join('\\n'),\n    caption: parent.caption,\n    hashtags: (parent.hashtags || []).join(' '),\n    generated_at: new Date().toISOString(),\n    status: 'generated',\n    notes,\n  },\n}];"
+      },
+      "id": "c92f01ce-c694-4de0-98f3-42ba82c0e137",
+      "name": "Assemble Sheet Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1216,
+        576
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": "={{ $prevNode.name === 'Parse Concept' }}"
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        560,
+        336
+      ],
+      "id": "3011296d-dd16-419a-a309-64ce42d9a9f9",
+      "name": "Loop Over Posts"
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(i => i.json);\nif (rows.length === 1 && rows[0]._empty) return rows.map(r => ({ json: r }));\nconst out = [];\nfor (const r of rows) {\n  out.push({ json: { ...r, variant: 'applied' } });\n  out.push({ json: { ...r, variant: 'research' } });\n}\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        -288
+      ],
+      "id": "88bbdc45-8304-40f8-b091-fc7512b7677e",
+      "name": "Variants"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================================\n//  \"Build Variant Prompt\"  —  paste this WHOLE file into a new Code node.\n//\n//  Placement: insert it between \"Build Paper Text\" and\n//  \"Generate Carousel Concept (Claude)\" (i.e. it becomes the new predecessor\n//  of the agent node; Build Paper Text -> Build Variant Prompt -> Generate\n//  Carousel Concept).\n//\n//  Then in the \"Generate Carousel Concept (Claude)\" node, replace the whole\n//  contents of the \"text\" parameter with just:\n//\n//      ={{ $json.assembled_prompt }}\n//\n//  Leave \"systemMessage\" and every other setting on that node untouched —\n//  only the prompt body varies by variant, not the output contract.\n//\n//  Why this lives in a Code node instead of the agent's own text field:\n//  n8n's {{ }} expression syntax is only evaluated inside node parameter\n//  fields, not inside a string that a Code node hands back as data. So all\n//  the paper-field interpolation that used to happen via {{ $json.title }}\n//  etc. now happens here instead, via normal JS template-literal ${...}.\n// ============================================================================\n\nconst ctx = $json;                          // from Build Paper Text: title, authors, field,\n                                              // study_type, paper_text, variant, ...\nconst g = $('Globals').first().json;\n\nconst VARIANTS = {\n  applied: {\n    AUDIENCE: `High school student aged 17-21 moving fast through their feed. They are into research, or would be if it were not delivered slowly. They will read real method detail, but only in short bursts. They give you about one second on slide 1.`,\n    POSITION: `This is the most energetic version. Short sentences. Strong verbs. Every slide earns the next one. The energy comes from PACE and from CONTRAST, never from overstatement. You get enthusiasm by choosing the most surprising true thing and putting it first, not by adding adjectives to an ordinary thing. A number stated flatly and early is more exciting than any amount of hype around it. Read every line back and ask: is this still exactly what the paper found? If the answer is anything other than a clear yes, rewrite it.`,\n    CONTENT_RULES: `- Stay grounded in the paper. No invented findings or numbers. Only use numbers that actually appear in the paper. This rule does not relax because the tone is livelier.\n- Short sentences. Aim for under 15 words in paragraph blocks.\n- Headlines should run 3 to 5 words here, not 8.\n- Lead with the most surprising true finding. Do not build up to it.\n- You may use one exclamation mark in the entire carousel. Spend it wisely, or not at all.\n- Rhetorical questions are allowed on the hook and stakes slides only.\n- Do not manufacture stakes the paper does not support. No \"this changes everything\". No implying the finding applies more broadly than it was tested.\n- Do not open with \"Did you know\", \"Imagine if\", \"Scientists discovered\", \"A new study\".\n- Banned words: mind-blowing, fascinating, incredible, game-changer, shocking, insane, crazy, secret, nobody talks about.`,\n    CAPTION: `- 120-180 words. Faster and shorter than the other versions.\n- Short paragraphs, two or three sentences each.\n- Lead with the finding. Method in the middle, compressed but real, with the actual numbers.\n- Paraphrase everything. Name the faculty, and end with a short invitation to study here.`,\n  },\n  research: {\n    AUDIENCE: `High school student aged 17-21 moving fast through their feed. They are into research, or would be if it were not delivered slowly. They will read real method detail, but only in short bursts. They give you about one second on slide 1.`,\n    POSITION: `The method is the story, delivered at speed. Short sentences. Concrete nouns. Numbers early and unadorned.\nThis is how the best science accounts write. They do not explain that a result is interesting. They state it so fast and so plainly that the reader works it out first. A bare number in a four word sentence carries more force than any adjective you could wrap around it.\nEnergy comes from PACE and from CONTRAST, never from overstatement. Nothing here is hyped. It is simply delivered without padding.`,\n    CONTENT_RULES: `- Stay grounded in the paper. No invented findings or numbers. Only use numbers that actually appear in the paper. This rule does not relax because the tone is faster.\n- Prefer concrete method detail over generic summary, on every slide. \"We tracked 1,200 choices\" beats \"we ran an experiment\".\n- Short sentences. Aim for under 15 words in paragraph blocks.\n- Headlines run 3 to 5 words here, not 8.\n- Lead with the most surprising true finding. Do not build up to it.\n- Strip hedging that carries no information: \"results appeared to suggest that\" is just \"we found\". Keep hedges that carry real uncertainty the paper reports.\n- Report the paper's caveats, stated as flatly as the findings. A limitation in four words is stronger than a limitation in twenty.\n- No exclamation marks. No rhetorical questions.\n- Do not open with \"Did you know\", \"Imagine if\", \"Scientists discovered\", \"A new study\".\n- Banned words: mind-blowing, fascinating, incredible, game-changer, shocking, insane, crazy.`,\n    CAPTION: `- 120-180 words. Same content as the research-factual version, delivered faster.\n- Short paragraphs, two or three sentences each.\n- Open with the finding and its number. Then the method: how many participants, what they did, what we measured. Then the caveat, if the paper has one.\n- Paraphrase everything. No sentences copied from the abstract.\n- Name the faculty, and end with a short invitation to study here.`,\n  },\n};\n\nconst v = VARIANTS[ctx.variant] || VARIANTS.applied;\n\nconst assembled_prompt = `You are turning a research paper into an Instagram carousel that gets young people excited about the research done at our faculty and invites them to study at the TU/e. It must be intellectually honest, specific, and intriguing, never clickbait.\n\n=== PAPER ===\nTitle: ${ctx.title}\nAuthors: ${ctx.authors}\nField: ${ctx.field}\nStudy type: ${ctx.study_type}\n\n=== FULL PAPER TEXT ===\n${ctx.paper_text}\n\n=== AUDIENCE ===\n${v.AUDIENCE}\n\n=== POSITION ON THE SPECTRUM ===\n${v.POSITION}\n\n=== IF YOU WRITE MORE THAN ONE POST ===\nEach post is standalone. A viewer may see only one. Do not write \"as we saw\nin our other post\". Each needs its own hook, its own payoff, and its own\nnumbers. Do not reuse the same headline figure across two posts.\n\n=== VOICE ===\nWrite as the faculty and researchers speaking: use \"we\" and \"our\" naturally (\"We asked 200 people...\", \"Here is what we found\"). Do not force \"we\" into every line, use it where it makes the work feel like ours.\n\n=== HOW INSTAGRAM CAROUSELS WORK ===\n- Slide 1 has to stop the scroll. Slide 2 is shown on its own when Instagram re-serves the post, so it must hook WITHOUT relying on slide 1. Getting people to swipe to slide 3 is the goal.\n- People SAVE and SEND posts that feel genuinely useful or surprising. Write for the save, not the like.\n\n=== SLIDE STRUCTURE: choose 5 to 10 slides for THIS paper ===\nUse only these slide types, in this order. Include every \"always\" slide; add the optional ones only if the paper genuinely needs them.\n- hook       (always)    one specific, assumption-flipping idea or number from the paper.\n- stakes     (always)    why this is surprising or why it matters; must stand alone without slide 1.\n- setup      (optional)  the real question we were asking, framed in the student's world.\n- concept    (0 to 4)    one idea needed to understand the finding. ONE idea per concept slide.\n- payoff     (always)    the actual finding, stated plainly, with the real numbers.\n- relevance  (always)    connect it to the viewer: this is the kind of research we do here.\n- cta        (always)    invite them to study at ${g.FACULTY_NAME} (${g.ENROLL_URL_HINT}).\n\nNumber the slides 1..N in order, hook first, cta last.\n\n=== EVERY SLIDE HAS THREE PARTS ===\n1. \"kicker\": a 1 to 3 word label, max 26 characters, that names what this slide is doing. Renders as a small grey chip above the headline. Examples: \"The setup\", \"The question\", \"The finding\", \"The catch\", \"Why it matters\", \"Day 9\". Omit it on the hook and cta slides. Max 26 characters.\n2. \"headline\": MAX 8 WORDS, bold, declarative. This is the only thing a fast scroller reads, and the best ones in this format are 4 to 6 words. A headline that wraps past two lines eats into the slide's density budget and costs you a block, so short headlines buy you room for research detail. Anything past 8 words gets cut.\n3. \"blocks\": an ordered array of 1 to 3 CONTENT BLOCKS. This is where the research lives.\n\n=== THE BLOCK LIBRARY ===\nPick the block whose SHAPE matches the shape of the idea. Do not default to paragraph.\n\n\"paragraph\"      Plain prose. Use for connective tissue, framing, and a single closing thought.\n                 Use when the idea genuinely is one continuous thought and has no internal structure.\n                 { \"type\": \"paragraph\", \"text\": \"...\" }\n                 text: max 230 chars. **bold** and *italic* are allowed, nothing else.\n\n\"stat\"           One enormous number. The strongest block you have. Use it on the payoff slide\n                 whenever the paper gives you a headline figure. At most ONE per carousel.\n                 { \"type\": \"stat\", \"value\": \"38%\", \"label\": \"of available earnings declined\", \"sub\": \"Median across 312 participants.\" }\n                 value max 12 chars, label max 52, sub optional max 95.\n\n\"cards\"          2 or 3 parallel findings, each with an icon. Use when several things are true\n                 at the same level and none of them comes first.\n                 { \"type\": \"cards\", \"items\": [ { \"icon\": \"brain\", \"title\": \"Load\", \"body\": \"...\" } ] }\n                 title max 30, body max 95, icon from the menu below.\n\n\"rule_blocks\"    2 or 3 points that carry weight, no icons, marked with a heavy left rule.\n                 Use for the two or three things that actually matter, when cards would feel too light.\n                 { \"type\": \"rule_blocks\", \"items\": [ { \"title\": \"...\", \"body\": \"...\" } ] }\n                 title max 34, body max 135.\n\n\"numbered_list\"  3 or 4 named components of one model or framework. The order is a taxonomy,\n                 not a sequence. Use for \"she identified four components of X\".\n                 { \"type\": \"numbered_list\", \"items\": [ { \"title\": \"Anticipating\", \"sub\": \"Identifying future needs\" } ] }\n                 title max 34, sub max 62.\n\n\"steps\"          3 or 4 stages of a process where each one leads to the next. Renders as chevrons,\n                 so only use it when the order genuinely carries meaning.\n                 { \"type\": \"steps\", \"items\": [ { \"title\": \"Noticing\", \"sub\": \"Knowing what needs doing\" } ] }\n                 title max 30, sub max 58.\n\n\"timeline\"       3 or 4 moments in time, connected by a line. Use ONLY for real chronology:\n                 study days, phases, follow-up waves, historical sequence.\n                 { \"type\": \"timeline\", \"items\": [ { \"label\": \"Day 1\", \"body\": \"...\" } ] }\n                 label max 16, body max 135.\n\n\"compare\"        Exactly two contrasting options, one marked wrong and one marked right.\n                 Use for before/after, naive vs correct, what people assume vs what we found.\n                 { \"type\": \"compare\", \"bad\": { \"title\": \"...\", \"body\": \"...\" }, \"good\": { \"title\": \"...\", \"body\": \"...\" } }\n                 title max 30, body max 125.\n\n\"quote\"          A participant quote or a single striking sentence, set off with a left rule.\n                 Only use a quote that actually appears in the paper.\n                 { \"type\": \"quote\", \"text\": \"...\", \"attribution\": \"Participant 114\" }\n                 text max 190, attribution optional max 62.\n\n=== HOW TO CHOOSE A BLOCK ===\nAsk what shape the idea has, then take the block with that shape:\n- one continuous thought          -> paragraph\n- one number that carries the post -> stat\n- several things, all equal        -> cards\n- two or three heavy points        -> rule_blocks\n- named parts of one framework     -> numbered_list\n- stages that cause each other     -> steps\n- things that happened in order    -> timeline\n- exactly two options in tension   -> compare\n- someone's actual words           -> quote\n\nIf you cannot say which shape an idea has, it is a paragraph. Forcing prose into a list is worse than leaving it as prose.\n\n=== DENSITY BUDGET (hard limit, obey it) ===\nEvery block has a cost. Add up the costs on a slide; the total must not exceed that slide type's budget. Slides that go over are automatically trimmed and lose content, so stay inside it.\n\nCosts:\n  headline         0   for 1 or 2 lines, then 1 per extra line\n                       (a line is roughly 24 characters, or 18 on the hook slide)\n  paragraph        1   (2 if the text is longer than 130 characters)\n  quote            2   (3 if it has an attribution)\n  stat             3\n  cards            2 per card\n  rule_blocks      2 per block\n  numbered_list    1 plus 1 per item\n  steps            2 plus 1 per item\n  timeline         1 plus 2 per item\n  compare          5\n\nBudgets:\n  hook       4     (the headline is huge on this slide, leave it room)\n  stakes     6\n  cta        5\n  everything else  8\n\nWorked examples: three cards is 6, plus a short paragraph is 7, fits in 8.\nA 70 character headline wraps to three lines and costs 1 on its own, leaving 7.\nA four item timeline is 9 and must therefore be the ONLY block on its slide.\nA four item numbered_list is 5, so it can carry an intro paragraph and a closing paragraph.\n\n=== RHYTHM ACROSS THE CAROUSEL ===\n- Use at least three DIFFERENT structured block types across the carousel.\n- Do not use the same structured block type more than twice.\n- Do not put the same structured block type on two consecutive slides.\n- At least one slide should be a single paragraph and nothing else. Density with no breathing room reads as a textbook. The slide before or after the payoff is the natural place for it.\n- The hook slide is almost always one short paragraph. Let the headline carry it.\n\n=== NUMBER SELECTION RULE ===\nNot every number in the paper is a good headline number. Raw statistical parameters (a mean difference, a correlation r, a standardized effect size d, a p-value) are meaningless to a reader with no stats background unless the paper glosses them in plain terms.\nBefore using a number in a \"stat\" block or the payoff slide, ask: would a reader understand this without me first explaining what the statistic is? If not:\n  (a) use the paper's own plain-language description of the finding's size if it gives one (\"a small effect,\" \"twice as likely\"), or\n  (b) use a different, more concrete number from the paper instead (a percentage, a count, a sample size, an odds framed as \"X times more likely\").\nNever put a raw coefficient or effect size alone into a \"stat\" block. That block is for numbers that are self-explanatory on their own: percentages, counts, ratios.\n\n=== ICON MENU (for \"cards\" only) ===\nUse only these names. Pick the one that means something, not the one that looks nice. Omit \"icon\" entirely rather than forcing a bad match.\nalert, info, question, check, check-circle, x, x-circle, lightbulb, brain, users, user, clock, calendar, chart-bar, trending-up, trending-down, percent, target, search, flask, book, file-text, clipboard, message, quote, eye, eye-off, heart, zap, scale, lock, shield, layers, refresh, globe, arrow-right, home\n\n=== CONTENT RULES ===\n- \"accent\": the single most striking word or number on that slide, which gets highlighted in the brand colour. It MUST appear verbatim inside that slide's headline. Use \"\" if nothing stands out. Do not set an accent on more than about a third of the slides.\n\n${v.CONTENT_RULES}\n\n=== PLAIN LANGUAGE RULE ===\nWrite for a 17-21 year old who may not be a native English speaker. Prefer short, common,\neveryday words over the paper's own vocabulary.\n- If the paper uses a technical, legal, medical, or statistical term (e.g. \"disposition,\", \"codicil,\" \"affect,\" \"valence,\" \"null hypothesis\"), do NOT carry it into the carousel. Replace it with the plain idea it stands for, in the same sentence.\n- Test: if a fluent-but-non-native English speaker would need a dictionary for a word, cut\n  it or unpack it in a few plain words. When precision and simplicity conflict, choose simplicity.\n- This applies even to ordinary-looking words the paper is using in a technical sense.\n\n=== PUNCTUATION RULE ===\nThe characters \"—\" and \"–\" are forbidden anywhere in the output JSON.\nIf either would appear, rewrite the sentence instead. Prefer periods and colons.\n\n=== CAPTION ===\n${v.CAPTION}\n\n=== HASHTAGS ===\n- 4 to 7, mix of broad (#psychology) and specific (#cognitivebias), lowercase, letters and digits only, no spaces.\n\n=== WORKED EXAMPLE OF ONE SLIDE ===\n{\n  \"slide_number\": 4,\n  \"slide_type\": \"concept\",\n  \"kicker\": \"How it works\",\n  \"headline\": \"Effort discounting, in four parts\",\n  \"accent\": \"\",\n  \"blocks\": [\n    { \"type\": \"paragraph\", \"text\": \"Before the result makes sense, you need the machinery underneath it.\" },\n    { \"type\": \"numbered_list\", \"items\": [\n      { \"title\": \"Detect\", \"sub\": \"Register that a task is demanding\" },\n      { \"title\": \"Price\", \"sub\": \"Convert that demand into a cost\" },\n      { \"title\": \"Compare\", \"sub\": \"Weigh the cost against the reward\" },\n      { \"title\": \"Choose\", \"sub\": \"Take whichever option is cheaper\" }\n    ] }\n  ]\n}\nCost check: paragraph 1 plus numbered_list 5 equals 6, inside the budget of 8.\n\n=== HOW MANY POSTS ===\nMost papers yield exactly ONE post. Propose a second only if it uses\ndifferent findings, different numbers, and a different structural spine,\nsuch that a reader who saw both would not feel they had read the same post\ntwice. A second study, a distinct secondary analysis, or a genuinely\nseparate mechanism can justify one. A different framing of the same finding\ndoes NOT. Three is rare. If in doubt, return one.\n\n=== OUTPUT (strict JSON, no markdown fences) ===\n{\n  \"angles_found\": 1,\n  \"angle_rationale\": \"one sentence: why this is one post, or why the angles are genuinely separate\",\n  \"posts\": [\n    {\n      \"angle_label\": \"3-6 words naming this post's angle, for the sheet\",\n      \"content_hook\": \"one-line internal note on what makes this post-worthy\",\n      \"content_brief\": \"2-3 sentences: the angle, how many slides, which blocks and why\",\n      \"slides\": [ ...one object per slide, numbered 1..N, hook first and cta last... ],\n      \"caption\": \"140-220 word caption in our voice, with method and real numbers, no hashtags inside\",\n      \"hashtags\": [\"#psychology\", \"#research\"]\n    }\n  ]\n}`;\n\nreturn [{ json: { ...ctx, assembled_prompt } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        -32
+      ],
+      "id": "fa2977a5-6802-4eb9-aca6-2fddd80925a2",
+      "name": "prompt variant"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $json.fullPath }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        624,
+        576
+      ],
+      "id": "fe6c57d7-ecad-4cd2-9d44-1ccb587e45fc",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================================\n//  \"Compute Local Path\"  —  paste this WHOLE file into the Code node.\n//\n//  Placement: right after \"Split Render Output\" and right before\n//  \"Read/Write Files from Disk\" (operation: Write).\n//  In that Write node set:\n//    Path                = {{ $json.fullPath }}\n//    Input Binary Field   = data\n//\n//  Folder naming, per spec: FirstAuthorSurname_TitleSlug_variant_index\n//  e.g.  zhang_effort-discounting-and-choice_applied_014/slide_01.jpg\n//\n//  FIX (2026-09-15): this node runs in \"Run Once for All Items\" mode (the\n//  Code node default), where $json / $binary only resolve to the FIRST\n//  input item. The original version read $json directly and returned a\n//  single-item array, so every slide after slide 1 was silently dropped\n//  before reaching \"Read/Write Files from Disk\" — only slide 1 ever made\n//  it through to the sheet row. Fixed by looping over $input.all() and\n//  returning one transformed item per input item.\n// ============================================================================\n\nfunction slug(s, maxWords = 6, maxChars = 40) {\n  return String(s || '')\n    .toLowerCase()\n    .replace(/[^a-z0-9\\s-]/g, '')\n    .trim()\n    .split(/\\s+/)\n    .filter(Boolean)\n    .slice(0, maxWords)\n    .join('-')\n    .slice(0, maxChars)\n    .replace(/-+$/, '');\n}\n\nfunction surname(authors) {\n  const first = String(authors || '').split(/,| and | & /i)[0].trim();\n  const parts = first.split(/\\s+/).filter(Boolean);\n  const last = parts[parts.length - 1] || 'unknown';\n  return last.replace(/[^a-zA-Z0-9-]/g, '') || 'unknown';\n}\n\nconst g = $('Globals').first().json;\nconst fs = require('fs');\n\nreturn $input.all().map((item) => {\n  const p = item.json._parent;\n\n  const indexPart = String(\n    p.paper_index ?? (p.drive_file_id ? p.drive_file_id.slice(0, 6) : '0')\n  ).padStart(3, '0');\n\n  const folderName = [\n    surname(p.authors),\n    slug(p.title),\n    p.variant || 'unknown',\n    indexPart,\n  ].join('_');\n\n  const fileName = `slide_${String(item.json.slide_number).padStart(2, '0')}.jpg`;\n\n  const root = String(g.LOCAL_OUTPUT_ROOT || '').replace(/[\\\\/]+$/, '');\n  const folderPath = `${root}/${folderName}`;\n  const fullPath = `${folderPath}/${fileName}`;\n\n  // \"Read/Write Files from Disk\" won't create missing directories itself —\n  // make sure the per-paper folder exists before the write step runs.\n  fs.mkdirSync(folderPath, { recursive: true });\n\n  return { json: { ...item.json, folderName, fileName, fullPath }, binary: item.binary };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        336
+      ],
+      "id": "755f65a0-245d-4805-b0d3-eaeca5677148",
+      "name": "Compute Local Path"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.RESULTS_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "row_key",
+              "displayName": "row_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "drive_file_id",
+              "displayName": "drive_file_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "drive_file_name",
+              "displayName": "drive_file_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "authors",
+              "displayName": "authors",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "field",
+              "displayName": "field",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "abstract_snippet",
+              "displayName": "abstract_snippet",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "indexed_at",
+              "displayName": "indexed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "study_type",
+              "displayName": "study_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "content_hook",
+              "displayName": "content_hook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "content_brief",
+              "displayName": "content_brief",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "slide_urls",
+              "displayName": "slide_urls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "caption",
+              "displayName": "caption",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "hashtags",
+              "displayName": "hashtags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "generated_at",
+              "displayName": "generated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "scheduled_for",
+              "displayName": "scheduled_for",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "posted_at",
+              "displayName": "posted_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "instagram_post_id",
+              "displayName": "instagram_post_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "angle_label",
+              "displayName": "angle_label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "post_index",
+              "displayName": "post_index",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "paper_index",
+              "displayName": "paper_index",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "variant",
+              "displayName": "variant",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "folder_name",
+              "displayName": "folder_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1456,
+        576
+      ],
+      "id": "19c27f0e-32af-4e40-9842-0ca58c73ea6e",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.PAPERS_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "status": "generated",
+            "drive_file_id": "={{ $json.drive_file_id }}"
+          },
+          "matchingColumns": [
+            "drive_file_id"
+          ],
+          "schema": [
+            {
+              "id": "row_key",
+              "displayName": "row_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "drive_file_id",
+              "displayName": "drive_file_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "drive_file_name",
+              "displayName": "drive_file_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "authors",
+              "displayName": "authors",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "field",
+              "displayName": "field",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "abstract_snippet",
+              "displayName": "abstract_snippet",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "indexed_at",
+              "displayName": "indexed_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "study_type",
+              "displayName": "study_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "content_hook",
+              "displayName": "content_hook",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "content_brief",
+              "displayName": "content_brief",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "slide_urls",
+              "displayName": "slide_urls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "caption",
+              "displayName": "caption",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "hashtags",
+              "displayName": "hashtags",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "generated_at",
+              "displayName": "generated_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "scheduled_for",
+              "displayName": "scheduled_for",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "posted_at",
+              "displayName": "posted_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "instagram_post_id",
+              "displayName": "instagram_post_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "angle_label",
+              "displayName": "angle_label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "post_index",
+              "displayName": "post_index",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "paper_index",
+              "displayName": "paper_index",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "variant",
+              "displayName": "variant",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "folder_name",
+              "displayName": "folder_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        304,
+        -32
+      ],
+      "id": "949f88c3-2943-4e07-9a3d-4d40bfeebf96",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-09-15T07:42:41.019Z",
+      "createdAt": "2026-09-15T07:42:41.019Z",
+      "role": "workflow:owner",
+      "workflowId": "IomJ5Yxsisnq8tbx",
+      "projectId": "O6AJ2gZorGSWwg9b"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-09-15T13:13:41.282Z",
+  "versionId": "6ea9f40a-71d3-4f89-ab46-6b494300a58d"
+}
