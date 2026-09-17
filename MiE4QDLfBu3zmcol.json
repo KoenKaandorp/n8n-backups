@@ -1,0 +1,353 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Globals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Globals": {
+      "main": [
+        [
+          {
+            "node": "Read Results Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Results Sheet": {
+      "main": [
+        [
+          {
+            "node": "Rename plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rename plan": {
+      "main": [
+        [
+          {
+            "node": "Rename folders on disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rename folders on disk": {
+      "main": [
+        [
+          {
+            "node": "Only renamed folders",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Status summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Only renamed folders": {
+      "main": [
+        [
+          {
+            "node": "Update results row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-09-17T11:27:19.748Z",
+  "id": "MiE4QDLfBu3zmcol",
+  "isArchived": false,
+  "meta": null,
+  "name": "W2b: Rename result folders",
+  "nodeGroups": [],
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Rename result folders\n\nRenames every slide folder to\n`{nnn}_{surname1-surname2-...}_{title-slug}_{variant}`\nand writes the new name into `folder_name` in the results tab.\n\n### How to run\n1. Leave **DRY_RUN = true** in Globals and execute.\n2. Open **Status summary**. You want only `would_rename` / `already_renamed`. Every other row is listed under `problems` with a reason.\n3. Close any Explorer windows showing the slide folders.\n4. Set **DRY_RUN = false** and execute again.\n\nSafe to re-run: folders that already have the new name are recognised, and the sheet is only written for rows whose folder was actually renamed.",
+        "height": 420,
+        "width": 520,
+        "color": 4
+      },
+      "id": "c820c867-5b03-4550-ae8d-83ff3025035c",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        -304
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "9d60ad7a-4c96-4ded-8cff-20be8cacee6d",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "291fe1e0-1cdf-4dd5-9dfd-0bee67f94f0e",
+              "name": "PAPERS_SHEET_ID",
+              "value": "1l-XuaEKcY9cC0aLHNGh-q2ZConnzFD-7VZV3UQSelDQ",
+              "type": "string"
+            },
+            {
+              "id": "512c6041-8023-4cf1-a933-682d06dbfb09",
+              "name": "RESULTS_TAB",
+              "value": "papers_batch1_results",
+              "type": "string"
+            },
+            {
+              "id": "8400e442-63e6-47c6-8191-0749f7114691",
+              "name": "LOCAL_OUTPUT_ROOT",
+              "value": "/files/slides/test_batch1",
+              "type": "string"
+            },
+            {
+              "id": "d90c3f6f-413d-40f6-b53c-e6c246c07e1d",
+              "name": "DRY_RUN",
+              "value": false,
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f6ea6708-a83f-4efe-955c-f96ea2108082",
+      "name": "Globals",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -192,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $json.RESULTS_TAB }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "ecf0a8ed-40ee-44c0-8a5d-9d27f1ab3266",
+      "name": "Read Results Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        16,
+        240
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================================\n//  \"Rename plan\"  —  REPLACEMENT. Paste the whole file.\n//  Mode: Run Once for All Items (default).\n//\n//  For every row of papers_batch1_results, builds\n//      new_folder_name = {nnn}_{surname1-surname2-...}_{title-slug}_{variant}\n//  and finds the folder that CURRENTLY holds that row's slides on disk.\n//\n//  It does not trust the sheet's folder_name column, because the previous\n//  version wrote new names into it even on a DRY_RUN. It looks for the\n//  current folder on disk in this order:\n//    1. the new name (already renamed on an earlier run)\n//    2. the sheet's folder_name\n//    3. the original name recorded in notes (\"Folder renamed: X -> ...\")\n//    4. the original naming pattern {FirstSurname}_{title-slug}_{variant}_{index}\n//\n//  Numbering: one number per paper (drive_file_id), in sheet order, so the\n//  applied and research folders of one paper share a number.\n//  This node only READS the disk, so it is safe on a dry run.\n// ============================================================================\n\nconst fs = require('fs');\nconst g = $('Globals').first().json;\nconst root = String(g.LOCAL_OUTPUT_ROOT || '').replace(/[\\\\/]+$/, '');\n\nif (!root || !fs.existsSync(root)) {\n  throw new Error(\n    `LOCAL_OUTPUT_ROOT \"${root}\" does not exist as seen from this Code node. ` +\n    `If n8n runs Code nodes in a separate task-runner container, that container ` +\n    `needs the same volume mount as the main n8n container.`\n  );\n}\n\nconst onDisk = new Set(\n  fs.readdirSync(root, { withFileTypes: true })\n    .filter((d) => d.isDirectory())\n    .map((d) => d.name)\n);\n\n// ---------------------------------------------------------------------------\n//  Exact copies of the helpers in \"Compute Local Path\".\n//  Used to rebuild the ORIGINAL folder names, so do not \"improve\" them.\n// ---------------------------------------------------------------------------\nfunction slug(s, maxWords = 6, maxChars = 40) {\n  return String(s || '')\n    .toLowerCase()\n    .replace(/[^a-z0-9\\s-]/g, '')\n    .trim()\n    .split(/\\s+/)\n    .filter(Boolean)\n    .slice(0, maxWords)\n    .join('-')\n    .slice(0, maxChars)\n    .replace(/-+$/, '');\n}\n\nfunction originalSurname(authors) {\n  const first = String(authors || '').split(/,| and | & /i)[0].trim();\n  const parts = first.split(/\\s+/).filter(Boolean);\n  const last = parts[parts.length - 1] || 'unknown';\n  return last.replace(/[^a-zA-Z0-9-]/g, '') || 'unknown';\n}\n\n// ---------------------------------------------------------------------------\n//  Helpers for the NEW name\n// ---------------------------------------------------------------------------\nconst MAX_AUTHOR_CHARS = 80; // Windows paths cap at 260 chars; long lists end in \"-etal\"\n\nfunction cleanName(s) {\n  return String(s || '')\n    .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '') // Müller -> Muller\n    .replace(/[^a-zA-Z0-9-]/g, '');\n}\n\nfunction allSurnames(authors) {\n  return String(authors || '')\n    .split(/\\s*[,;&]\\s*|\\s+and\\s+/i)\n    .map((name) => name.trim().split(/\\s+/).filter(Boolean).pop())\n    .map(cleanName)\n    .filter(Boolean);\n}\n\nfunction authorPart(authors) {\n  let out = '';\n  for (const s of allSurnames(authors)) {\n    const next = out ? `${out}-${s}` : s;\n    if (next.length > MAX_AUTHOR_CHARS) {\n      return out ? `${out}-etal` : s.slice(0, MAX_AUTHOR_CHARS);\n    }\n    out = next;\n  }\n  return out || 'unknown';\n}\n\n// ---------------------------------------------------------------------------\n//  Plan\n// ---------------------------------------------------------------------------\nconst paperSeq = new Map(); // drive_file_id -> \"001\"\nconst claimed = new Map();  // current folder -> group that claimed it\nlet nextSeq = 1;\n\nreturn $input.all().map((item) => {\n  const row = item.json;\n  const skip = (reason) => ({ json: { ...row, _skip: true, _skip_reason: reason } });\n\n  if (!row.drive_file_id || !row.variant) {\n    return skip('row has no drive_file_id or variant');\n  }\n\n  if (!paperSeq.has(row.drive_file_id)) {\n    paperSeq.set(row.drive_file_id, String(nextSeq++).padStart(3, '0'));\n  }\n\n  const groupKey = `${row.drive_file_id}_${row.variant}`;\n  const titleSlug = slug(row.title);\n  const newFolder =\n    `${paperSeq.get(row.drive_file_id)}_${authorPart(row.authors)}_` +\n    `${titleSlug || 'untitled'}_${row.variant}`;\n\n  const fromNotes = (String(row.notes || '').match(/Folder renamed: (\\S+) ->/) || [])[1];\n  const originalPrefix = `${originalSurname(row.authors)}_${titleSlug}_${row.variant}_`;\n\n  let current = null;\n  let foundVia = '';\n  if (onDisk.has(newFolder)) {\n    current = newFolder; foundVia = 'new name';\n  } else if (row.folder_name && onDisk.has(row.folder_name)) {\n    current = row.folder_name; foundVia = 'sheet folder_name';\n  } else if (fromNotes && onDisk.has(fromNotes)) {\n    current = fromNotes; foundVia = 'notes';\n  } else {\n    const hits = [...onDisk].filter((n) => n.startsWith(originalPrefix));\n    if (hits.length === 1) {\n      current = hits[0]; foundVia = 'original pattern';\n    } else if (hits.length > 1) {\n      return skip(`ambiguous, several folders match: ${hits.join(', ')}`);\n    }\n  }\n\n  if (!current) return skip(`no folder on disk (looked for ${originalPrefix}*)`);\n\n  const owner = claimed.get(current);\n  if (owner && owner !== groupKey) {\n    return skip(`folder ${current} is already claimed by ${owner}`);\n  }\n  claimed.set(current, groupKey);\n\n  return {\n    json: {\n      ...row,\n      old_folder_name: current,\n      new_folder_name: newFolder,\n      found_via: foundVia,\n      old_path: `${root}/${current}`,\n      new_path: `${root}/${newFolder}`,\n    },\n  };\n});\n"
+      },
+      "id": "2212b856-2aa7-4bd3-a060-3cbff502785f",
+      "name": "Rename plan",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================================\n//  \"Rename folders on disk\"  —  REPLACEMENT. Paste the whole file.\n//  Mode: Run Once for All Items (default).\n//\n//  Renames each folder once (several rows can share a folder), respects\n//  Globals.DRY_RUN, and never overwrites an existing folder.\n//\n//  rename_status values:\n//    renamed / already_renamed   -> passes the Filter, sheet gets updated\n//    would_rename                -> dry run only, sheet untouched\n//    target_exists / error / skipped -> sheet untouched, check the row\n// ============================================================================\n\nconst fs = require('fs');\nconst g = $('Globals').first().json;\nconst dryRun = g.DRY_RUN === true || String(g.DRY_RUN).toLowerCase() === 'true';\n\nconst results = new Map(); // new folder name -> { status, error }\n\nreturn $input.all().map((item) => {\n  const row = item.json;\n  if (row._skip) {\n    return { json: { ...row, rename_status: 'skipped', rename_error: row._skip_reason } };\n  }\n\n  let r = results.get(row.new_folder_name);\n  if (!r) {\n    r = { status: '', error: '' };\n    try {\n      if (row.old_folder_name === row.new_folder_name) {\n        r.status = 'already_renamed';\n      } else if (fs.existsSync(row.new_path)) {\n        r.status = 'target_exists';\n      } else if (dryRun) {\n        r.status = 'would_rename';\n      } else {\n        fs.renameSync(row.old_path, row.new_path);\n        r.status = 'renamed';\n      }\n    } catch (e) {\n      r.status = 'error';\n      r.error = e.message;\n    }\n    results.set(row.new_folder_name, r);\n  }\n\n  let newNotes = row.notes || '';\n  const changed = row.old_folder_name !== row.new_folder_name;\n  if (changed && !newNotes.includes(`-> ${row.new_folder_name} (`)) {\n    const line =\n      `Folder renamed: ${row.old_folder_name} -> ${row.new_folder_name} ` +\n      `(${new Date().toISOString()})`;\n    newNotes = newNotes ? `${newNotes}\\n${line}` : line;\n  }\n\n  return {\n    json: {\n      ...row,\n      rename_status: r.status,\n      rename_error: r.error,\n      new_notes: newNotes,\n    },\n  };\n});\n"
+      },
+      "id": "5616cef3-5e9c-416f-a6d1-5335f2316643",
+      "name": "Rename folders on disk",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Quick overview for checking a dry run: counts per status plus every row\n// that needs attention. Does not touch the disk or the sheet.\nconst g = $('Globals').first().json;\nconst all = $input.all().map((i) => i.json);\n\nconst counts = {};\nconst problems = [];\nfor (const r of all) {\n  counts[r.rename_status] = (counts[r.rename_status] || 0) + 1;\n  if (!['renamed', 'already_renamed', 'would_rename'].includes(r.rename_status)) {\n    problems.push({\n      row_key: r.row_key,\n      status: r.rename_status,\n      reason: r.rename_error || '',\n      sheet_folder_name: r.folder_name || '',\n    });\n  }\n}\n\nconst folders = new Set(all.map((r) => r.new_folder_name).filter(Boolean)).size;\n\nreturn [{\n  json: {\n    dry_run: g.DRY_RUN,\n    rows: all.length,\n    distinct_new_folders: folders,\n    counts,\n    problems_count: problems.length,\n    problems,\n  },\n}];\n"
+      },
+      "id": "b6279760-9ac7-45a5-b6d0-ad102d73d015",
+      "name": "Status summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "248c479f-36be-4bf5-b9f8-6094ab89e064",
+              "leftValue": "={{ ['renamed', 'already_renamed'].includes($json.rename_status) }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "27e55928-529f-4b33-a1fc-2ea138bace1e",
+      "name": "Only renamed folders",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.RESULTS_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_key": "={{ $json.row_key }}",
+            "folder_name": "={{ $json.new_folder_name }}",
+            "notes": "={{ $json.new_notes }}"
+          },
+          "matchingColumns": [
+            "row_key"
+          ],
+          "schema": [
+            {
+              "id": "row_key",
+              "displayName": "row_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "folder_name",
+              "displayName": "folder_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "ef1b266f-83f7-4a23-8b58-78f63a4f153d",
+      "name": "Update results row",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        848,
+        240
+      ],
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-09-17T11:27:19.757Z",
+      "createdAt": "2026-09-17T11:27:19.757Z",
+      "role": "workflow:owner",
+      "workflowId": "MiE4QDLfBu3zmcol",
+      "projectId": "O6AJ2gZorGSWwg9b"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-09-17T12:04:26.120Z",
+  "versionId": "87446b01-734e-4e5e-a77e-7a36f241dc07"
+}
