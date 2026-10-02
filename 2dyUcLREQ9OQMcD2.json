@@ -1,0 +1,267 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Settings": {
+      "main": [
+        [
+          {
+            "node": "List Executions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Executions": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Executions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Executions": {
+      "main": [
+        [
+          {
+            "node": "Write Manifest",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fetch and Extract",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch and Extract": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Executions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-09-21T14:34:42.815Z",
+  "id": "2dyUcLREQ9OQMcD2",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Recover Carousel HTML (flat folder)",
+  "nodeGroups": [],
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Recover concepts + HTML from past executions\n\nReads every execution of the carousel workflow through the n8n API and writes\neverything into ONE folder (Settings > HTML_OUT_DIR),\nnamed <original_folder_name>__post<N>:\n\n  concept_post<N>.json   what Claude wrote, normalised - edit this\n  carousel_post<N>.html  the exact HTML that was rendered - or edit this\n\n**Before the first run**\n1. Back up the n8n database. Execution data is pruned after 14 days by default.\n2. Settings > N8N_API_KEY: create one under Settings > n8n API in the UI.\n3. Settings > N8N_API_URL: from inside the n8n container this is\n   http://localhost:5678/api/v1\n4. Leave DRY_RUN on for the first run. Nothing is written; the manifest tells\n   you how many posts were found and whether the folders match.\n5. Turn DRY_RUN off and run it again.\n\nDownloads are streamed to disk and base64 slide images are discarded while\nreading, so a multi-gigabyte execution costs about 30 MB of memory.\n\nThe manifest lands in WORK_DIR/manifest.json. Read `collisions` in it: the\nsource workflow's folder name has no post index, so a paper that produced\n2 or 3 posts wrote them all into one folder and the later post overwrote the\nearlier one's images. Every concept is recovered; those images are not.",
+        "height": 700,
+        "width": 520,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        688,
+        560
+      ],
+      "id": "1314dc3c-9c7e-4478-a52d-b43c93a72de1",
+      "name": "How to use"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        800
+      ],
+      "id": "6af15f2f-12f0-429f-a96d-a2eed324e78e",
+      "name": "Manual Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "s0",
+              "name": "N8N_API_URL",
+              "value": "http://localhost:5678/api/v1",
+              "type": "string"
+            },
+            {
+              "id": "s1",
+              "name": "N8N_API_KEY",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNDI5MTUzMS1kZDViLTRjNzYtYTM2NS01OTFmZWRmNmE2NmIiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiYmUxZDk0OTMtYjM0Mi00Y2RmLWFlMmQtNDdjYjUyZjRjYzdmIiwiaWF0IjoxNzkwNzA3MTU1LCJleHAiOjE3OTMyMjg0MDB9.M4uH2U2OwZMqVCrIgyyA7lfXWcJQfCrpcGhb7_QSZDM",
+              "type": "string"
+            },
+            {
+              "id": "s2",
+              "name": "SOURCE_WORKFLOW_ID",
+              "value": "IomJ5Yxsisnq8tbx",
+              "type": "string"
+            },
+            {
+              "id": "s3",
+              "name": "STARTED_AFTER",
+              "value": "2026-09-14T00:00:00Z",
+              "type": "string"
+            },
+            {
+              "id": "s4",
+              "name": "STARTED_BEFORE",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "s5",
+              "name": "ONLY_EXECUTION_IDS",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "s6",
+              "name": "MAX_EXECUTIONS",
+              "value": 0,
+              "type": "number"
+            },
+            {
+              "id": "s7",
+              "name": "WORK_DIR",
+              "value": "/files/_recovery",
+              "type": "string"
+            },
+            {
+              "id": "s8",
+              "name": "DRY_RUN",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "s9",
+              "name": "KEEP_HTML",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "s10",
+              "name": "KEEP_RAW_DOWNLOAD",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "s11",
+              "name": "HTML_OUT_DIR",
+              "value": "/files/_recovery/html",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1488,
+        800
+      ],
+      "id": "e9aa762d-a902-4aab-b29b-c7ea5c274d17",
+      "name": "Settings"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===========================================================================\n//  List Executions\n//  Every execution of the carousel workflow, oldest first. Oldest first\n//  matters: if a paper was generated more than once, the newest run is the\n//  one whose images are on disk, so it must be the one that writes last.\n// ===========================================================================\n\nconst s = $('Settings').first().json;\nconst base = String(s.N8N_API_URL || '').replace(/\\/+$/, '');\nif (!base || !s.N8N_API_KEY) {\n  throw new Error('Set N8N_API_URL and N8N_API_KEY in the Settings node first.');\n}\n\nconst headers = { 'X-N8N-API-KEY': s.N8N_API_KEY, accept: 'application/json' };\n\nconst only = String(s.ONLY_EXECUTION_IDS || '')\n  .split(',').map((x) => x.trim()).filter(Boolean);\n\nlet list = [];\n\nif (only.length) {\n  // Explicit ids: skip the listing entirely, handy for a first trial run.\n  list = only.map((id) => ({ id, startedAt: null, status: null }));\n} else {\n  let cursor;\n  do {\n    const qs = { limit: 250, includeData: false };\n    if (s.SOURCE_WORKFLOW_ID) qs.workflowId = s.SOURCE_WORKFLOW_ID;\n    if (cursor) qs.cursor = cursor;\n\n    const res = await this.helpers.httpRequest({\n      method: 'GET', url: `${base}/executions`, qs, headers, json: true,\n    });\n\n    list.push(...(res.data || []));\n    cursor = res.nextCursor;\n  } while (cursor);\n\n  const since = s.STARTED_AFTER ? new Date(s.STARTED_AFTER) : null;\n  const until = s.STARTED_BEFORE ? new Date(s.STARTED_BEFORE) : null;\n\n  list = list\n    .filter((e) => !since || new Date(e.startedAt) >= since)\n    .filter((e) => !until || new Date(e.startedAt) <= until)\n    .sort((a, b) => new Date(a.startedAt) - new Date(b.startedAt));\n}\n\nif (!list.length) {\n  throw new Error(\n    `No executions matched. Check SOURCE_WORKFLOW_ID (${s.SOURCE_WORKFLOW_ID || 'not set'}) ` +\n    `and the date filters. The workflow id is the last part of its editor URL.`\n  );\n}\n\nif (s.MAX_EXECUTIONS) list = list.slice(0, Number(s.MAX_EXECUTIONS));\n\nreturn list.map((e) => ({\n  json: {\n    id: String(e.id),\n    startedAt: e.startedAt,\n    status: e.status ?? (e.finished ? 'success' : 'unknown'),\n    mode: e.mode,\n  },\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1712,
+        800
+      ],
+      "id": "6eab0f64-1d3b-4c56-a6ee-041cdaf3fbf4",
+      "name": "List Executions"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1936,
+        800
+      ],
+      "id": "f223dd90-c37d-4e63-8da9-1e92b29187a0",
+      "name": "Loop Over Executions"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===========================================================================\n//  CORE  —  streaming reader for one n8n execution payload.\n//\n//  Why streaming: this workflow's \"Render Carousel\" node returns every slide\n//  as base64 inside its JSON output, and n8n stores every node's output in\n//  the execution. One execution of a 200-paper batch is therefore hundreds of\n//  megabytes to several gigabytes, most of it image data we do not want.\n//  JSON.parse() on that either blows the heap or exceeds V8's max string\n//  length. So the payload is streamed to disk and walked byte by byte, and\n//  any large string that is not HTML is thrown away as it is read.\n// ===========================================================================\n\nconst fs = require('fs');\n\nconst BIG_BYTES = 65536;      // above this, a string has to prove it is wanted\nconst CHUNK = 1 << 22;        // 4 MB read buffer\n\nconst LT = 60;                // '<'  — HTML we keep, however large\n\n// Base64 alphabet, for spotting image payloads early.\nconst B64 = new Uint8Array(256);\nfor (const ch of 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=') {\n  B64[ch.charCodeAt(0)] = 1;\n}\n\n// ---------------------------------------------------------------------------\n//  Byte reader over a file descriptor.\n// ---------------------------------------------------------------------------\nfunction makeReader(fd) {\n  const buf = Buffer.allocUnsafe(CHUNK);\n  let len = 0;\n  let pos = 0;\n  let eof = false;\n\n  function fill() {\n    if (pos < len || eof) return;\n    len = fs.readSync(fd, buf, 0, CHUNK, null);\n    pos = 0;\n    if (len <= 0) { len = 0; eof = true; }\n  }\n\n  return {\n    peek() { fill(); return pos < len ? buf[pos] : -1; },\n    take() { fill(); return pos < len ? buf[pos++] : -1; },\n    skip() { fill(); if (pos < len) pos++; },\n  };\n}\n\nfunction ws(rd) {\n  for (;;) {\n    const c = rd.peek();\n    if (c === 32 || c === 10 || c === 13 || c === 9) rd.skip();\n    else return;\n  }\n}\n\n// ---------------------------------------------------------------------------\n//  String token. Returns the decoded string, or null when the string was\n//  discarded for being a large non-HTML blob (i.e. a base64 image).\n//  Raw bytes are copied verbatim and decoded once through JSON.parse, so\n//  every escape sequence is handled by the engine rather than by hand.\n// ---------------------------------------------------------------------------\nfunction readString(rd) {\n  rd.skip(); // opening quote\n  const parts = [];\n  let cur = Buffer.allocUnsafe(8192);\n  let n = 0;\n  let total = 0;\n  let first = -1;\n  let drop = false;\n  let esc = false;\n\n  for (;;) {\n    const c = rd.take();\n    if (c === -1) throw new Error('unterminated string in JSON payload');\n\n    if (esc) {\n      esc = false;\n    } else if (c === 92) {      // backslash\n      esc = true;\n    } else if (c === 34) {      // closing quote\n      break;\n    }\n\n    if (first === -1) first = c;\n    total++;\n\n    if (drop) continue;\n\n    if (n === cur.length) { parts.push(cur.subarray(0, n)); cur = Buffer.allocUnsafe(1 << 16); n = 0; }\n    cur[n++] = c;\n\n    if (total === BIG_BYTES && first !== LT) {\n      // Large and not HTML. If it reads as base64 it is a rendered slide;\n      // drop it and keep scanning to the closing quote.\n      let b64 = true;\n      const head = parts.length ? parts[0] : cur;\n      const lim = Math.min(64, head.length);\n      for (let i = 0; i < lim; i++) if (!B64[head[i]]) { b64 = false; break; }\n      if (b64) { drop = true; parts.length = 0; n = 0; }\n    }\n  }\n\n  if (drop) return null;\n  parts.push(cur.subarray(0, n));\n  return JSON.parse('\"' + Buffer.concat(parts).toString('utf8') + '\"');\n}\n\n// A string is skipped without being kept at all.\nfunction skipString(rd) {\n  rd.skip();\n  let esc = false;\n  for (;;) {\n    const c = rd.take();\n    if (c === -1) throw new Error('unterminated string in JSON payload');\n    if (esc) esc = false;\n    else if (c === 92) esc = true;\n    else if (c === 34) return;\n  }\n}\n\nfunction readLiteral(rd, discard) {\n  const bytes = [];\n  for (;;) {\n    const c = rd.peek();\n    if (c === -1 || c === 44 || c === 125 || c === 93 ||\n        c === 32 || c === 10 || c === 13 || c === 9) break;\n    rd.skip();\n    if (!discard) bytes.push(c);\n  }\n  if (discard) return undefined;\n  return JSON.parse(Buffer.from(bytes).toString('utf8'));\n}\n\n// ---------------------------------------------------------------------------\n//  Value walker.\n//\n//  opts.keepNodes  — Set of node names to keep under a \"runData\" object;\n//                    every other node's output is parsed and thrown away.\n//  opts.dropTop    — Set of keys to skip at the top level of the document.\n//  opts.dataToFile — when set, a top-level \"data\" key holding a STRING has\n//                    its contents unescaped straight to this path instead of\n//                    being held in memory (that string is the whole flatted\n//                    execution, far past V8's string limit).\n// ---------------------------------------------------------------------------\nfunction parseValue(rd, discard, key, depth, opts, isRunData) {\n  ws(rd);\n  const c = rd.peek();\n  if (c === 123) return parseObject(rd, discard, depth, opts, isRunData);\n  if (c === 91) return parseArray(rd, discard, depth, opts);\n  if (c === 34) {\n    if (!discard && depth === 1 && key === 'data' && opts.dataToFile) {\n      return { __file: unescapeToFile(rd, opts.dataToFile) };\n    }\n    if (discard) { skipString(rd); return undefined; }\n    return readString(rd);\n  }\n  return readLiteral(rd, discard);\n}\n\n// isRunData: this object is the runData map, so its keys are node names and\n// the nodes we do not need are parsed straight past instead of materialised.\nfunction parseObject(rd, discard, depth, opts, isRunData) {\n  rd.skip(); // {\n  const out = discard ? undefined : {};\n  ws(rd);\n  if (rd.peek() === 125) { rd.skip(); return out; }\n  for (;;) {\n    ws(rd);\n    const key = readString(rd);\n    ws(rd);\n    rd.skip(); // :\n    let d = discard;\n    if (!d && depth === 0 && opts.dropTop && opts.dropTop.has(key)) d = true;\n    if (!d && isRunData && opts.keepNodes && !opts.keepNodes.has(key)) d = true;\n    const v = parseValue(rd, d, key, depth + 1, opts, key === 'runData');\n    if (!d) out[key] = v;\n    ws(rd);\n    const t = rd.take();\n    if (t === 44) continue;\n    if (t === 125) return out;\n    throw new Error('malformed object in JSON payload');\n  }\n}\n\nfunction parseArray(rd, discard, depth, opts) {\n  rd.skip(); // [\n  const out = discard ? undefined : [];\n  ws(rd);\n  if (rd.peek() === 93) { rd.skip(); return out; }\n  for (;;) {\n    const v = parseValue(rd, discard, null, depth + 1, opts, false);\n    if (!discard) out.push(v);\n    ws(rd);\n    const t = rd.take();\n    if (t === 44) continue;\n    if (t === 93) return out;\n    throw new Error('malformed array in JSON payload');\n  }\n}\n\n// ---------------------------------------------------------------------------\n//  Unescape a JSON string token straight into a file, without ever holding it.\n// ---------------------------------------------------------------------------\nfunction unescapeToFile(rd, path) {\n  rd.skip(); // opening quote\n  const out = fs.openSync(path, 'w');\n  const buf = Buffer.allocUnsafe(1 << 20);\n  let n = 0;\n\n  const flush = () => { if (n) { fs.writeSync(out, buf, 0, n); n = 0; } };\n  const put = (byte) => { if (n === buf.length) flush(); buf[n++] = byte; };\n  const putStr = (s) => { const b = Buffer.from(s, 'utf8'); for (let i = 0; i < b.length; i++) put(b[i]); };\n  const hex4 = () => {\n    let v = 0;\n    for (let i = 0; i < 4; i++) {\n      const c = rd.take();\n      const d = c >= 48 && c <= 57 ? c - 48\n        : c >= 97 && c <= 102 ? c - 87\n        : c >= 65 && c <= 70 ? c - 55\n        : -1;\n      if (d < 0) throw new Error('bad \\\\u escape in JSON payload');\n      v = v * 16 + d;\n    }\n    return v;\n  };\n\n  try {\n    for (;;) {\n      const c = rd.take();\n      if (c === -1) throw new Error('unterminated string in JSON payload');\n      if (c === 34) break;            // closing quote\n      if (c !== 92) { put(c); continue; }\n\n      const e = rd.take();\n      if (e === 110) put(10);         // \\n\n      else if (e === 116) put(9);     // \\t\n      else if (e === 114) put(13);    // \\r\n      else if (e === 98) put(8);      // \\b\n      else if (e === 102) put(12);    // \\f\n      else if (e === 117) {           // \\uXXXX\n        const a = hex4();\n        if (a >= 0xd800 && a <= 0xdbff) {\n          // High surrogate: a low surrogate must follow as its own escape.\n          if (rd.peek() === 92) {\n            rd.skip();\n            const u = rd.take();      // 'u'\n            if (u !== 117) throw new Error('bad surrogate pair in JSON payload');\n            const b = hex4();\n            putStr(String.fromCharCode(a, b));\n          } else putStr(String.fromCharCode(a));\n        } else putStr(String.fromCharCode(a));\n      } else put(e);                  // \\\" \\\\ \\/ and anything else\n    }\n    flush();\n  } finally {\n    fs.closeSync(out);\n  }\n  return path;\n}\n\nfunction parseFile(path, opts) {\n  const fd = fs.openSync(path, 'r');\n  try {\n    return parseValue(makeReader(fd), false, null, 0, opts || {}, false);\n  } finally {\n    fs.closeSync(fd);\n  }\n}\n\n// ---------------------------------------------------------------------------\n//  flatted — the format n8n stores execution data in. Every property whose\n//  value is a string is an index into the flat array; non-strings are literal.\n//  Strings we dropped above sit in the array as null, so they resolve to null.\n// ---------------------------------------------------------------------------\nfunction unflatten(arr) {\n  if (!Array.isArray(arr)) return arr;\n  const seen = new Set();\n  const revive = (node) => {\n    for (const k of Object.keys(node)) {\n      const v = node[k];\n      if (typeof v !== 'string') continue;\n      const t = arr[Number(v)];\n      if (t && typeof t === 'object' && !seen.has(t)) { seen.add(t); node[k] = revive(t); }\n      else node[k] = t;\n    }\n    return node;\n  };\n  const root = arr[0];\n  return root && typeof root === 'object' ? revive(root) : root;\n}\n\n// ---------------------------------------------------------------------------\n//  Pull the three node outputs we need out of a parsed execution.\n// ---------------------------------------------------------------------------\nconst KEEP_NODES = new Set(['Parse Concept', 'Build Carousel HTML', 'Compute Local Path']);\n\nfunction runDataOf(parsed) {\n  let data = parsed && parsed.data;\n  if (data && data.__file) {\n    data = unflatten(parseFile(data.__file, {}));\n  }\n  if (typeof data === 'string') data = unflatten(JSON.parse(data));\n  const rd = data && data.resultData && data.resultData.runData;\n  return rd && typeof rd === 'object' ? rd : {};\n}\n\n// Every output item of a node, flattened across all of its loop iterations.\nfunction outputsOf(runData, node) {\n  const runs = runData[node];\n  if (!Array.isArray(runs)) return [];\n  const out = [];\n  for (const run of runs) {\n    const main = run && run.data && run.data.main;\n    const items = Array.isArray(main) && Array.isArray(main[0]) ? main[0] : [];\n    for (const it of items) if (it && it.json) out.push(it.json);\n  }\n  return out;\n}\n\nconst keyOf = (p) =>\n  p && p.drive_file_id ? `${p.drive_file_id}_${p.variant}_${p.post_index}` : null;\n\nconst dirOf = (p) => String(p).replace(/[\\\\/][^\\\\/]*$/, '');\n\nfunction extract(runData) {\n  const concepts = new Map();\n  for (const j of outputsOf(runData, 'Parse Concept')) {\n    const k = keyOf(j);\n    if (k) concepts.set(k, j);\n  }\n\n  const htmls = new Map();\n  for (const j of outputsOf(runData, 'Build Carousel HTML')) {\n    const k = keyOf(j._parent);\n    if (k && typeof j.html === 'string') htmls.set(k, j.html);\n  }\n\n  const targets = new Map();\n  for (const j of outputsOf(runData, 'Compute Local Path')) {\n    const k = keyOf(j._parent);\n    if (!k || !j.fullPath) continue;\n    let t = targets.get(k);\n    if (!t) {\n      t = { dir: dirOf(j.fullPath), folderName: j.folderName, fits: (j._parent && j._parent._fits) || [], slides: new Set() };\n      targets.set(k, t);\n    }\n    t.slides.add(j.slide_number);\n  }\n\n  return { concepts, htmls, targets };\n}\n\n// ---------------------------------------------------------------------------\n//  Write one file per post, next to the slides that post produced.\n// ---------------------------------------------------------------------------\nfunction writePosts(ex, { concepts, htmls, targets }, opts) {\n  // Everything goes into ONE flat folder, so renamed slide folders do not\n  // matter: the original folder name is only used to name the files.\n  const outDir = opts.outDir;\n  fs.mkdirSync(outDir, { recursive: true });\n  const safe = (x) => String(x).replace(/[^\\w.\\-]+/g, '_').slice(0, 180);\n\n  const written = [];\n  const keys = new Set([...htmls.keys(), ...concepts.keys()]);\n  for (const k of keys) {\n    const c = concepts.get(k);\n    const t = targets.get(k);\n    const html = htmls.get(k);\n    const n = (c && c.post_index) || k.split('_').pop();\n    const name = safe(`${(t && t.folderName) || k}__post${n}`);\n\n    if (html) fs.writeFileSync(`${outDir}/${name}.html`, html, 'utf8');\n    if (c) {\n      const concept = Object.assign({\n        _recovered: {\n          execution_id: ex.id, started_at: ex.startedAt, row_key: k,\n          original_folder: t ? t.dir : null, folder_name: t ? t.folderName : null,\n          fits: t ? t.fits : [],\n        },\n      }, c);\n      fs.writeFileSync(`${outDir}/${name}.json`, JSON.stringify(concept, null, 2), 'utf8');\n    }\n\n    written.push({\n      row_key: k,\n      file: `${outDir}/${name}.html`,\n      folder: t ? t.dir : `(not rendered) ${k}`,\n      folder_name: t ? t.folderName : null,\n      post_index: n,\n      posts_total: c ? c.posts_total : null,\n      total_slides: c ? c.total_slides : null,\n      slides_on_disk: t ? t.slides.size : 0,\n      html: !!html,\n      title: c ? c.title : null,\n      variant: c ? c.variant : null,\n    });\n  }\n  return { written, missingConcept: [], notRendered: [] };\n}\n\n// ===========================================================================\n//  n8n GLUE  —  everything above this line is portable JS with no n8n\n//  dependencies, so it can be unit-tested outside n8n.\n// ===========================================================================\n\nconst s = $('Settings').first().json;\nconst ex = $input.first().json;\n\nconst base = String(s.N8N_API_URL || '').replace(/\\/+$/, '');\nconst workDir = String(s.WORK_DIR || '/files/_recovery').replace(/[\\\\/]+$/, '');\nconst raw = `${workDir}/exec_${ex.id}.json`;\nconst inner = `${workDir}/exec_${ex.id}.inner.json`;\n\nfs.mkdirSync(workDir, { recursive: true });\n\n// --- download -------------------------------------------------------------\n// Streamed to disk: one execution of a 200-paper batch is hundreds of MB to\n// several GB, nearly all of it base64 slide images, and holding that in\n// memory would take n8n down.\nconst url = `${base}/executions/${ex.id}`;\nconst qs = { includeData: true };\nconst headers = { 'X-N8N-API-KEY': s.N8N_API_KEY, accept: 'application/json' };\n\nlet streamed = true;\ntry {\n  const stream = await this.helpers.httpRequest({\n    method: 'GET', url, qs, headers, json: false, encoding: 'stream', timeout: 1800000,\n  });\n  await new Promise((resolve, reject) => {\n    const out = fs.createWriteStream(raw);\n    stream.on('error', reject);\n    out.on('error', reject);\n    out.on('finish', resolve);\n    stream.pipe(out);\n  });\n} catch (err) {\n  // Older n8n builds do not stream; fall back to a buffered download.\n  streamed = false;\n  const body = await this.helpers.httpRequest({\n    method: 'GET', url, qs, headers, json: false, encoding: 'arraybuffer', timeout: 1800000,\n  });\n  fs.writeFileSync(raw, Buffer.isBuffer(body) ? body : Buffer.from(String(body), 'utf8'));\n}\n\nconst bytes = fs.statSync(raw).size;\n\n// --- read -----------------------------------------------------------------\nlet result;\ntry {\n  const parsed = parseFile(raw, {\n    dropTop: new Set(['workflowData']),\n    keepNodes: KEEP_NODES,\n    dataToFile: inner,\n  });\n\n  const runData = runDataOf(parsed);\n  const nodesSeen = Object.keys(runData);\n\n  if (!nodesSeen.length) {\n    result = {\n      execution_id: ex.id, started_at: ex.startedAt, status: ex.status,\n      bytes, streamed, posts_written: 0, written: [], not_rendered: [], missing_concept: [],\n      note: 'This execution carries no saved node data (pruned, or saving was off for this run).',\n    };\n  } else {\n    const found = extract(runData);\n\n    if (s.DRY_RUN) {\n      // Report what would happen without touching a single folder.\n      const written = [];\n      for (const [k, t] of found.targets) {\n        const c = found.concepts.get(k);\n        if (!c) continue;\n        written.push({\n          row_key: k, folder: t.dir, folder_name: t.folderName, post_index: c.post_index,\n          posts_total: c.posts_total, total_slides: c.total_slides,\n          slides_on_disk: t.slides.size, html: found.htmls.has(k),\n          folder_exists: fs.existsSync(t.dir), title: c.title, variant: c.variant,\n        });\n      }\n      const notRendered = [];\n      for (const k of found.concepts.keys()) if (!found.targets.has(k)) notRendered.push(k);\n      result = {\n        execution_id: ex.id, started_at: ex.startedAt, status: ex.status, bytes, streamed,\n        dry_run: true, posts_written: 0, posts_found: written.length,\n        written, not_rendered: notRendered, missing_concept: [], nodes_seen: nodesSeen,\n      };\n    } else {\n      const w = writePosts(ex, found, { outDir: String(s.HTML_OUT_DIR || `${workDir}/html`).replace(/[\\\\/]+$/, '') });\n      result = {\n        execution_id: ex.id, started_at: ex.startedAt, status: ex.status, bytes, streamed,\n        posts_written: w.written.length, posts_found: w.written.length,\n        written: w.written, not_rendered: w.notRendered,\n        missing_concept: w.missingConcept, nodes_seen: nodesSeen,\n      };\n    }\n  }\n} finally {\n  if (!s.KEEP_RAW_DOWNLOAD) {\n    try { fs.unlinkSync(raw); } catch (e) {}\n    try { fs.unlinkSync(inner); } catch (e) {}\n  }\n}\n\nreturn [{ json: result }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2176,
+        928
+      ],
+      "id": "9cf5ea00-f2fa-49ba-8b14-4d21621a2292",
+      "name": "Fetch and Extract"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===========================================================================\n//  Write Manifest  —  runs once, after the last execution has been processed.\n//  Writes one index of every recovered post and flags the two things worth\n//  looking at by hand before editing anything.\n// ===========================================================================\n\nconst fs = require('fs');\n\nconst s = $('Settings').first().json;\nconst runs = $input.all().map((i) => i.json);\n\n// Newest execution wins per post, matching whichever run left the images on\n// disk. The list arrives oldest first, so a later entry overwrites an earlier.\nconst byRowKey = new Map();\nfor (const r of runs) {\n  for (const w of r.written || []) {\n    byRowKey.set(w.row_key, Object.assign({}, w, {\n      execution_id: r.execution_id,\n      started_at: r.started_at,\n    }));\n  }\n}\nconst posts = [...byRowKey.values()];\n\n// Folder naming in the source workflow is surname_title_variant_index, with no\n// post index, so a paper that produced 2-3 posts wrote them all into ONE\n// folder and each post overwrote the previous one's slides. Those folders hold\n// a mix: the concept files are all recovered, the images are not.\nconst byFolder = new Map();\nfor (const p of posts) {\n  if (!byFolder.has(p.folder)) byFolder.set(p.folder, []);\n  byFolder.get(p.folder).push(p);\n}\n\nconst collisions = [];\nfor (const [folder, ps] of byFolder) {\n  if (ps.length < 2) continue;\n  const sorted = ps.slice().sort((a, b) => a.post_index - b.post_index);\n  collisions.push({\n    folder,\n    posts: sorted.map((p) => p.post_index),\n    slides_per_post: sorted.map((p) => p.total_slides),\n    images_on_disk_belong_to_post: sorted[sorted.length - 1].post_index,\n    title: sorted[0].title,\n    variant: sorted[0].variant,\n  });\n}\n\n// A post whose concept says 9 slides but whose run only wrote 6 files.\nconst shortWrites = posts.filter((p) => p.slides_on_disk && p.total_slides &&\n  p.slides_on_disk !== p.total_slides);\n\nconst summary = {\n  generated_at: new Date().toISOString(),\n  dry_run: !!s.DRY_RUN,\n  executions_processed: runs.length,\n  executions_without_data: runs.filter((r) => r.note).map((r) => r.execution_id),\n  bytes_downloaded: runs.reduce((a, r) => a + (r.bytes || 0), 0),\n  posts_recovered: posts.length,\n  html_recovered: posts.filter((p) => p.html).length,\n  folders_touched: byFolder.size,\n  folders_holding_more_than_one_post: collisions.length,\n  posts_with_fewer_images_than_slides: shortWrites.length,\n  concepts_never_rendered: runs.flatMap((r) => r.not_rendered || []),\n  slides_without_a_concept: runs.flatMap((r) => r.missing_concept || []),\n};\n\nconst manifestPath = String(s.WORK_DIR || '/files/_recovery').replace(/[\\\\/]+$/, '') + '/manifest.json';\nfs.mkdirSync(manifestPath.replace(/[\\\\/][^\\\\/]*$/, ''), { recursive: true });\nfs.writeFileSync(manifestPath, JSON.stringify(\n  Object.assign({}, summary, { collisions, short_writes: shortWrites, posts }), null, 2), 'utf8');\n\nreturn [{ json: Object.assign({ manifest: manifestPath }, summary, { collisions }) }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2176,
+        688
+      ],
+      "id": "fb989163-562c-41f7-ad53-4a42dbfe5072",
+      "name": "Write Manifest"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-09-21T14:34:42.824Z",
+      "createdAt": "2026-09-21T14:34:42.824Z",
+      "role": "workflow:owner",
+      "workflowId": "2dyUcLREQ9OQMcD2",
+      "projectId": "O6AJ2gZorGSWwg9b"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-09-29T18:39:22.885Z",
+  "versionId": "96b3ca6a-7b93-473f-850d-c1ec9cf4dacd"
+}
