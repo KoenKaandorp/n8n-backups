@@ -1,0 +1,735 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Globals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Globals": {
+      "main": [
+        [
+          {
+            "node": "Check Logo Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Logo Exists": {
+      "main": [
+        [
+          {
+            "node": "Read Results Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Results Sheet": {
+      "main": [
+        [
+          {
+            "node": "Filter Excellent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Excellent": {
+      "main": [
+        [
+          {
+            "node": "If Has Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Has Rows": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Rows": {
+      "main": [
+        [
+          {
+            "node": "Run Summary",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Load Old HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Old HTML": {
+      "main": [
+        [
+          {
+            "node": "If HTML Found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If HTML Found": {
+      "main": [
+        [
+          {
+            "node": "Pill Label (Claude)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Skip Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skip Row": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Haiku Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Pill Label (Claude)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pill Label (Claude)": {
+      "main": [
+        [
+          {
+            "node": "Restyle HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Restyle HTML": {
+      "main": [
+        [
+          {
+            "node": "Render Carousel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Render Carousel": {
+      "main": [
+        [
+          {
+            "node": "Save New Slides",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save New Slides": {
+      "main": [
+        [
+          {
+            "node": "Update Results Row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Results Row": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-09-30T12:21:20.477Z",
+  "id": "neGlAby0ESQebLkX",
+  "isArchived": false,
+  "meta": null,
+  "name": "W4 — Restyle Approved Carousels (red → blue)",
+  "nodeGroups": [],
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Restyle Approved Carousels (red → blue)\n\nRuns manually. Picks up every row in `RESULTS_TAB` with `status = excellent` (up to `BATCH_SIZE` per run) and, per row:\n\n1. reads `carousel_post<N>.html` from the row's `folder_name` folder\n2. Haiku writes a 2–3 word topic label for the pill\n3. patches the HTML: blue accents + payoff colours, blue logo on every slide, two-line programme footer, programme names in the CTA text, blue pill on slide 1. **All other text and layout stay identical.**\n4. renders it with `carousel-renderer`\n5. only after a successful render: clears the folder (keeps `concept_post*.json`), writes the new `slide_NN.jpg` files and the new HTML under the same name\n6. sets `status = good to post` and `slide_urls` to the new images\n\n**Check Logo Exists** stops the run if the renderer cannot serve `LOGO_URL_BLUE`.\n\n**Redo:** set `REDO_RESTYLED` = true to re-run the carousels that were already restyled (status `good to post` + pill in the HTML); they keep their pill label.\n\nRows with no HTML are skipped, keep `excellent`, and are listed in **Run Summary**. Re-running is safe: finished rows no longer match.",
+        "height": 520,
+        "width": 620,
+        "color": 4
+      },
+      "id": "4c5ca83b-9768-48c4-8043-9c13ff6237d1",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        784,
+        736
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "1a6645af-ebad-4ede-a7e1-6bd19f2a2407",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        1488,
+        848
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "rg1",
+              "name": "PAPERS_SHEET_ID",
+              "value": "1l-XuaEKcY9cC0aLHNGh-q2ZConnzFD-7VZV3UQSelDQ",
+              "type": "string"
+            },
+            {
+              "id": "rg2",
+              "name": "RESULTS_TAB",
+              "value": "papers_batch1_results",
+              "type": "string"
+            },
+            {
+              "id": "rg3",
+              "name": "STATUS_IN",
+              "value": "updated",
+              "type": "string"
+            },
+            {
+              "id": "rg4",
+              "name": "STATUS_OUT",
+              "value": "updated",
+              "type": "string"
+            },
+            {
+              "id": "rg5",
+              "name": "BATCH_SIZE",
+              "value": 50,
+              "type": "number"
+            },
+            {
+              "id": "rg6",
+              "name": "LOCAL_OUTPUT_ROOT",
+              "value": "/files/slides/test_batch1",
+              "type": "string"
+            },
+            {
+              "id": "rg7",
+              "name": "ANTHROPIC_MODEL_CHEAP",
+              "value": "claude-haiku-4-5-20251001",
+              "type": "string"
+            },
+            {
+              "id": "rg8",
+              "name": "RENDER_SERVICE_URL",
+              "value": "http://carousel-renderer:3000/render",
+              "type": "string"
+            },
+            {
+              "id": "rg9",
+              "name": "SLIDE_WIDTH",
+              "value": 1080,
+              "type": "number"
+            },
+            {
+              "id": "rg10",
+              "name": "SLIDE_HEIGHT",
+              "value": 1350,
+              "type": "number"
+            },
+            {
+              "id": "rg11",
+              "name": "DEVICE_SCALE",
+              "value": 1,
+              "type": "number"
+            },
+            {
+              "id": "rg12",
+              "name": "SLIDE_FORMAT",
+              "value": "jpeg",
+              "type": "string"
+            },
+            {
+              "id": "rg13",
+              "name": "SLIDE_QUALITY",
+              "value": 92,
+              "type": "number"
+            },
+            {
+              "id": "rg14",
+              "name": "LOGO_URL_BLUE",
+              "value": "http://localhost:3000/assets/tue-logo-blue.svg",
+              "type": "string"
+            },
+            {
+              "id": "rg15",
+              "name": "REDO_RESTYLED",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "rg16",
+              "name": "HANDLE_LINE_1",
+              "value": "Psychology & Technology Bachelor",
+              "type": "string"
+            },
+            {
+              "id": "rg17",
+              "name": "HANDLE_LINE_2",
+              "value": "Human-Technology Interaction Master",
+              "type": "string"
+            },
+            {
+              "id": "rg18",
+              "name": "OLD_FACULTY_NAME",
+              "value": "Faculty of Innovation Sciences",
+              "type": "string"
+            },
+            {
+              "id": "rg19",
+              "name": "CTA_PROGRAMME_NAME",
+              "value": "Psychology & Technology Bachelor Human-Technology Interaction Master",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "99dbcf1f-0738-4587-a94d-493bb2e71fe6",
+      "name": "Globals",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1712,
+        848
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.RESULTS_TAB }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "id": "18718a25-792c-4054-aafb-b48b354b8ade",
+      "name": "Read Results Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1920,
+        848
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Rows in the results tab whose status is STATUS_IN (\"excellent\").\nconst g = $('Globals').first().json;\n// REDO_RESTYLED = true: pick rows already at STATUS_OUT instead; Load Old HTML\n// then only keeps the ones whose HTML already has the pill (i.e. were restyled).\nconst want = String(g.REDO_RESTYLED ? g.STATUS_OUT : g.STATUS_IN).trim().toLowerCase();\nconst rows = $input.all().map((i) => i.json)\n  .filter((r) => String(r.status || '').trim().toLowerCase() === want);\nif (rows.length === 0) return [{ json: { _empty: true } }];\nreturn rows.slice(0, g.BATCH_SIZE || rows.length).map((r) => ({ json: r }));"
+      },
+      "id": "35f872f2-af99-4d19-bf4d-fb10524857f0",
+      "name": "Filter Excellent",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2144,
+        848
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c0ffee00-0000-4000-8000-000000000006",
+              "leftValue": "={{ $json._empty }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "deaf1ace-d92a-4013-a301-b166127c3e61",
+      "name": "If Has Rows",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2368,
+        848
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Globals').first().json.LOGO_URL_BLUE.replace(/^https?:\\/\\/localhost:3000/, $('Globals').first().json.RENDER_SERVICE_URL.replace(/\\/render\\/?$/, '')) }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 15000
+        }
+      },
+      "id": "7f150e67-0815-45d8-80bf-013e66de9042",
+      "name": "Check Logo Exists",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1808,
+        656
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "3af42736-7957-4084-8f1e-7eedc3baa00c",
+      "name": "Loop Over Rows",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1488,
+        1168
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Everything that came back through the loop, counted.\nconst g = $('Globals').first().json;\nconst all = $input.all().map((i) => i.json);\nconst skipped = all.filter((r) => r.result === 'skipped');\nconst done = all.filter((r) => r.result !== 'skipped');\nreturn [{\n  json: {\n    restyled: done.length,\n    skipped: skipped.length,\n    skipped_rows: skipped.map((r) => `${r.row_key}: ${r.reason}`),\n    note: skipped.length\n      ? `Skipped rows keep their status and will be retried next run.`\n      : 'All selected rows restyled.',\n  },\n}];"
+      },
+      "id": "6e2d1409-499a-495a-b040-da7ef3971622",
+      "name": "Run Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1712,
+        1024
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Finds carousel_post<N>.html in the row's folder and builds the pill prompt.\n// Nothing is changed on disk here.\nconst fs = require('fs');\nconst g = $('Globals').first().json;\nconst row = $json;\n\nconst root = String(g.LOCAL_OUTPUT_ROOT || '').replace(/[\\\\/]+$/, '');\nconst folder = String(row.folder_name || '').trim();\nconst postIndex = parseInt(row.post_index, 10) || 1;\nconst dir = `${root}/${folder}`;\n\nlet problem = null;\nlet htmlFile = null;\nif (!root) problem = 'LOCAL_OUTPUT_ROOT is empty in Globals';\nelse if (!folder) problem = 'folder_name is empty';\nelse if (/[\\\\/]|\\.\\./.test(folder)) problem = `folder_name looks like a path: ${folder}`;\nelse if (!fs.existsSync(dir)) problem = `folder not found: ${dir}`;\nelse {\n  const want = `carousel_post${postIndex}.html`;\n  const files = fs.readdirSync(dir);\n  if (files.includes(want)) htmlFile = want;\n  else {\n    const any = files.filter((f) => /^carousel_post\\d+\\.html$/.test(f));\n    if (any.length === 1) htmlFile = any[0];\n    else problem = any.length\n      ? `several carousel_post*.html in ${dir}, none for post ${postIndex}`\n      : `no carousel_post*.html in ${dir}`;\n  }\n}\n\nif (problem) {\n  return [{ json: { found: false, row_key: row.row_key, folder_name: folder, reason: problem } }];\n}\n\nconst html = fs.readFileSync(`${dir}/${htmlFile}`, 'utf8');\n\n// A pill already in the HTML means this carousel was restyled before.\nconst pillMatch = html.match(/<div class=\"pill\"><span class=\"pill-dot\"><\\/span>([\\s\\S]*?)<\\/div>/);\nconst existing_pill_label = pillMatch\n  ? pillMatch[1].replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim()\n  : '';\nif (g.REDO_RESTYLED && !existing_pill_label) {\n  return [{ json: { found: false, row_key: row.row_key, folder_name: folder,\n    reason: 'redo mode: HTML has no pill, so it was never restyled (left alone)' } }];\n}\n\n// Hook slide text, stripped of tags, to give the pill label some context.\nconst plain = (s) => String(s || '').replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&')\n  .replace(/&[a-z]+;/g, ' ').replace(/\\s+/g, ' ').trim();\nconst hook = (html.match(/<div class=\"slide slide--hook[\\s\\S]*?<div class=\"footer\">/) || [''])[0];\nconst hookHeadline = plain((hook.match(/<h1 class=\"headline\">([\\s\\S]*?)<\\/h1>/) || [])[1]);\nconst hookText = plain((hook.match(/<div class=\"blocks\">([\\s\\S]*?)<\\/div>\\s*<\\/div>/) || [])[1]);\n\nconst pill_prompt = `Write the label for a small pill badge on the first slide of an Instagram carousel about a research paper. The label names the TOPIC of the study in 2 or 3 words, like a tag. Examples of the style: \"Pilot studies\", \"Sleep and memory\", \"Trust in robots\".\n\nRules:\n- 2 or 3 words, at most 24 characters.\n- Sentence case: capitalise only the first word and proper nouns.\n- Plain everyday words a 17 year old understands. No jargon.\n- Name the topic, not the finding. Do not repeat the headline.\n- No quotes, no punctuation, no emoji, no hashtags, no dashes.\n\nPaper title: ${row.title || ''}\nPost angle: ${row.angle_label || ''}\nHook headline: ${hookHeadline}\nHook text: ${hookText}\n\nReply with the label only.`;\n\nreturn [{\n  json: {\n    found: true,\n    row_key: row.row_key,\n    title: row.title,\n    angle_label: row.angle_label,\n    folder_name: folder,\n    dir,\n    html_file: htmlFile,\n    post_index: postIndex,\n    html,\n    existing_pill_label,\n    pill_prompt,\n  },\n}];"
+      },
+      "id": "80e95ded-0766-46e0-a2fa-4224ab417f6e",
+      "name": "Load Old HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1712,
+        1184
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c0ffee00-0000-4000-8000-000000000012",
+              "leftValue": "={{ $json.found }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b9fe78ba-4717-4da9-8fde-c277f3a54ead",
+      "name": "If HTML Found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1920,
+        1184
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Row skipped: its status stays unchanged so it is picked up again next run.\nreturn [{ json: { result: 'skipped', row_key: $json.row_key, folder_name: $json.folder_name, reason: $json.reason } }];"
+      },
+      "id": "ee5adcb5-78a0-4ec0-b568-4aa5c8f1c747",
+      "name": "Skip Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        1504
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.pill_prompt }}",
+        "options": {
+          "systemMessage": "You write very short topic labels for research posts. Reply with the label only: no quotes, no explanation, no punctuation.",
+          "maxIterations": 1
+        }
+      },
+      "id": "6c0d26f3-b9dc-440f-a731-cf44372b4236",
+      "name": "Pill Label (Claude)",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2160,
+        1136
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.ANTHROPIC_MODEL_CHEAP }}",
+          "mode": "id"
+        },
+        "options": {
+          "maxTokensToSample": 50,
+          "temperature": 0.2
+        }
+      },
+      "id": "00b755b7-ca5b-4237-a69d-8fdf123ddeed",
+      "name": "Haiku Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        2160,
+        1360
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "sUkzGV6H3EB4ekZS",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================================\n//  Restyle HTML — applies the blue house style to the old carousel HTML.\n//  Text, blocks and layout of every slide stay exactly as they were.\n// ============================================================================\n\n// ============================================================================\n//  restyle(html, opts)  —  red carousel HTML  ->  blue house style.\n//  Pure string transform: every slide's text, blocks and layout stay exactly\n//  as they are. Only these things change:\n//    1. red palette tokens -> blue (accent, neg, payoff slide colours)\n//    2. every logo -> the blue logo\n//    3. footer -> two-line programme handle (CSS + markup)\n//    4. CTA slide text: old faculty name -> programme names\n//    5. pill CSS + a pill with a 2-3 word label on the hook slide\n//  Idempotent: running it on an already-blue file gives the same file.\n// ============================================================================\n\nconst COLOR_MAP = {\n  '#c72125': '#008EAA', // accent / neg / payoff background\n  '#f6d5d6': '#6dd9ff', // payoff muted\n  '#b31d21': '#006a88', // payoff surface\n  '#a01a1d': '#005273', // payoff surface-2\n  '#d4585b': '#1ba8c9', // payoff line\n};\n\nconst FOOTER_CSS =\n  '.footer { display:flex; justify-content:space-between; align-items:flex-start;' +\n  ' padding-top:34px; }';\nconst FOOTER_LEFT_CSS = '.footer-left { display:flex; flex-direction:column; gap:8px; }';\n\nconst PILL_CSS =\n  '.pill { display:inline-flex; align-items:center; gap:10px; background:#008EAA;' +\n  ' color:#ffffff; padding:14px 28px; border-radius:28px;' +\n  ' font-family:var(--font-display); font-weight:700; font-size:32px;' +\n  ' letter-spacing:.04em; position:absolute; top:140px; left:84px; }\\n' +\n  '  .pill-dot { width:8px; height:8px; background:#ffffff; border-radius:50%; }\\n' +\n  '  .slide--hook .pill { background:#008EAA; color:#ffffff; }\\n  ';\n\nconst escHtml = (s) => String(s == null ? '' : s)\n  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\n\nfunction restyle(html, opts) {\n  const { pillLabel, logoUrl, handles, oldFacultyName, ctaName } = opts;\n  let out = String(html);\n  const changes = [];\n\n  // ---- split style from body so CSS edits never touch slide text ----------\n  const m = out.match(/^([\\s\\S]*?<style>)([\\s\\S]*?)(<\\/style>[\\s\\S]*)$/);\n  if (!m) throw new Error('No <style> block found in HTML');\n  let [, head, css, rest] = m;\n\n  // 1. palette\n  for (const [from, to] of Object.entries(COLOR_MAP)) {\n    const re = new RegExp(from, 'gi');\n    if (re.test(css)) { css = css.replace(re, to); changes.push(`colour ${from}->${to}`); }\n  }\n\n  // 3a. footer CSS\n  css = css.replace(/\\.footer\\s*\\{[^}]*\\}/, FOOTER_CSS);\n  if (!/\\.footer-left\\s*\\{/.test(css)) {\n    css = css.replace(FOOTER_CSS, FOOTER_CSS + '\\n  ' + FOOTER_LEFT_CSS);\n    changes.push('footer-left css added');\n  }\n\n  // 5a. pill CSS (once), placed before the per-type variants like the template\n  if (!/\\.pill\\s*\\{/.test(css)) {\n    const anchor = css.search(/\\/\\*\\s*-+\\s*per-type variants|\\.slide--hook,\\s*\\.slide--cta\\s*\\{/);\n    css = anchor >= 0 ? css.slice(0, anchor) + PILL_CSS + css.slice(anchor) : css + '\\n  ' + PILL_CSS;\n    changes.push('pill css added');\n  }\n\n  let body = rest;\n\n  // 2. logos: every logo image (and any placeholder) -> blue logo\n  const logoImg = `<img class=\"logo-img\" src=\"${escHtml(logoUrl)}\" alt=\"TU/e\">`;\n  body = body.replace(/<img class=\"logo-img\"[^>]*>/g, logoImg);\n  body = body.replace(/<span class=\"logo-ph\">[\\s\\S]*?<\\/span>/g, logoImg);\n\n  // 3b. footer markup: whatever sits before footer-right becomes the two handles\n  const left = '<div class=\"footer-left\">' +\n    handles.map((h) => `<span class=\"handle\">${escHtml(h)}</span>`).join('') + '</div>';\n  let footers = 0;\n  body = body.replace(/(<div class=\"footer\">)[\\s\\S]*?(<div class=\"footer-right\">)/g, (_, a, b) => {\n    footers++; return a + left + b;\n  });\n\n  // 4. CTA text: old faculty name -> programme names (CTA slide only)\n  if (oldFacultyName && ctaName) {\n    body = body.replace(\n      /(<div class=\"slide slide--cta[^\"]*\">)([\\s\\S]*?)(<div class=\"footer\">)/,\n      (_, a, content, c) => {\n        const re = new RegExp(oldFacultyName.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&'), 'g');\n        if (re.test(content)) changes.push('cta faculty name replaced');\n        return a + content.replace(re, escHtml(ctaName)) + c;\n      }\n    );\n  }\n\n  // 5b. pill on the hook slide (replace an existing pill if re-run)\n  body = body.replace(/<div class=\"pill\">[\\s\\S]*?<\\/div>/g, '');\n  let pills = 0;\n  body = body.replace(/(<div class=\"slide slide--hook[^\"]*\">)/, (a) => {\n    pills++;\n    return a + `<div class=\"pill\"><span class=\"pill-dot\"></span>${escHtml(pillLabel)}</div>`;\n  });\n  if (!pills) throw new Error('No hook slide found for the pill');\n\n  const slides = (body.match(/<div class=\"slide slide--/g) || []).length;\n  if (footers !== slides) throw new Error(`Footer rewrite hit ${footers} of ${slides} slides`);\n\n  return { html: head + css + body, slides, changes };\n}\n\n// ============================================================================\n//  n8n GLUE\n// ============================================================================\nconst g = $('Globals').first().json;\nconst src = $('Load Old HTML').first().json;\n\n// Clean up whatever Haiku returned; fall back to the angle label if unusable.\nfunction cleanLabel(s) {\n  const line = String(s || '').split(/\\r?\\n/).map((l) => l.trim()).filter(Boolean)[0] || '';\n  return line\n    .replace(/^label\\s*:\\s*/i, '')\n    .replace(/[—–-]/g, ' ')\n    .replace(/[^\\p{L}\\p{N}&' ]/gu, '')\n    .replace(/\\s+/g, ' ')\n    .trim();\n}\n// A carousel that already has a pill keeps its label (a redo only fixes the\n// style); new ones get Haiku's label.\nlet pillLabel = src.existing_pill_label || cleanLabel($json.output);\nlet pillWarning = '';\nconst words = pillLabel.split(' ').filter(Boolean);\nif (words.length < 1 || words.length > 3 || pillLabel.length > 28) {\n  const fallback = cleanLabel(src.angle_label).split(' ').slice(0, 3).join(' ');\n  pillWarning = `pill label \"${pillLabel}\" unusable, used \"${fallback}\"`;\n  pillLabel = fallback;\n}\nif (!pillLabel) throw new Error(`No usable pill label for ${src.row_key}`);\npillLabel = pillLabel.charAt(0).toUpperCase() + pillLabel.slice(1);\n\nconst result = restyle(src.html, {\n  pillLabel,\n  logoUrl: g.LOGO_URL_BLUE,\n  handles: [g.HANDLE_LINE_1, g.HANDLE_LINE_2].filter(Boolean),\n  oldFacultyName: g.OLD_FACULTY_NAME,\n  ctaName: g.CTA_PROGRAMME_NAME,\n});\n\nreturn [{\n  json: {\n    row_key: src.row_key,\n    dir: src.dir,\n    folder_name: src.folder_name,\n    html_file: src.html_file,\n    total_slides: result.slides,\n    pill_label: pillLabel,\n    pill_warning: pillWarning,\n    changes: result.changes,\n    html: result.html,\n  },\n}];"
+      },
+      "id": "bc8db750-67ab-455f-bb2b-a40ad93c8bd5",
+      "name": "Restyle HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2464,
+        1136
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Globals').first().json.RENDER_SERVICE_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"html\": {{ JSON.stringify($json.html) }},\n  \"width\": {{ $('Globals').first().json.SLIDE_WIDTH }},\n  \"height\": {{ $('Globals').first().json.SLIDE_HEIGHT }},\n  \"deviceScale\": {{ $('Globals').first().json.DEVICE_SCALE }},\n  \"selector\": \".slide\",\n  \"format\": \"{{ $('Globals').first().json.SLIDE_FORMAT }}\",\n  \"quality\": {{ $('Globals').first().json.SLIDE_QUALITY }}\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "id": "e12010d0-2d77-4e77-a6a7-c2585bcabd8d",
+      "name": "Render Carousel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2688,
+        1136
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================================\n//  Save New Slides — only runs after the renderer succeeded, so a failed\n//  render never leaves a folder empty.\n//  1. decode + validate every new slide in memory\n//  2. clear the folder, keeping concept_post*.json\n//  3. write slide_NN.jpg + the restyled carousel_post<N>.html\n// ============================================================================\nconst fs = require('fs');\nconst g = $('Globals').first().json;\nconst src = $('Restyle HTML').first().json;\nconst resp = $json;\n\nconst images = resp.images || [];\nconst urls = Array.isArray(resp.urls) ? resp.urls : [];\nif (images.length !== src.total_slides) {\n  throw new Error(`Renderer returned ${images.length} images, expected ${src.total_slides} (${src.row_key})`);\n}\nif (urls.length !== src.total_slides) {\n  throw new Error(`Renderer returned ${urls.length} urls, expected ${src.total_slides}. Is PUBLIC_BASE_URL set on carousel-renderer?`);\n}\n\n// 1. decode first\nconst slides = images.map((img, i) => {\n  const b64 = typeof img === 'string' ? img : (img.image_base64 || img.base64 || img.data);\n  if (!b64) throw new Error(`No image data for slide ${i + 1} (${src.row_key})`);\n  const buf = Buffer.from(b64, 'base64');\n  if (buf.length < 1000) throw new Error(`Slide ${i + 1} is suspiciously small (${buf.length} bytes)`);\n  return { name: `slide_${String(i + 1).padStart(2, '0')}.jpg`, buf };\n});\n\n// 2. clear the folder (safety: must be a direct child of LOCAL_OUTPUT_ROOT)\nconst root = String(g.LOCAL_OUTPUT_ROOT || '').replace(/[\\\\/]+$/, '');\nconst dir = src.dir;\nif (!root || dir !== `${root}/${src.folder_name}` || !src.folder_name || /[\\\\/]|\\.\\./.test(src.folder_name)) {\n  throw new Error(`Refusing to clear unexpected folder: ${dir}`);\n}\nconst KEEP = /^concept_post\\d+\\.json$/;\nconst deleted = [];\nfor (const f of fs.readdirSync(dir)) {\n  if (KEEP.test(f)) continue;\n  fs.rmSync(`${dir}/${f}`, { recursive: true, force: true });\n  deleted.push(f);\n}\n\n// 3. write the new files\nfor (const s of slides) fs.writeFileSync(`${dir}/${s.name}`, s.buf);\nfs.writeFileSync(`${dir}/${src.html_file}`, src.html, 'utf8');\n\nreturn [{\n  json: {\n    row_key: src.row_key,\n    folder_name: src.folder_name,\n    slide_urls: urls.join('\\n'),\n    pill_label: src.pill_label,\n    pill_warning: src.pill_warning,\n    written: [...slides.map((s) => s.name), src.html_file],\n    deleted,\n  },\n}];"
+      },
+      "id": "7b590b26-b3c3-42e2-a332-47f5e5b1b9ce",
+      "name": "Save New Slides",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2912,
+        1136
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.PAPERS_SHEET_ID }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Globals').first().json.RESULTS_TAB }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_key": "={{ $json.row_key }}",
+            "status": "={{ $('Globals').first().json.STATUS_OUT }}",
+            "slide_urls": "={{ $json.slide_urls }}"
+          },
+          "matchingColumns": [
+            "row_key"
+          ],
+          "schema": [
+            {
+              "id": "row_key",
+              "displayName": "row_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "slide_urls",
+              "displayName": "slide_urls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "a45b3683-073f-40b7-87bd-069ed107d892",
+      "name": "Update Results Row",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3120,
+        1136
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-09-30T12:21:20.480Z",
+      "createdAt": "2026-09-30T12:21:20.480Z",
+      "role": "workflow:owner",
+      "workflowId": "neGlAby0ESQebLkX",
+      "projectId": "O6AJ2gZorGSWwg9b"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-09-30T12:43:05.513Z",
+  "versionId": "3f057001-bd5d-4389-a685-92830cb4b7e3"
+}
