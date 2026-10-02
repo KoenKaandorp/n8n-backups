@@ -1,0 +1,192 @@
+{
+  "active": false,
+  "activeVersion": null,
+  "activeVersionId": null,
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Settings": {
+      "main": [
+        [
+          {
+            "node": "Read Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Sheet": {
+      "main": [
+        [
+          {
+            "node": "Match Old HTML Folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2026-09-30T07:49:07.978Z",
+  "id": "1SJv5lz6zxSUIwwH",
+  "isArchived": false,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "Reuse Previously Saved HTML",
+  "nodeGroups": [],
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Reuse HTML saved last week\n\nOnly looks at rows whose slide folder still has no carousel_post<N>.html.\nFor each one it looks for an old-style folder\n(surname_title_variant_driveid, with or without a number prefix) that\ncontains an .html file, and checks that it comes from the SAME run as the\nslides in the folder now.\n\n**Status per row**\nverified_same_run: the old folder's slide JPGs are byte-identical to the\n  current ones. Safe, and copied.\ndifferent_run: an older version of this post. Skipped.\nunverified_close / unverified_far: the old folder has no JPGs to compare,\n  so it goes by when the HTML was saved versus generated_at (MAX_HOURS).\n  Skipped unless COPY_UNVERIFIED_CLOSE is on.\nno_old_html_found: nothing usable; this post needs a re-run.\n\n**Settings**\nOLD_HTML_ROOTS: folder(s) holding last week's folders, as n8n sees them,\n  comma-separated (searched 3 levels deep)\nSLIDES_ROOT: same as in the placement workflow\nLeave DRY_RUN on first. The report goes to\nREPORT_DIR/old_html_match_report.json.\n",
+        "height": 700,
+        "width": 560,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        704,
+        608
+      ],
+      "id": "d377db1d-8ba1-412f-a0d3-e99558d654e4",
+      "name": "How to use"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        1376,
+        896
+      ],
+      "id": "fda36206-cf1c-4c6a-a331-53e02a7e17ff",
+      "name": "Manual Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "q0",
+              "name": "SLIDES_ROOT",
+              "value": "/files/slides",
+              "type": "string"
+            },
+            {
+              "id": "q1",
+              "name": "OLD_HTML_ROOTS",
+              "value": "/files/slides/last_week",
+              "type": "string"
+            },
+            {
+              "id": "q2",
+              "name": "REPORT_DIR",
+              "value": "/files/_recovery",
+              "type": "string"
+            },
+            {
+              "id": "q3",
+              "name": "MAX_HOURS",
+              "value": 6,
+              "type": "number"
+            },
+            {
+              "id": "q4",
+              "name": "DRY_RUN",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "q5",
+              "name": "COPY_UNVERIFIED_CLOSE",
+              "value": false,
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1584,
+        896
+      ],
+      "id": "658403c8-cae0-4f3a-83f4-c973e7fe5a77",
+      "name": "Settings"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1l-XuaEKcY9cC0aLHNGh-q2ZConnzFD-7VZV3UQSelDQ"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "papers_batch1_results",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        1808,
+        896
+      ],
+      "id": "930d5ef8-dd41-4aea-a4fb-c6e84a8db4bf",
+      "name": "Read Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YIqis4WruUS7mI8Q",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===========================================================================\n//  Match Old HTML Folders\n//  For every sheet row whose slide folder still has NO carousel_post<N>.html,\n//  look for an HTML file saved earlier in an old-style folder\n//  (<surname>_<title>_<variant>_<driveId6>, optionally with a timestamp prefix)\n//  and check it belongs to the SAME run as the slides now in the folder.\n//\n//  Verification, strongest first:\n//   verified_same_run   the old folder's slide JPGs are byte-identical to the\n//                       ones in the destination folder, so it is the same run\n//   different_run       old folder has JPGs but they differ: an older version\n//   unverified_close    no JPGs to compare; HTML file saved within\n//                       MAX_HOURS of the row's generated_at\n//   unverified_far      no JPGs; saved long before/after the row was generated\n//  Only verified_same_run is copied, unless COPY_UNVERIFIED_CLOSE is on.\n// ===========================================================================\n\nconst fs = require('fs');\nconst path = require('path');\n\nconst s = $('Settings').first().json;\nconst DRY = s.DRY_RUN !== false;\nconst COPY_CLOSE = s.COPY_UNVERIFIED_CLOSE === true;\nconst MAX_HOURS = Number(s.MAX_HOURS || 6);\nconst SLIDES_ROOT = String(s.SLIDES_ROOT).replace(/[\\\\/]+$/, '');\nconst OLD_ROOTS = String(s.OLD_HTML_ROOTS).split(',').map((d) => d.trim()).filter(Boolean);\n\n// Byte-for-byte comparison without the crypto module: size first, then contents.\nfunction sameAsAny(file, others) {\n  const size = fs.statSync(file).size;\n  const same = others.filter((o) => o.size === size);\n  if (!same.length) return false;\n  const buf = fs.readFileSync(file);\n  return same.some((o) => buf.equals(fs.readFileSync(o.path)));\n}\nconst jpgs = (dir) => fs.readdirSync(dir).filter((f) => /\\.jpe?g$/i.test(f)).sort();\nconst htmls = (dir) => fs.readdirSync(dir).filter((f) => /\\.html?$/i.test(f));\nconst stripPrefix = (name) => name.replace(/^\\d{10,}_/, '');   // \"1790755131927_Dameski_...\" -> \"Dameski_...\"\n\nfunction walkDirs(root, maxDepth) {\n  const out = new Map();   // folder name -> [full paths]\n  (function walk(d, depth) {\n    for (const e of fs.readdirSync(d, { withFileTypes: true })) {\n      if (!e.isDirectory() || e.name.startsWith('.')) continue;\n      const full = path.join(d, e.name);\n      if (!out.has(e.name)) out.set(e.name, []);\n      out.get(e.name).push(full);\n      if (depth < maxDepth) walk(full, depth + 1);\n    }\n  })(root, 1);\n  return out;\n}\n\n// --- old folders that contain HTML -----------------------------------------\n// Indexed two ways: by old folder name, and by \"<driveId6>_<variant>\".\nconst oldByName = new Map();\nconst oldById = new Map();\nfor (const root of OLD_ROOTS) {\n  if (!fs.existsSync(root)) throw new Error(`OLD_HTML_ROOTS entry does not exist: ${root}`);\n  for (const [name, paths] of walkDirs(root, 3)) {\n    for (const p of paths) {\n      const hs = htmls(p);\n      if (!hs.length) continue;\n      // Newest HTML in the folder, if there are several.\n      const pick = hs.map((f) => ({ f, t: fs.statSync(path.join(p, f)).mtimeMs })).sort((a, b) => b.t - a.t)[0];\n      const rec = { dir: p, html: path.join(p, pick.f), htmlCount: hs.length, mtime: pick.t, name: stripPrefix(name) };\n      const push = (m, k) => { if (!m.has(k)) m.set(k, []); m.get(k).push(rec); };\n      push(oldByName, rec.name);\n      const m = rec.name.match(/_(applied|research|[a-z]+)_([A-Za-z0-9_-]{6})$/);\n      if (m) push(oldById, `${m[2]}_${m[1]}`);\n    }\n  }\n}\n\n// --- current slide folders ---------------------------------------------------\nif (!fs.existsSync(SLIDES_ROOT)) throw new Error(`SLIDES_ROOT does not exist: ${SLIDES_ROOT}`);\nconst slideDirs = walkDirs(SLIDES_ROOT, 3);\n\n// --- sheet rows ----------------------------------------------------------------\nconst groups = new Map();\nfor (const r of $input.all().map((i) => i.json)) {\n  if (!r.row_key || /^FIRST FILE LINE/i.test(String(r.row_key))) continue;\n  const k = String(r.row_key).trim();\n  if (!groups.has(k)) groups.set(k, []);\n  groups.get(k).push(r);\n}\n\nconst results = [];\nfor (const [key, rs] of groups) {\n  rs.sort((a, b) => String(b.generated_at || '').localeCompare(String(a.generated_at || '')));\n  const row = rs.find((r) => slideDirs.has(String(r.folder_name || '').trim())) || rs[0];\n  const folderName = String(row.folder_name || '').trim();\n  const oldFolder = (String(row.notes || '').match(/Local folder:\\s*(\\S+)/) || [])[1] || '';\n  const n = Number(row.post_index) || Number(key.split('_').pop()) || 1;\n  const out = { row_key: key, folder_name: folderName, old_folder: oldFolder, title: row.title };\n\n  const dests = slideDirs.get(folderName) || (oldFolder && slideDirs.get(oldFolder)) || [];\n  if (dests.length !== 1) { results.push({ ...out, status: dests.length ? 'dest_ambiguous' : 'dest_not_found' }); continue; }\n  const dest = dests[0];\n  const destHtml = path.join(dest, `carousel_post${n}.html`);\n  if (fs.existsSync(destHtml)) continue;   // already has HTML, nothing to do\n\n  // Candidate old folders: by exact old name, else by drive id + variant.\n  const variant = String(row.variant || key.split('_').slice(-2, -1)[0] || '');\n  let cands = (oldFolder && oldByName.get(oldFolder)) || [];\n  if (!cands.length) cands = oldById.get(`${String(row.drive_file_id || key).slice(0, 6)}_${variant}`) || [];\n  cands = cands.filter((c) => path.resolve(c.dir) !== path.resolve(dest));\n  if (!cands.length) { results.push({ ...out, status: 'no_old_html_found' }); continue; }\n\n  // Check each candidate, keep the best.\n  const destJ = jpgs(dest);\n  const genAt = Date.parse(row.generated_at || '') || null;\n  const rank = { verified_same_run: 0, unverified_close: 1, unverified_far: 2, different_run: 3 };\n  let best = null;\n  for (const c of cands) {\n    const oldJ = jpgs(c.dir);\n    let status;\n    let detail;\n    if (oldJ.length && destJ.length) {\n      const oldFiles = oldJ.map((f) => {\n        const p = path.join(c.dir, f);\n        return { path: p, size: fs.statSync(p).size };\n      });\n      const shared = destJ.filter((f) => sameAsAny(path.join(dest, f), oldFiles)).length;\n      status = shared === destJ.length && oldJ.length === destJ.length ? 'verified_same_run' : 'different_run';\n      detail = `${shared}/${destJ.length} slide images identical`;\n    } else {\n      const hrs = genAt ? Math.abs(c.mtime - genAt) / 36e5 : null;\n      status = hrs !== null && hrs <= MAX_HOURS ? 'unverified_close' : 'unverified_far';\n      detail = hrs === null ? 'no generated_at in sheet' : `HTML saved ${hrs.toFixed(1)} h from generated_at`;\n    }\n    const cand = { ...c, status, detail };\n    if (!best || rank[status] < rank[best.status]) best = cand;\n  }\n\n  const r = { ...out, status: best.status, detail: best.detail, source: best.html, destination: destHtml,\n    candidates: cands.length, html_files_in_old_folder: best.htmlCount };\n\n  const ok = best.status === 'verified_same_run' || (COPY_CLOSE && best.status === 'unverified_close');\n  if (ok) {\n    if (DRY) r.action = 'would_copy';\n    else { fs.copyFileSync(best.html, destHtml); r.action = 'copied'; }\n  } else r.action = 'skipped';\n  results.push(r);\n}\n\nconst count = (f) => results.reduce((m, r) => ((m[r[f]] = (m[r[f]] || 0) + 1), m), {});\nconst summary = {\n  row_key: '_SUMMARY', dry_run: DRY,\n  rows_still_missing_html: results.length,\n  old_folders_with_html: [...oldByName.values()].reduce((a, v) => a + v.length, 0),\n  by_status: count('status'), by_action: count('action'),\n};\nconst reportPath = path.join(String(s.REPORT_DIR || '/files/_recovery'), 'old_html_match_report.json');\nfs.mkdirSync(path.dirname(reportPath), { recursive: true });\nfs.writeFileSync(reportPath, JSON.stringify({ summary, results }, null, 2), 'utf8');\nsummary.report = reportPath;\n\nreturn [summary, ...results].map((j) => ({ json: j }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2032,
+        896
+      ],
+      "id": "ac93fe48-8305-49a1-a163-22fd97e3264a",
+      "name": "Match Old HTML Folders"
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "shared": [
+    {
+      "updatedAt": "2026-09-30T07:49:07.984Z",
+      "createdAt": "2026-09-30T07:49:07.984Z",
+      "role": "workflow:owner",
+      "workflowId": "1SJv5lz6zxSUIwwH",
+      "projectId": "O6AJ2gZorGSWwg9b"
+    }
+  ],
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-09-30T08:05:51.664Z",
+  "versionId": "102ec454-9d63-4331-add0-96718f2a6d29"
+}
